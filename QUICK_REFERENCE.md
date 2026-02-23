@@ -142,7 +142,7 @@ Update both the `mailto:` and the displayed text.
 **Lines: 635-650**
 
 ```html
-<h3 class="text-2xl font-bold mb-4 gradient-text">N-SPACe CanSat Team</h3>
+<h3 class="text-2xl font-bold mb-4 gradient-text">IN-SPACe CanSat Team</h3>
 <p class="text-gray-400 mb-6">India Student Competition 2022-'24</p>
 ```
 
