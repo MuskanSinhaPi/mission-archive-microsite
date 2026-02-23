@@ -790,7 +790,7 @@
             -->
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Example 3D Model Cards - Update with your 21 parts -->
+                <!-- Example 3D Model Cards -->
                 <div class="mission-card rounded-xl p-4">
                     <model-viewer 
                         src="assets/models/part-01.glb"
@@ -800,84 +800,152 @@
                         shadow-intensity="1"
                         class="w-full">
                     </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Main Body</h3>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Assembled CanSat</h3>
                     <p class="text-center text-sm text-gray-400">Primary structure assembly</p>
                 </div>
                 
                 <div class="mission-card rounded-xl p-4">
                     <model-viewer 
                         src="assets/models/part-02.glb"
+                        alt="Gyro Assembly"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Gyro Assembly</h3>
+                    <p class="text-center text-sm text-gray-400">Assembled 3-DoF Active Control Gyro Mechanism</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-03.glb"
+                        alt="Gyro Pitch Gimbal"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Pitch Gimbal</h3>
+                    <p class="text-center text-sm text-gray-400">Pitch Servo Mounting Structure</p>
+                </div>
+
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-04.glb"
+                        alt="Gyro Roll Gimbal"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Roll Gimbal</h3>
+                    <p class="text-center text-sm text-gray-400">Roll Servo Mounting Structure</p>
+                </div>
+
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-05.glb"
+                        alt="Hinge Part 1"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge part 1</h3>
+                    <p class="text-center text-sm text-gray-400">Hinge mounting structure</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-06.glb"
+                        alt="Hinge Part 2"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Hinge Part 2</h3>
+                    <p class="text-center text-sm text-gray-400">Hinge mounting structure</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-07.glb"
+                        alt="Hinge Shaft"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Shaft</h3>
+                    <p class="text-center text-sm text-gray-400">Hinge shaft structure</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-08.glb"
+                        alt="Lower Body"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Lower Body</h3>
+                    <p class="text-center text-sm text-gray-400">Lower body structure</p>
+                </div>
+        
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-09.glb"
                         alt="Parachute Lid"
                         auto-rotate
                         camera-controls
                         shadow-intensity="1"
                         class="w-full">
                     </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Lid</h3>
-                    <p class="text-center text-sm text-gray-400">Deployment mechanism cover</p>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Parachute Lid</h3>
+                    <p class="text-center text-sm text-gray-400">Deployment mechanism cover</p> 
                 </div>
-                
+
                 <div class="mission-card rounded-xl p-4">
                     <model-viewer 
-                        src="assets/models/part-03.glb"
+                        src="assets/models/part-10.glb"
                         alt="Electronics Bay"
                         auto-rotate
                         camera-controls
                         shadow-intensity="1"
                         class="w-full">
                     </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Electronics Bay</h3>
-                    <p class="text-center text-sm text-gray-400">PCB mounting structure</p>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Electronics Bay</h3>
+                    <p class="text-center text-sm text-gray-400">Bay for housing electronics</p>
                 </div>
                 
                 <div class="mission-card rounded-xl p-4">
                     <model-viewer 
-                        src="assets/models/part-04.glb"
-                        alt="Component 4"
+                        src="assets/models/part-11.glb"
+                        alt="Gyro Mounting Bracket"
+                        auto-rotate                                                                             
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Mounting Bracket</h3>
+                    <p class="text-center text-sm text-gray-400">Bracket for mounting the gyro assembly</p>
+                </div>
+
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-12.glb"
+                        alt="Parachute Compartment"
                         auto-rotate
                         camera-controls
                         shadow-intensity="1"
                         class="w-full">
                     </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Part 4</h3>
-                    <p class="text-center text-sm text-gray-400">Description here</p>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Compartment</h3>
+                    <p class="text-center text-sm text-gray-400">Compartment for housing the parachute</p>
                 </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-05.glb"
-                        alt="Component 5"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Part 5</h3>
-                    <p class="text-center text-sm text-gray-400">Description here</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-06.glb"
-                        alt="Component 6"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Part 6</h3>
-                    <p class="text-center text-sm text-gray-400">Description here</p>
-                </div>
-                
-                <!-- Add remaining 15 parts following the same pattern -->
-                <!-- Simply copy the above block and update:
-                     - src="assets/models/part-XX.glb"
-                     - alt="Your Part Name"
-                     - <h3> title
-                     - <p> description
-                -->
-            </div>
-            
             <p class="text-center text-gray-400 mt-12">
                 💡 <strong>Tip:</strong> Click and drag to rotate • Scroll to zoom • Right-click drag to pan
                 <br>All 21 mechanical parts available • glTF format for optimal web performance
