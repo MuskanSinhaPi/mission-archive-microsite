@@ -1,4 +1,4 @@
-# N-SPACe CanSat Website - Setup Instructions
+# IN-SPACe CanSat Website - Setup Instructions
 
 ## 📁 Folder Structure
 
