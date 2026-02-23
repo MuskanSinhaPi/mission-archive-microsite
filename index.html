@@ -3,25 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IN-SPACe CanSat | Mission Archive</title>
+    <title>Team Kalpana Time Capsule</title>
     <meta name="description" content="IN-SPACe CanSat India Student Competition 2022-'24 - Mission Archive">
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Model Viewer for 3D Models -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <style>
-        * {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        
+        * { font-family: 'Space Grotesk', sans-serif; }
         :root {
             --bg-primary: #0B0F19;
             --accent-cyan: #00D4FF;
@@ -29,262 +19,152 @@
             --text-primary: #F1F5F9;
             --text-secondary: #94A3B8;
         }
-        
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-        
-        /* Loading Screen */
+        body { background-color: var(--bg-primary); color: var(--text-primary); overflow-x: hidden; }
         #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-primary); display: flex; align-items: center;
+            justify-content: center; z-index: 9999; transition: opacity 0.5s ease-out;
         }
-        
-        #loading-screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .satellite-loader {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            animation: rotate 3s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Animated Background */
+        #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+        .satellite-loader { width: 100px; height: 100px; animation: rotate 3s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .telemetry-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.03;
-            background-image: 
-                linear-gradient(90deg, var(--accent-cyan) 1px, transparent 1px),
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.03;
+            background-image: linear-gradient(90deg, var(--accent-cyan) 1px, transparent 1px),
                 linear-gradient(var(--accent-cyan) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
+            background-size: 50px 50px; pointer-events: none;
         }
-        
-        /* Gradient Text */
         .gradient-text {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        
-        /* Glowing Button */
         .glow-btn {
-            position: relative;
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease; box-shadow: 0 0 20px rgba(0,212,255,0.3);
         }
-        
-        .glow-btn:hover {
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-            transform: translateY(-2px);
-        }
-        
-        /* Card Styles */
+        .glow-btn:hover { box-shadow: 0 0 30px rgba(0,212,255,0.5); transform: translateY(-2px); }
         .mission-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            background: rgba(15,23,42,0.6); border: 1px solid rgba(0,212,255,0.2);
+            backdrop-filter: blur(10px); transition: all 0.3s ease;
         }
-        
         .mission-card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            border-color: var(--accent-cyan); transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.2);
         }
-        
-        /* Gallery Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(11, 15, 25, 0.95);
-            backdrop-filter: blur(10px);
+        /* YouTube Facade */
+        .yt-facade {
+            position: relative; width: 100%; padding-bottom: 56.25%; background: #000;
+            border-radius: 12px; border: 1px solid rgba(0,212,255,0.2); overflow: hidden; cursor: pointer;
         }
-        
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .yt-facade img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
+        .yt-facade:hover img { opacity: 0.7; }
+        .yt-play-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 68px; height: 48px; background: rgba(0,0,0,0.8); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 2;
         }
-        
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
+        .yt-facade:hover .yt-play-btn { background: #FF0000; }
+        .yt-play-btn svg { width: 28px; height: 28px; fill: white; }
+        .yt-facade iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        /* Gallery */
+        .album-tab {
+            background: rgba(15,23,42,0.6); border: 1px solid rgba(0,212,255,0.2);
+            color: var(--text-secondary); padding: 0.5rem 1.2rem; border-radius: 9999px;
+            cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 0.9rem;
         }
-        
-        /* Video Container */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-        
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Section Divider */
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-            margin: 4rem 0;
-        }
-        
-        /* Pagination Styles */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .pagination button {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .pagination button:hover:not(:disabled) {
-            border-color: var(--accent-cyan);
-            background: rgba(0, 212, 255, 0.1);
-        }
-        
-        .pagination button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        .pagination button.active {
+        .album-tab:hover { border-color: var(--accent-cyan); color: var(--text-primary); }
+        .album-tab.active {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            border-color: transparent;
+            border-color: transparent; color: white; font-weight: 600;
         }
-        
-        .gallery-item {
-            display: none;
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
         }
-        
-        .gallery-item.active {
-            display: block;
+        @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
+        .gallery-thumb {
+            aspect-ratio: 1; overflow: hidden; border-radius: 8px; cursor: pointer;
+            border: 1px solid rgba(0,212,255,0.15); transition: all 0.3s ease;
+            background: rgba(15,23,42,0.8); position: relative;
         }
-        
-        /* 3D Model Viewer Styles */
-        model-viewer {
-            width: 100%;
-            height: 400px;
-            background-color: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
+        .gallery-thumb:hover { border-color: var(--accent-cyan); transform: scale(1.03); box-shadow: 0 8px 24px rgba(0,212,255,0.25); }
+        .gallery-thumb img, .gallery-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .gallery-thumb .video-badge {
+            position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7);
+            border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; color: var(--accent-cyan);
         }
-        
-        model-viewer:hover {
-            border-color: var(--accent-cyan);
+        .gallery-pagination {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.5rem; margin-top: 2rem; flex-wrap: wrap;
         }
+        .gallery-pagination button {
+            background: rgba(15,23,42,0.6); border: 1px solid rgba(0,212,255,0.2);
+            color: var(--text-primary); padding: 0.4rem 0.9rem; border-radius: 0.5rem;
+            cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem;
+        }
+        .gallery-pagination button:hover:not(:disabled) { border-color: var(--accent-cyan); background: rgba(0,212,255,0.1); }
+        .gallery-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .gallery-pagination button.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-color: transparent;
+        }
+        /* Modal */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(11,15,25,0.97); backdrop-filter: blur(10px);
+            align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-inner { max-width: 92vw; max-height: 90vh; position: relative; }
+        .modal-inner img, .modal-inner video { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px; }
+        .modal-close { position: fixed; top: 1.5rem; right: 2rem; color: white; font-size: 3rem; cursor: pointer; line-height: 1; z-index: 2001; transition: color 0.2s; }
+        .modal-close:hover { color: var(--accent-cyan); }
+        .modal-nav {
+            position: fixed; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6);
+            color: white; font-size: 2rem; padding: 1rem 1.2rem; cursor: pointer; border-radius: 8px;
+            transition: background 0.2s; z-index: 2001; user-select: none;
+        }
+        .modal-nav:hover { background: rgba(0,212,255,0.3); }
+        #modal-prev { left: 1rem; }
+        #modal-next { right: 1rem; }
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent); margin: 4rem 0; }
+        html { scroll-behavior: smooth; }
+        model-viewer { width: 100%; height: 380px; background: rgba(15,23,42,0.8); border-radius: 12px; --poster-color: transparent; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1.5s linear infinite; display: inline-block; }
     </style>
 </head>
 <body>
-    
+
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="satellite-loader">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- Satellite Body -->
                 <rect x="35" y="35" width="30" height="30" fill="#00D4FF" opacity="0.8"/>
-                <!-- Solar Panels -->
                 <rect x="10" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
                 <rect x="70" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
-                <!-- Antenna -->
                 <line x1="50" y1="35" x2="50" y2="15" stroke="#00D4FF" stroke-width="2"/>
                 <circle cx="50" cy="15" r="3" fill="#00D4FF"/>
             </svg>
         </div>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div class="telemetry-bg"></div>
-        
-        <!-- 
-            📸 HERO IMAGE PLACEHOLDER
-            Replace the background with your hero image:
-            1. Save your hero image as: /assets/images/hero-image.jpg
-            2. Uncomment the div below and update the path
-        -->
-        <!-- <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('assets/images/hero-image.jpg');"></div> -->
-        
+        <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('assets/images/hero.jpeg');"></div>
         <div class="container mx-auto px-6 text-center relative z-10">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text">
-                IN-SPACe CanSat
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                India Student Competition 2022-'24
-            </p>
-            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-                Dual-Parachute Deployment System | 800-900m Altitude Mission | Novel Descent Control
-            </p>
-            <a href="#mission" class="glow-btn inline-block px-8 py-4 rounded-full text-white font-semibold text-lg">
-                Explore the Mission
-            </a>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text">IN-SPACe CanSat India Student Competition 2022-'24</h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">Team Kalpana, NSUT, New Delhi — Mission Archive</p>
+            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">Dual-Parachute Deployment System | 800–900 m Altitude Mission | Novel Descent Control</p>
+            <a href="#mission" class="glow-btn inline-block px-8 py-4 rounded-full text-white font-semibold text-lg">Explore the Mission</a>
         </div>
     </section>
 
     <!-- Mission Overview -->
     <section id="mission" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
-                Mission Overview
-            </h2>
-            
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Mission Overview</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Objective Card -->
                 <div class="mission-card rounded-2xl p-8">
                     <div class="text-4xl mb-4">🎯</div>
                     <h3 class="text-2xl font-bold mb-4 text-cyan-400">Mission Objectives</h3>
@@ -296,8 +176,6 @@
                         <li>• Quality & reliability analysis</li>
                     </ul>
                 </div>
-                
-                <!-- Constraints Card -->
                 <div class="mission-card rounded-2xl p-8">
                     <div class="text-4xl mb-4">📐</div>
                     <h3 class="text-2xl font-bold mb-4 text-purple-400">Design Constraints</h3>
@@ -305,11 +183,9 @@
                         <li>• <strong>Mass:</strong> 0.700 kg (±0.050 kg)</li>
                         <li>• <strong>Diameter:</strong> ≤ 0.125 m</li>
                         <li>• <strong>Height:</strong> ≤ 0.310 m</li>
-                        <li>• <strong>Launch Altitude:</strong> 800-900 m</li>
+                        <li>• <strong>Launch Altitude:</strong> 800–900 m</li>
                     </ul>
                 </div>
-                
-                <!-- Key Specs Card -->
                 <div class="mission-card rounded-2xl p-8">
                     <div class="text-4xl mb-4">🪂</div>
                     <h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3>
@@ -329,296 +205,348 @@
     <!-- System Architecture -->
     <section id="systems" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
-                System Architecture
-            </h2>
-            
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">System Architecture</h2>
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="mission-card rounded-2xl p-8">
-                    <div class="text-4xl mb-4">💻</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Flight Computer</h3>
-                    <p class="text-gray-300">Custom flight control system managing telemetry, sensor fusion, and deployment sequences with real-time data transmission.</p>
-                </div>
-                
-                <div class="mission-card rounded-2xl p-8">
-                    <div class="text-4xl mb-4">🔋</div>
-                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Power System</h3>
-                    <p class="text-gray-300">Optimized power distribution system ensuring reliable operation throughout the mission phases.</p>
-                </div>
-                
-                <div class="mission-card rounded-2xl p-8">
-                    <div class="text-4xl mb-4">📡</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Telemetry System</h3>
-                    <p class="text-gray-300">Advanced communication system with HAM radio and beacon for real-time ground station data relay.</p>
-                </div>
-                
-                <div class="mission-card rounded-2xl p-8">
-                    <div class="text-4xl mb-4">⚙️</div>
-                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Deployment Mechanism</h3>
-                    <p class="text-gray-300">Dual-stage parachute deployment system with altitude-based triggers for controlled descent velocity.</p>
-                </div>
+                <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">💻</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Flight Computer</h3><p class="text-gray-300">Custom flight control system managing telemetry, sensor fusion, and deployment sequences with real-time data transmission.</p></div>
+                <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">🔋</div><h3 class="text-2xl font-bold mb-4 text-purple-400">Power System</h3><p class="text-gray-300">Optimized power distribution system ensuring reliable operation throughout the mission phases.</p></div>
+                <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">📡</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Telemetry System</h3><p class="text-gray-300">Advanced communication system with HAM radio and beacon for real-time ground station data relay.</p></div>
+                <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">⚙️</div><h3 class="text-2xl font-bold mb-4 text-purple-400">Deployment Mechanism</h3><p class="text-gray-300">Dual-stage parachute deployment system with altitude-based triggers for controlled descent velocity.</p></div>
             </div>
         </div>
     </section>
 
+<!-- ===== MEET THE TEAM SECTION =====
+     Add this to index.html just before the <div class="section-divider"></div> before the gallery section.
+     Make sure Team.jpeg is at: assets/images/Team.jpeg
+-->
+
+<div class="section-divider"></div>
+
+    <section id="team" class="py-20 px-6">
+        <div class="container mx-auto max-w-5xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">Meet the Team</h2>
+            <p class="text-center text-gray-400 mb-12">Team Kalpana — NSUT, New Delhi</p>
+
+            <div class="team-photo-wrapper">
+                <img src="assets/images/Team.jpeg" alt="Team Kalpana" class="team-photo">
+
+                <!-- Hotspots: left% and top% are center of each person's head/body -->
+                <!-- Adjust these percentages if tooltips feel off -->
+
+                <!-- Vansh — far left, front -->
+                <div class="hotspot" style="left:15%; top:35%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-right">
+                        <strong>Vansh</strong>
+                        <span>Mechanical Department</span>
+                    </div>
+                </div>
+
+                <!-- Khush — second from left, front -->
+                <div class="hotspot" style="left:24%; top:22%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-right">
+                        <strong>Khush</strong>
+                        <span>Ground Control Operations</span>
+                    </div>
+                </div>
+
+                <!-- Divya — third from left, front -->
+                <div class="hotspot" style="left:35%; top:30%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-right">
+                        <strong>Divya</strong>
+                        <span>Mechanical Department</span>
+                    </div>
+                </div>
+
+                <!-- Vidushi — centre front (smiling, long hair) -->
+                <div class="hotspot" style="left:47%; top:22%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-left">
+                        <strong>Vidushi</strong>
+                        <span>Mechanical Department</span>
+                    </div>
+                </div>
+
+                <!-- Arnav — back row left -->
+                <div class="hotspot" style="left:55%; top:23%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-left">
+                        <strong>Arnav</strong>
+                        <span>Electronics Department</span>
+                    </div>
+                </div>
+
+                <!-- Yash — back row right -->
+                <div class="hotspot" style="left:63%; top:18%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-left">
+                        <strong>Yash</strong>
+                        <span>Electronics Department</span>
+                    </div>
+                </div>
+
+                <!-- Yuvraj — front row, hat, sunglasses -->
+                <div class="hotspot" style="left:68%; top:33%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-left">
+                        <strong>Yuvraj</strong>
+                        <span>Mechanical Department</span>
+                    </div>
+                </div>
+
+                <!-- Muskan — far right, front -->
+                <div class="hotspot" style="left:81%; top:35%">
+                    <div class="hotspot-dot"></div>
+                    <div class="tooltip tooltip-left">
+                        <strong>Muskan</strong>
+                        <span>Electronics Department</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-gray-500 text-sm mt-6">💡 Hover over a team member to see their name and role</p>
+        </div>
+    </section>
+
+    <style>
+    /* ── Team Photo Wrapper ─────────────────────────────────────── */
+    .team-photo-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        border-radius: 16px;
+        overflow: visible;
+        border: 1px solid rgba(0,212,255,0.2);
+        box-shadow: 0 0 40px rgba(0,212,255,0.08);
+    }
+
+    .team-photo {
+        width: 100%;
+        display: block;
+        border-radius: 16px;
+    }
+
+    /* ── Hotspot Dot ────────────────────────────────────────────── */
+    .hotspot {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    .hotspot-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent-cyan);
+        border: 2px solid white;
+        box-shadow: 0 0 0 0 rgba(0,212,255,0.6);
+        animation: pulse-dot 2s infinite;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .hotspot:hover .hotspot-dot {
+        transform: scale(1.3);
+        background: white;
+    }
+
+    @keyframes pulse-dot {
+        0%   { box-shadow: 0 0 0 0 rgba(0,212,255,0.6); }
+        70%  { box-shadow: 0 0 0 10px rgba(0,212,255,0); }
+        100% { box-shadow: 0 0 0 0 rgba(0,212,255,0); }
+    }
+
+    /* ── Tooltip ────────────────────────────────────────────────── */
+    .tooltip {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(11,15,25,0.95);
+        border: 1px solid var(--accent-cyan);
+        border-radius: 8px;
+        padding: 8px 14px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 20px rgba(0,212,255,0.2);
+        z-index: 10;
+    }
+
+    .tooltip strong {
+        color: var(--accent-cyan);
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .tooltip span {
+        color: #94a3b8;
+        font-size: 0.78rem;
+    }
+
+    /* Tooltip pointing right (for left-side members) */
+    .tooltip-right {
+        left: 26px;
+        transform: translateY(-50%) translateX(4px);
+    }
+    .tooltip-right::before {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-right-color: var(--accent-cyan);
+        border-left: none;
+    }
+
+    /* Tooltip pointing left (for right-side members) */
+    .tooltip-left {
+        right: 26px;
+        transform: translateY(-50%) translateX(-4px);
+    }
+    .tooltip-left::before {
+        content: '';
+        position: absolute;
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-left-color: var(--accent-cyan);
+        border-right: none;
+    }
+
+    /* Show tooltip on hotspot hover */
+    .hotspot:hover .tooltip {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+
+    /* Mobile — show name below dot, hide tooltip arrow */
+    @media (max-width: 640px) {
+        .hotspot-dot { width: 13px; height: 13px; }
+        .tooltip {
+            top: 26px;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            right: auto;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+        }
+        .tooltip::before { display: none; }
+        .hotspot:hover .tooltip { opacity: 1; transform: translateX(-50%) !important; }
+    }
+    </style>
     <div class="section-divider"></div>
 
     <!-- Flight & Testing -->
     <section id="testing" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
-                Flight & Testing
-            </h2>
-            
-            <!-- Launch Footage -->
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Flight & Testing</h2>
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-cyan-400">🚀 Launch Footage</h3>
-                <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/BlnHOM-ItQg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+                <div class="yt-facade" onclick="loadYT(this,'BlnHOM-ItQg')"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
             </div>
-            
-            <!-- Parachute Tests -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/zfHItv2cbR0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/Vj-me1MMqE0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/-SENyK0R3Eo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Short: Parachute Drop</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/Mz4KYMlhKPQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Test 1</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/C3dBkWsMyNM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" onclick="loadYT(this,'zfHItv2cbR0')"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" onclick="loadYT(this,'Vj-me1MMqE0')"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" onclick="loadYT(this,'-SENyK0R3Eo')"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Short: Parachute Drop</h4><div class="yt-facade" onclick="loadYT(this,'Mz4KYMlhKPQ')"><img src="https://i.ytimg.com/vi/Mz4KYMlhKPQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Test 1</h4><div class="yt-facade" onclick="loadYT(this,'C3dBkWsMyNM')"><img src="https://i.ytimg.com/vi/C3dBkWsMyNM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Sensor Testing -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-purple-400">🎯 Sensor Testing</h3>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Gyroscope Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/MfQjgFuOVNc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">General Testing Video</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/zf4PJpYdRZw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gyroscope Test</h4><div class="yt-facade" onclick="loadYT(this,'MfQjgFuOVNc')"><img src="https://i.ytimg.com/vi/MfQjgFuOVNc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">General Testing Video</h4><div class="yt-facade" onclick="loadYT(this,'zf4PJpYdRZw')"><img src="https://i.ytimg.com/vi/zf4PJpYdRZw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Structural & Stress Analysis -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-cyan-400">🔬 Structural Analysis</h3>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Total Deformation Analysis</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/_STlaqy4GR4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Stress Test Simulation</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/FSKDF4RFnME" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Total Deformation Analysis</h4><div class="yt-facade" onclick="loadYT(this,'_STlaqy4GR4')"><img src="https://i.ytimg.com/vi/_STlaqy4GR4/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Stress Test Simulation</h4><div class="yt-facade" onclick="loadYT(this,'FSKDF4RFnME')"><img src="https://i.ytimg.com/vi/FSKDF4RFnME/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Vacuum Chamber Testing -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-purple-400">🔧 Environmental Testing</h3>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Vacuum Chamber Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/V4kRHyrGw84" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI During Vacuum Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/ZYSU60DqHMs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Vacuum Chamber Test</h4><div class="yt-facade" onclick="loadYT(this,'V4kRHyrGw84')"><img src="https://i.ytimg.com/vi/V4kRHyrGw84/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI During Vacuum Test</h4><div class="yt-facade" onclick="loadYT(this,'ZYSU60DqHMs')"><img src="https://i.ytimg.com/vi/ZYSU60DqHMs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Ground Control Station -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-cyan-400">📡 Ground Control Station</h3>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GCS Antenna Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/QtMg2qHt8sk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Screen</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/Y5gkge9h9yc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Attitude Screen</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/6X_WXwlWfdY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Command Driven Telemetry</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/VV981JAFxKw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Demo</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/EueZ1pHA4NQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS Antenna Test</h4><div class="yt-facade" onclick="loadYT(this,'QtMg2qHt8sk')"><img src="https://i.ytimg.com/vi/QtMg2qHt8sk/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Screen</h4><div class="yt-facade" onclick="loadYT(this,'Y5gkge9h9yc')"><img src="https://i.ytimg.com/vi/Y5gkge9h9yc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Attitude Screen</h4><div class="yt-facade" onclick="loadYT(this,'6X_WXwlWfdY')"><img src="https://i.ytimg.com/vi/6X_WXwlWfdY/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Command Driven Telemetry</h4><div class="yt-facade" onclick="loadYT(this,'VV981JAFxKw')"><img src="https://i.ytimg.com/vi/VV981JAFxKw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Demo</h4><div class="yt-facade" onclick="loadYT(this,'EueZ1pHA4NQ')"><img src="https://i.ytimg.com/vi/EueZ1pHA4NQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Hardware Assembly -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-purple-400">🔩 Hardware Assembly</h3>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Assembly</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/7MOyV5iUIqM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Test</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/iBgmaokHsVs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 1</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/AZ5rRGwyR70" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 2</h4>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/LeHIJvyRIXQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Assembly</h4><div class="yt-facade" onclick="loadYT(this,'7MOyV5iUIqM')"><img src="https://i.ytimg.com/vi/7MOyV5iUIqM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Test</h4><div class="yt-facade" onclick="loadYT(this,'iBgmaokHsVs')"><img src="https://i.ytimg.com/vi/iBgmaokHsVs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 1</h4><div class="yt-facade" onclick="loadYT(this,'AZ5rRGwyR70')"><img src="https://i.ytimg.com/vi/AZ5rRGwyR70/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+                    <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 2</h4><div class="yt-facade" onclick="loadYT(this,'LeHIJvyRIXQ')"><img src="https://i.ytimg.com/vi/LeHIJvyRIXQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
                 </div>
             </div>
-            
-            <!-- Market Pitch -->
             <div class="mb-12">
                 <h3 class="text-3xl font-bold mb-6 text-cyan-400">💼 Market Pitch</h3>
-                <div class="video-wrapper max-w-3xl mx-auto">
-                    <iframe src="https://www.youtube.com/embed/2vygV02hXTM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+                <div class="max-w-3xl mx-auto"><div class="yt-facade" onclick="loadYT(this,'2vygV02hXTM')"><img src="https://i.ytimg.com/vi/2vygV02hXTM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             </div>
         </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- Gallery -->
+    <!-- ===== DYNAMIC GALLERY ===== -->
     <section id="gallery" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 gradient-text">
-                Mission Gallery
-            </h2>
-            <p class="text-center text-gray-400 mb-12">
-                📸 Browse through 500+ images and videos from our CanSat journey
-            </p>
-            
-            <!-- 
-                📸 GALLERY IMAGES/VIDEOS PLACEHOLDER
-                Instructions:
-                1. Create folder: /assets/images/gallery/
-                2. Add your images/videos (500+ files supported with pagination)
-                3. Name them: gallery-001.jpg, gallery-002.jpg, ..., gallery-500.jpg
-                4. Update the generateGallery() function below with actual count
-                5. Supports: .jpg, .png, .webp, .mp4, .mov
-                
-                For videos: Use <video> tag instead of <img> in the template
-            -->
-            
-            <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <!-- Gallery items will be generated by JavaScript -->
-                <!-- You can manually add items or let the script generate them -->
-                
-                <!-- Manual Example: -->
-                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" data-page="1" onclick="openModal('assets/images/gallery/gallery-001.jpg')">
-                    <img src="assets/images/gallery/gallery-001.jpg" alt="Mission Photo 1" class="w-full h-48 object-cover" loading="lazy">
-                </div>
-                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" data-page="1" onclick="openModal('assets/images/gallery/gallery-002.jpg')">
-                    <img src="assets/images/gallery/gallery-002.jpg" alt="Mission Photo 2" class="w-full h-48 object-cover" loading="lazy">
-                </div>
-                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" data-page="1" onclick="openModal('assets/images/gallery/gallery-003.jpg')">
-                    <img src="assets/images/gallery/gallery-003.jpg" alt="Mission Photo 3" class="w-full h-48 object-cover" loading="lazy">
-                </div>
-                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" data-page="1" onclick="openModal('assets/images/gallery/gallery-004.jpg')">
-                    <img src="assets/images/gallery/gallery-004.jpg" alt="Mission Photo 4" class="w-full h-48 object-cover" loading="lazy">
-                </div>
-                
-                <!-- Add more items manually, or use the auto-generate script below -->
-                <!-- The script will generate items numbered gallery-001.jpg to gallery-500.jpg -->
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">Mission Gallery</h2>
+            <p class="text-center text-gray-400 mb-10">Browse through albums from our CanSat journey</p>
+
+            <!-- Tabs rendered by JS -->
+            <div class="flex flex-wrap gap-2 justify-center mb-10" id="album-tabs">
+                <span class="text-gray-500 text-sm py-2">Loading albums…</span>
             </div>
-            
-            <!-- Pagination Controls -->
-            <div class="pagination" id="gallery-pagination">
-                <button onclick="changePage('prev')" id="prev-btn" class="px-4 py-2">
-                    ← Previous
-                </button>
-                <div id="page-numbers" class="flex gap-2">
-                    <!-- Page numbers will be generated by JavaScript -->
-                </div>
-                <button onclick="changePage('next')" id="next-btn" class="px-4 py-2">
-                    Next →
-                </button>
+
+            <!-- Loading spinner -->
+            <div id="gallery-loading" class="text-center py-20 text-gray-400">
+                <span class="animate-spin text-5xl">🛰️</span>
+                <p class="mt-4">Loading gallery…</p>
             </div>
-            
-            <p class="text-center text-gray-400 mt-8 text-sm">
-                💡 <strong>Tip:</strong> Click any image to view full size. Use arrow keys to navigate in modal.
+
+            <!-- Album content injected here -->
+            <div id="album-panels"></div>
+
+            <p class="text-center text-gray-400 mt-8 text-sm" id="gallery-tip" style="display:none">
+                💡 Click any media to view full size. Use ← → arrow keys or nav buttons to browse the full album.
             </p>
         </div>
     </section>
 
-    <!-- Modal for Gallery -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="absolute top-8 right-12 text-white text-5xl font-bold cursor-pointer hover:text-cyan-400 z-50">&times;</span>
-        <img class="modal-content" id="modalImage">
+    <!-- Media Modal -->
+    <div id="mediaModal" class="modal" onclick="handleModalClick(event)">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <span class="modal-nav" id="modal-prev" onclick="navigateModal(-1);event.stopPropagation()">&#8249;</span>
+        <div class="modal-inner" onclick="event.stopPropagation()">
+            <img id="modalImage" src="" alt="" style="display:none">
+            <video id="modalVideo" controls style="display:none;max-width:90vw;max-height:85vh"></video>
+        </div>
+        <span class="modal-nav" id="modal-next" onclick="navigateModal(1);event.stopPropagation()">&#8250;</span>
     </div>
 
     <div class="section-divider"></div>
@@ -626,348 +554,61 @@
     <!-- Technical Archive -->
     <section id="archive" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
-                Technical Archive
-            </h2>
-            
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Technical Archive</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 
-                    📄 DOCUMENT LINKS PLACEHOLDER
-                    Instructions for adding your local PDFs:
-                    1. Create folder: /assets/documents/
-                    2. Add all your PDFs there
-                    3. Update href attributes below to point to your files
-                    Example: href="assets/documents/pdr-round1.pdf"
-                -->
-                
-                <!-- Design Reviews -->
-                <a href="assets/documents/presentations/round-1-pdr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📋</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Preliminary Design Review</h3>
-                    <p class="text-sm text-gray-400">Round 1 - PDR Document</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-1-pdr.pdf</p>
-                </a>
-                
-                <a href="assets/documents/presentations/round-2-cdr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📋</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Critical Design Review</h3>
-                    <p class="text-sm text-gray-400">Round 2 - CDR Document</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-2-cdr.pdf</p>
-                </a>
-                
-                <a href="assets/documents/presentations/round-3-pa.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">🔧</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Physical Assessment</h3>
-                    <p class="text-sm text-gray-400">Round 3 - PA Document</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-3-pa.pdf</p>
-                </a>
-                
-                <a href="assets/documents/presentations/round-4-frr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">✈️</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Flight Readiness Review</h3>
-                    <p class="text-sm text-gray-400">Round 4 - FRR Document</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-4-frr.pdf</p>
-                </a>
-                
-                <!-- Post Flight Reports -->
-                <a href="assets/documents/post-flight-review/flight-report-1.jpeg" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📊</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Post Flight Review Screen 1</h3>
-                    <p class="text-sm text-gray-400">Flight Data & Analysis</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 post-flight-review1/</p>
-                </a>
-
-                <!-- Post Flight Reports -->
-                <a href="assets/documents/post-flight-review/flight-report-2.jpeg" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📊</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Post Flight Review Screen 2</h3>
-                    <p class="text-sm text-gray-400">Flight Data & Analysis</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 post-flight-review/</p>
-                </a>
-
-                <!-- Post Flight Reports -->
-                <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📊</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Fight Data CSV</h3>
-                    <p class="text-sm text-gray-400">Flight Data CSV</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 flight-csv/</p>
-                </a>
-                
-                <!-- Research Report -->
-                <a href="assets/documents/post-flight-review/presentation.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📚</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Presentation for the Board of Governors</h3>
-                    <p class="text-sm text-gray-400">Complete Documentation</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 docs/presentation.pdf</p>
-                </a>
-                
-                <!-- CAD Files -->
-                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">🔷</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">CAD Files</h3>
-                    <p class="text-sm text-gray-400">SolidWorks Models (21 parts)</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 mechanical-parts/</p>
-                </a>
-                
-                <!-- PCB Files - Google Drive -->
-                <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">⚡</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">PCB Files</h3>
-                    <p class="text-sm text-gray-400">Circuit Design & Schematics</p>
-                    <p class="text-xs text-cyan-400 mt-2">🔗 Google Drive</p>
-                </a>
-                
-                <!-- Expenses Sheet - Google Sheets -->
-                <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">💰</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Expenses Sheet</h3>
-                    <p class="text-sm text-gray-400">Budget & Financial Tracking</p>
-                    <p class="text-xs text-cyan-400 mt-2">🔗 Google Sheets</p>
-                </a>
-                
-                <!-- Certificates -->
-                <a href="assets/documents/certificate.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">🏆</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Certificates</h3>
-                    <p class="text-sm text-gray-400">Competition Recognition</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 Certificate.pdf</p>
-                </a>
-                
-                <!-- Competition Guidelines -->
-                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">📖</div>
-                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Competition Guidelines</h3>
-                    <p class="text-sm text-gray-400">Official Documentation (8 docs)</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 docs/</p>
-                </a>
-                
-                <!-- Banner & Standee -->
-                <a href="assets/documents/banner.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">🎨</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Banner</h3>
-                    <p class="text-sm text-gray-400">Display Materials</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 banner.pdf</p>
-                </a>
-
-                <a href="assets/documents/standee-final.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
-                    <div class="text-4xl mb-3">🎨</div>
-                    <h3 class="text-xl font-bold text-purple-400 mb-2">Standee</h3>
-                    <p class="text-sm text-gray-400">Display Materials</p>
-                    <p class="text-xs text-gray-500 mt-2">📁 standee-final.pdf</p>
-                </a>
-            </div>
-            
-            <div class="mt-12 text-center">
-                <p class="text-gray-400 text-sm">
-                    💡 <strong>Interactive 3D Models:</strong> View our mechanical CAD designs in 3D below!
-                    <br>All SolidWorks files have been converted to glTF format for web viewing.
-                </p>
+                <a href="assets/documents/presentations/round-1-pdr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📋</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Preliminary Design Review</h3><p class="text-sm text-gray-400">Round 1 – PDR</p></a>
+                <a href="assets/documents/presentations/round-2-cdr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📋</div><h3 class="text-xl font-bold text-purple-400 mb-2">Critical Design Review</h3><p class="text-sm text-gray-400">Round 2 – CDR</p></a>
+                <a href="assets/documents/presentations/round-3-pa.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🔧</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Physical Assessment</h3><p class="text-sm text-gray-400">Round 3 – PA</p></a>
+                <a href="assets/documents/presentations/round-4-frr.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">✈️</div><h3 class="text-xl font-bold text-purple-400 mb-2">Flight Readiness Review</h3><p class="text-sm text-gray-400">Round 4 – FRR</p></a>
+                <a href="assets/documents/post-flight-review/flight-report-1.jpeg" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📊</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Post Flight Review Screen 1</h3><p class="text-sm text-gray-400">Flight Data & Analysis</p></a>
+                <a href="assets/documents/post-flight-review/flight-report-2.jpeg" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📊</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Post Flight Review Screen 2</h3><p class="text-sm text-gray-400">Flight Data & Analysis</p></a>
+                <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📊</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Flight Data CSV</h3><p class="text-sm text-gray-400">Raw telemetry data</p></a>
+                <a href="assets/documents/post-flight-review/presentation.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📚</div><h3 class="text-xl font-bold text-purple-400 mb-2">Board of Governors Presentation</h3><p class="text-sm text-gray-400">Complete Documentation</p></a>
+                <a href="#3d-models" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🔷</div><h3 class="text-xl font-bold text-cyan-400 mb-2">CAD Files</h3><p class="text-sm text-gray-400">View in 3D below</p></a>
+                <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">⚡</div><h3 class="text-xl font-bold text-purple-400 mb-2">PCB Files</h3><p class="text-sm text-gray-400">Circuit Design & Schematics</p><p class="text-xs text-cyan-400 mt-2">🔗 Google Drive</p></a>
+                <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">💰</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Expenses Sheet</h3><p class="text-sm text-gray-400">Budget & Financial Tracking</p><p class="text-xs text-cyan-400 mt-2">🔗 Google Sheets</p></a>
+                <a href="assets/certificate.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🏆</div><h3 class="text-xl font-bold text-purple-400 mb-2">Certificates</h3><p class="text-sm text-gray-400">Competition Recognition</p></a>
+                <a href="assets/documents/docs" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📖</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Competition Guidelines</h3><p class="text-sm text-gray-400">Official Documentation (8 docs)</p></a>
+                <a href="assets/banner.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🎨</div><h3 class="text-xl font-bold text-purple-400 mb-2">Banner</h3><p class="text-sm text-gray-400">Display Materials</p></a>
+                <a href="assets/standee-final.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🎨</div><h3 class="text-xl font-bold text-purple-400 mb-2">Standee</h3><p class="text-sm text-gray-400">Display Materials</p></a>
             </div>
         </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- 3D CAD Models Section -->
+    <!-- 3D CAD Models -->
     <section id="3d-models" class="py-20 px-6">
         <div class="container mx-auto max-w-6xl">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 gradient-text">
-                3D CAD Models
-            </h2>
-            <p class="text-center text-gray-300 mb-12">
-                🔷 Explore our mechanical designs in interactive 3D • Rotate • Zoom • Pan
-            </p>
-            
-            <!-- 
-                🔷 3D MODELS PLACEHOLDER
-                Instructions:
-                1. Create folder: /assets/models/
-                2. Add your glTF files: part-01.glb, part-02.glb, etc.
-                3. Update the src attributes below
-                4. Each model is interactive - users can rotate and zoom
-                
-                Note: Use .glb format (binary glTF) for best performance
-            -->
-            
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">3D CAD Models</h2>
+            <p class="text-center text-gray-300 mb-12">🔷 Rotate &nbsp;•&nbsp; Zoom &nbsp;•&nbsp; Pan</p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Example 3D Model Cards -->
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-01.glb"
-                        alt="CanSat Body"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Assembled CanSat</h3>
-                    <p class="text-center text-sm text-gray-400">Primary structure assembly</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-02.glb"
-                        alt="Gyro Assembly"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Gyro Assembly</h3>
-                    <p class="text-center text-sm text-gray-400">Assembled 3-DoF Active Control Gyro Mechanism</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-03.glb"
-                        alt="Gyro Pitch Gimbal"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Pitch Gimbal</h3>
-                    <p class="text-center text-sm text-gray-400">Pitch Servo Mounting Structure</p>
-                </div>
-
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-04.glb"
-                        alt="Gyro Roll Gimbal"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Roll Gimbal</h3>
-                    <p class="text-center text-sm text-gray-400">Roll Servo Mounting Structure</p>
-                </div>
-
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-05.glb"
-                        alt="Hinge Part 1"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge part 1</h3>
-                    <p class="text-center text-sm text-gray-400">Hinge mounting structure</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-06.glb"
-                        alt="Hinge Part 2"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Hinge Part 2</h3>
-                    <p class="text-center text-sm text-gray-400">Hinge mounting structure</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-07.glb"
-                        alt="Hinge Shaft"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Shaft</h3>
-                    <p class="text-center text-sm text-gray-400">Hinge shaft structure</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-08.glb"
-                        alt="Lower Body"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Lower Body</h3>
-                    <p class="text-center text-sm text-gray-400">Lower body structure</p>
-                </div>
-        
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-09.glb"
-                        alt="Parachute Lid"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Parachute Lid</h3>
-                    <p class="text-center text-sm text-gray-400">Deployment mechanism cover</p> 
-                </div>
-
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-10.glb"
-                        alt="Electronics Bay"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Electronics Bay</h3>
-                    <p class="text-center text-sm text-gray-400">Bay for housing electronics</p>
-                </div>
-                
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-11.glb"
-                        alt="Gyro Mounting Bracket"
-                        auto-rotate                                                                             
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Mounting Bracket</h3>
-                    <p class="text-center text-sm text-gray-400">Bracket for mounting the gyro assembly</p>
-                </div>
-
-                <div class="mission-card rounded-xl p-4">
-                    <model-viewer 
-                        src="assets/models/part-12.glb"
-                        alt="Parachute Compartment"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        class="w-full">
-                    </model-viewer>
-                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Compartment</h3>
-                    <p class="text-center text-sm text-gray-400">Compartment for housing the parachute</p>
-                </div>
-            <p class="text-center text-gray-400 mt-12">
-                💡 <strong>Tip:</strong> Click and drag to rotate • Scroll to zoom • Right-click drag to pan
-                <br>All 21 mechanical parts available • glTF format for optimal web performance
-            </p>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-01.glb" alt="Assembled CanSat" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Assembled CanSat</h3><p class="text-center text-sm text-gray-400">Primary structure assembly</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-02.glb" alt="Gyro Assembly" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Gyro Assembly</h3><p class="text-center text-sm text-gray-400">3-DoF Active Control Gyro Mechanism</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-03.glb" alt="Gyro Pitch Gimbal" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Pitch Gimbal</h3><p class="text-center text-sm text-gray-400">Pitch Servo & BLDC Motor Mounting</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-04.glb" alt="Gyro Roll Gimbal" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Roll Gimbal</h3><p class="text-center text-sm text-gray-400">Roll Servo Mounting Structure</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-05.glb" alt="Hinge Part 1" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Part 1</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-06.glb" alt="Hinge Part 2" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Hinge Part 2</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-07.glb" alt="Hinge Shaft" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Shaft</h3><p class="text-center text-sm text-gray-400">Hinge shaft structure</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-08.glb" alt="Lower Body" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Lower Body</h3><p class="text-center text-sm text-gray-400">Lower body structure</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-09.glb" alt="Parachute Lid" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Parachute Lid</h3><p class="text-center text-sm text-gray-400">Deployment mechanism cover</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-10.glb" alt="Electronics Bay" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Electronics Bay</h3><p class="text-center text-sm text-gray-400">Bay for housing electronics</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-11.glb" alt="Gyro Mounting Bracket" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Mounting Bracket</h3><p class="text-center text-sm text-gray-400">Bracket for mounting the gyro assembly</p></div>
+                <div class="mission-card rounded-xl p-4"><model-viewer src="assets/models/part-12.glb" alt="Parachute Compartment" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Compartment</h3><p class="text-center text-sm text-gray-400">Compartment for housing the parachute</p></div>
+            </div>
+            <p class="text-center text-gray-400 mt-12">💡 Click and drag to rotate &nbsp;•&nbsp; Scroll to zoom &nbsp;•&nbsp; Right-click drag to pan</p>
         </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- GitHub Section -->
+    <!-- GitHub -->
     <section id="github" class="py-20 px-6">
         <div class="container mx-auto max-w-4xl text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-8 gradient-text">
-                Open Source Code
-            </h2>
-            <p class="text-xl text-gray-300 mb-12">
-                Explore our flight software, telemetry systems, and ground control station code
-            </p>
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 gradient-text">Open Source Code</h2>
+            <p class="text-xl text-gray-300 mb-12">Explore our flight software, telemetry systems, and ground control station code</p>
             <a href="https://gitfront.io/r/Muskan-Sinha/5N6r48CaceFi/CanSat-India-Updated/" target="_blank" rel="noopener" class="glow-btn inline-flex items-center px-8 py-4 rounded-full text-white font-semibold text-lg">
-                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
+                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                 View on GitFront
             </a>
         </div>
@@ -978,221 +619,234 @@
     <!-- Footer -->
     <footer class="py-12 px-6 text-center">
         <div class="container mx-auto max-w-4xl">
-            <h3 class="text-2xl font-bold mb-4 gradient-text">IN-SPACe CanSat Team</h3>
-            <p class="text-gray-400 mb-6">India Student Competition 2022-'24</p>
-            
-            <!-- 
-                📧 CONTACT EMAIL PLACEHOLDER
-                Replace with your preferred contact email
-            -->
-            <p class="text-gray-300 mb-8">
-                📧 Contact: <a href="mailto:team@inspace-cansat.edu" class="text-cyan-400 hover:text-cyan-300">team@inspace-cansat.edu</a>
-            </p>
-            
+            <h3 class="text-2xl font-bold mb-4 gradient-text">Team Kalpana</h3>
+            <p class="text-gray-400 mb-6">IN-SPACe CanSat India Student Competition 2022–'24 organised by ASI, in association with ISRO</p>
+            <p class="text-gray-300 mb-8">📧 Contact: <a href="mailto:aaryamuskan@gmail.com" class="text-cyan-400 hover:text-cyan-300">Muskan Sinha, Team Lead</a></p>
             <div class="text-sm text-gray-500">
-                <p>&copy; 2024 IN-SPACe CanSat Team. All rights reserved.</p>
+                <p>&copy; 2026 IN-SPACe CanSat Team. All rights reserved.</p>
                 <p class="mt-2">Designed for aerospace excellence 🛰️</p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script>
-        // ==================== CONFIGURATION ====================
-        // Update these values based on your gallery
-        const ITEMS_PER_PAGE = 24; // Number of images per page
-        const TOTAL_ITEMS = 500;   // Total number of images (update this!)
-        
-        let currentPage = 1;
-        const totalPages = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
-        
-        // ==================== LOADING SCREEN ====================
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('loading-screen').classList.add('fade-out');
-            }, 2000);
-            
-            // Initialize gallery on page load
-            initializeGallery();
-        });
+    // ── Loading screen ───────────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+        setTimeout(() => document.getElementById('loading-screen').classList.add('fade-out'), 1800);
+    });
 
-        // ==================== GALLERY PAGINATION ====================
-        
-        function initializeGallery() {
-            // Option 1: If you have manually added gallery items with data-page attribute
-            // The pagination will work automatically
-            
-            // Option 2: Auto-generate gallery items (uncomment if needed)
-            // generateGalleryItems();
-            
-            renderPagination();
-            showPage(1);
-        }
-        
-        // Optional: Auto-generate gallery items
-        // Uncomment this function if you want to automatically generate HTML for all items
-        function generateGalleryItems() {
-            const galleryGrid = document.getElementById('gallery-grid');
-            
-            // Clear existing sample items
-            galleryGrid.innerHTML = '';
-            
-            for (let i = 1; i <= TOTAL_ITEMS; i++) {
-                const pageNum = Math.ceil(i / ITEMS_PER_PAGE);
-                const itemNum = String(i).padStart(3, '0'); // Format: 001, 002, etc.
-                
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'mission-card rounded-lg overflow-hidden cursor-pointer gallery-item';
-                galleryItem.setAttribute('data-page', pageNum);
-                galleryItem.onclick = function() {
-                    openModal(`assets/images/gallery/gallery-${itemNum}.jpg`);
-                };
-                
-                // Determine if it's an image or video based on extension
-                // Adjust this logic based on your file naming convention
-                const isVideo = false; // Set logic here if you have videos
-                
-                if (isVideo) {
-                    galleryItem.innerHTML = `
-                        <video class="w-full h-48 object-cover" loading="lazy">
-                            <source src="assets/images/gallery/gallery-${itemNum}.mp4" type="video/mp4">
-                        </video>
-                    `;
-                } else {
-                    galleryItem.innerHTML = `
-                        <img src="assets/images/gallery/gallery-${itemNum}.jpg" 
-                             alt="Mission Photo ${i}" 
-                             class="w-full h-48 object-cover" 
-                             loading="lazy">
-                    `;
-                }
-                
-                galleryGrid.appendChild(galleryItem);
-            }
-        }
-        
-        function showPage(page) {
-            currentPage = page;
-            
-            // Hide all items
-            const allItems = document.querySelectorAll('.gallery-item');
-            allItems.forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show items for current page
-            const pageItems = document.querySelectorAll(`.gallery-item[data-page="${page}"]`);
-            pageItems.forEach(item => {
-                item.classList.add('active');
-            });
-            
-            // Update pagination controls
-            updatePaginationControls();
-            
-            // Scroll to gallery section
-            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        
-        function changePage(direction) {
-            if (direction === 'prev' && currentPage > 1) {
-                showPage(currentPage - 1);
-            } else if (direction === 'next' && currentPage < totalPages) {
-                showPage(currentPage + 1);
-            }
-        }
-        
-        function renderPagination() {
-            const pageNumbersDiv = document.getElementById('page-numbers');
-            pageNumbersDiv.innerHTML = '';
-            
-            // Show first page, current page range, and last page
-            const pagesToShow = [];
-            
-            // Always show first page
-            pagesToShow.push(1);
-            
-            // Show pages around current page
-            for (let i = Math.max(2, currentPage - 2); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
-                pagesToShow.push(i);
-            }
-            
-            // Always show last page
-            if (totalPages > 1) {
-                pagesToShow.push(totalPages);
-            }
-            
-            // Remove duplicates and sort
-            const uniquePages = [...new Set(pagesToShow)].sort((a, b) => a - b);
-            
-            // Render page buttons with ellipsis
-            uniquePages.forEach((page, index) => {
-                // Add ellipsis if there's a gap
-                if (index > 0 && page - uniquePages[index - 1] > 1) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = '...';
-                    ellipsis.className = 'px-2 text-gray-400';
-                    pageNumbersDiv.appendChild(ellipsis);
-                }
-                
-                const pageBtn = document.createElement('button');
-                pageBtn.textContent = page;
-                pageBtn.className = page === currentPage ? 'active' : '';
-                pageBtn.onclick = () => showPage(page);
-                pageNumbersDiv.appendChild(pageBtn);
-            });
-        }
-        
-        function updatePaginationControls() {
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-            
-            renderPagination();
-        }
-
-        // ==================== GALLERY MODAL ====================
-        
-        function openModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            modal.classList.add('active');
-            modalImg.src = imageSrc;
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('active');
-        }
-
-        // ==================== SMOOTH SCROLL ====================
-        
-        document.querySelector('a[href="#mission"]').addEventListener('click', function(e) {
+    // ── Smooth scroll for hero CTA ───────────────────────────────────────────
+    document.querySelectorAll('a[href="#mission"]').forEach(el => {
+        el.addEventListener('click', e => {
             e.preventDefault();
-            document.querySelector('#mission').scrollIntoView({
-                behavior: 'smooth'
-            });
+            document.querySelector('#mission').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // ── YouTube facade ───────────────────────────────────────────────────────
+    function loadYT(el, videoId) {
+        if (el.querySelector('iframe')) return;
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        el.querySelectorAll('img, .yt-play-btn').forEach(c => c.style.display = 'none');
+        el.appendChild(iframe);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // DYNAMIC GALLERY  — reads assets/images/gallery/index.json (generated by
+    //                    generate_gallery.py, runs in < 1 second)
+    // ════════════════════════════════════════════════════════════════════════
+
+    const ALBUM_META = [
+        { id: 'good-times',      label: '🎉 Good Times' },
+        { id: 'photos',          label: '📷 Photos' },
+        { id: 'mini-spy-cam',    label: '🎥 Mini Spy Cam' },
+        { id: 'presentation',    label: '🎤 Presentation' },
+        { id: 'videos',          label: '🎬 Videos' },
+        { id: 'grand-finale',    label: '🏆 Grand Finale' },
+        { id: 'videos-mini-spy', label: '📹 Videos – Mini Spy Cam' },
+        { id: 'good-times-2',    label: '✨ Good Times 2' },
+    ];
+
+    const ITEMS_PER_PAGE = 48;
+    let galleryData   = {};
+    let currentAlbum  = ALBUM_META[0].id;
+    const pageState   = {};
+    ALBUM_META.forEach(a => pageState[a.id] = 1);
+
+    // Modal state
+    let modalItems = [], modalIndex = 0;
+
+    // ── Fetch index.json ─────────────────────────────────────────────────────
+    fetch('assets/images/gallery/index.json')
+        .then(r => {
+            if (!r.ok) throw new Error('Run generate_gallery.py first to create assets/images/gallery/index.json');
+            return r.json();
+        })
+        .then(data => {
+            galleryData = data;
+            buildTabs();
+            renderAlbum(currentAlbum);
+            document.getElementById('gallery-loading').style.display = 'none';
+            document.getElementById('gallery-tip').style.display     = 'block';
+        })
+        .catch(err => {
+            document.getElementById('gallery-loading').innerHTML =
+                `<div class="py-12 text-center">
+                    <p class="text-red-400 text-lg mb-2">⚠️ Gallery not loaded</p>
+                    <p class="text-gray-500 text-sm">${err.message}</p>
+                 </div>`;
         });
 
-        // ==================== KEYBOARD SHORTCUTS ====================
-        
-        document.addEventListener('keydown', function(event) {
-            // Close modal on Escape
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-            
-            // Navigate pages with arrow keys (when not in modal)
-            const modal = document.getElementById('imageModal');
-            if (!modal.classList.contains('active')) {
-                if (event.key === 'ArrowLeft') {
-                    changePage('prev');
-                } else if (event.key === 'ArrowRight') {
-                    changePage('next');
-                }
+    // ── Build tab bar ────────────────────────────────────────────────────────
+    function buildTabs() {
+        const el = document.getElementById('album-tabs');
+        el.innerHTML = '';
+        ALBUM_META.forEach((album, i) => {
+            const d = galleryData[album.id];
+            const count = d ? d.files.length : 0;
+            const btn = document.createElement('button');
+            btn.className = 'album-tab' + (i === 0 ? ' active' : '');
+            btn.innerHTML = `${album.label} <span style="opacity:.55;font-size:.75rem;margin-left:.2rem">(${count})</span>`;
+            btn.onclick = () => switchAlbum(album.id);
+            el.appendChild(btn);
+        });
+    }
+
+    // ── Switch album ─────────────────────────────────────────────────────────
+    function switchAlbum(albumId) {
+        currentAlbum = albumId;
+        document.querySelectorAll('.album-tab').forEach((tab, i) =>
+            tab.classList.toggle('active', ALBUM_META[i].id === albumId));
+        renderAlbum(albumId);
+        window.scrollTo({ top: document.getElementById('gallery').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    // ── Render current page of album ─────────────────────────────────────────
+    function renderAlbum(albumId) {
+        const panels = document.getElementById('album-panels');
+        const data   = galleryData[albumId];
+        if (!data) { panels.innerHTML = '<p class="text-center text-gray-500 py-12">Album not found.</p>'; return; }
+
+        const files      = data.files;
+        const page       = pageState[albumId] || 1;
+        const totalPages = Math.max(1, Math.ceil(files.length / ITEMS_PER_PAGE));
+        const start      = (page - 1) * ITEMS_PER_PAGE;
+        const slice      = files.slice(start, start + ITEMS_PER_PAGE);
+
+        // Grid
+        let html = '<div class="gallery-grid">';
+        slice.forEach((item, sliceIdx) => {
+            const globalIdx = start + sliceIdx;
+            const src = `assets/images/gallery/${data.folder}/${item.f}`.replace(/'/g, "\\'");
+            if (item.t === 'image') {
+                html += `<div class="gallery-thumb" onclick="openMedia('${src}','image','${albumId}',${globalIdx})">
+                             <img src="${src}" alt="" loading="lazy">
+                         </div>`;
+            } else {
+                html += `<div class="gallery-thumb" onclick="openMedia('${src}','video','${albumId}',${globalIdx})">
+                             <video src="${src}" muted playsinline preload="metadata"></video>
+                             <div class="video-badge">▶ VIDEO</div>
+                         </div>`;
             }
         });
+        html += '</div>';
+
+        // Pagination
+        if (totalPages > 1) {
+            html += '<div class="gallery-pagination">';
+            html += `<button onclick="goPage('${albumId}',${page-1})" ${page===1?'disabled':''}>← Prev</button>`;
+            smartPages(page, totalPages).forEach((p, i, arr) => {
+                if (i > 0 && p - arr[i-1] > 1) html += '<span style="color:#64748b;padding:0 4px">…</span>';
+                html += `<button class="${p===page?'active':''}" onclick="goPage('${albumId}',${p})">${p}</button>`;
+            });
+            html += `<button onclick="goPage('${albumId}',${page+1})" ${page===totalPages?'disabled':''}>Next →</button>`;
+            html += `<span style="color:#64748b;font-size:.8rem;margin-left:.5rem">${files.length} items</span>`;
+            html += '</div>';
+        } else {
+            html += `<p class="text-center text-gray-500 text-sm mt-4">${files.length} items</p>`;
+        }
+
+        panels.innerHTML = html;
+    }
+
+    function smartPages(cur, total) {
+        const s = new Set([1, total]);
+        for (let i = Math.max(1, cur-2); i <= Math.min(total, cur+2); i++) s.add(i);
+        return [...s].sort((a,b) => a-b);
+    }
+
+    function goPage(albumId, page) {
+        const data = galleryData[albumId];
+        if (!data) return;
+        const totalPages = Math.ceil(data.files.length / ITEMS_PER_PAGE);
+        pageState[albumId] = Math.max(1, Math.min(totalPages, page));
+        renderAlbum(albumId);
+        window.scrollTo({ top: document.getElementById('gallery').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    // ── Media Modal ──────────────────────────────────────────────────────────
+    function openMedia(src, type, albumId, globalIndex) {
+        const data = galleryData[albumId];
+        if (data) {
+            modalItems = data.files.map(item => ({
+                src:  `assets/images/gallery/${data.folder}/${item.f}`,
+                type: item.t
+            }));
+            modalIndex = globalIndex;
+        } else {
+            modalItems = [{ src, type }];
+            modalIndex = 0;
+        }
+        showModal(src, type);
+    }
+
+    function showModal(src, type) {
+        const modal = document.getElementById('mediaModal');
+        const img   = document.getElementById('modalImage');
+        const vid   = document.getElementById('modalVideo');
+        if (type === 'video') {
+            img.style.display = 'none';
+            vid.style.display = 'block';
+            vid.src = src;
+            vid.play().catch(() => {});
+        } else {
+            vid.pause(); vid.src = '';
+            vid.style.display = 'none';
+            img.style.display = 'block';
+            img.src = src;
+        }
+        modal.classList.add('active');
+        const multi = modalItems.length > 1;
+        document.getElementById('modal-prev').style.display = multi ? 'flex' : 'none';
+        document.getElementById('modal-next').style.display = multi ? 'flex' : 'none';
+    }
+
+    function navigateModal(dir) {
+        if (!modalItems.length) return;
+        modalIndex = (modalIndex + dir + modalItems.length) % modalItems.length;
+        const item = modalItems[modalIndex];
+        showModal(item.src, item.type);
+    }
+
+    function closeModal() {
+        document.getElementById('mediaModal').classList.remove('active');
+        const vid = document.getElementById('modalVideo');
+        vid.pause(); vid.src = '';
+    }
+
+    function handleModalClick(e) {
+        if (e.target === document.getElementById('mediaModal')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => {
+        if (!document.getElementById('mediaModal').classList.contains('active')) return;
+        if (e.key === 'Escape')      closeModal();
+        if (e.key === 'ArrowLeft')   navigateModal(-1);
+        if (e.key === 'ArrowRight')  navigateModal(1);
+    });
     </script>
 </body>
 </html>
