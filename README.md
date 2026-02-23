@@ -1,4 +1,4 @@
-# N-SPACe CanSat Mission Archive 🛰️
+# IN-SPACe CanSat Mission Archive 🛰️
 
 > India Student Competition 2022-'24 | Official Mission Archive Website
 
