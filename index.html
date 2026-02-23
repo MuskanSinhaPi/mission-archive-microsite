@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-SPACe CanSat | Mission Archive</title>
+    <meta name="description" content="N-SPACe CanSat India Student Competition 2022-'24 - Mission Archive">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        :root {
+            --bg-primary: #0B0F19;
+            --accent-cyan: #00D4FF;
+            --accent-purple: #7C3AED;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .satellite-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            animation: rotate 3s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Animated Background */
+        .telemetry-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(90deg, var(--accent-cyan) 1px, transparent 1px),
+                linear-gradient(var(--accent-cyan) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Glowing Button */
+        .glow-btn {
+            position: relative;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .glow-btn:hover {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Card Styles */
+        .mission-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .mission-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        /* Gallery Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        /* Video Container */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            margin: 4rem 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="satellite-loader">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Satellite Body -->
+                <rect x="35" y="35" width="30" height="30" fill="#00D4FF" opacity="0.8"/>
+                <!-- Solar Panels -->
+                <rect x="10" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
+                <rect x="70" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
+                <!-- Antenna -->
+                <line x1="50" y1="35" x2="50" y2="15" stroke="#00D4FF" stroke-width="2"/>
+                <circle cx="50" cy="15" r="3" fill="#00D4FF"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="telemetry-bg"></div>
+        
+        <!-- 
+            📸 HERO IMAGE PLACEHOLDER
+            Replace the background with your hero image:
+            1. Save your hero image as: /assets/images/hero-image.jpg
+            2. Uncomment the div below and update the path
+        -->
+        <!-- <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('assets/images/hero-image.jpg');"></div> -->
+        
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text">
+                N-SPACe CanSat
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                India Student Competition 2022-'24
+            </p>
+            <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
+                Dual-Parachute Deployment System | 800-900m Altitude Mission | Novel Descent Control
+            </p>
+            <a href="#mission" class="glow-btn inline-block px-8 py-4 rounded-full text-white font-semibold text-lg">
+                Explore the Mission
+            </a>
+        </div>
+    </section>
+
+    <!-- Mission Overview -->
+    <section id="mission" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                Mission Overview
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Objective Card -->
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Mission Objectives</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>• Novel descent control & innovative materials</li>
+                        <li>• Innovative sensor & communication system</li>
+                        <li>• Video capture from separation to touchdown</li>
+                        <li>• HAM radio / advanced beacon recovery</li>
+                        <li>• Quality & reliability analysis</li>
+                    </ul>
+                </div>
+                
+                <!-- Constraints Card -->
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">📐</div>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Design Constraints</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>• <strong>Mass:</strong> 0.700 kg (±0.050 kg)</li>
+                        <li>• <strong>Diameter:</strong> ≤ 0.125 m</li>
+                        <li>• <strong>Height:</strong> ≤ 0.310 m</li>
+                        <li>• <strong>Launch Altitude:</strong> 800-900 m</li>
+                    </ul>
+                </div>
+                
+                <!-- Key Specs Card -->
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">🪂</div>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>• <strong>1st Deploy:</strong> At separation</li>
+                        <li>• <strong>Initial Descent:</strong> 20 m/s (±5 m/s)</li>
+                        <li>• <strong>2nd Deploy:</strong> 500 m (±10 m)</li>
+                        <li>• <strong>Final Descent:</strong> 5 m/s</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- System Architecture -->
+    <section id="systems" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                System Architecture
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">💻</div>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Flight Computer</h3>
+                    <p class="text-gray-300">Custom flight control system managing telemetry, sensor fusion, and deployment sequences with real-time data transmission.</p>
+                </div>
+                
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">🔋</div>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Power System</h3>
+                    <p class="text-gray-300">Optimized power distribution system ensuring reliable operation throughout the mission phases.</p>
+                </div>
+                
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">📡</div>
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Telemetry System</h3>
+                    <p class="text-gray-300">Advanced communication system with HAM radio and beacon for real-time ground station data relay.</p>
+                </div>
+                
+                <div class="mission-card rounded-2xl p-8">
+                    <div class="text-4xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-bold mb-4 text-purple-400">Deployment Mechanism</h3>
+                    <p class="text-gray-300">Dual-stage parachute deployment system with altitude-based triggers for controlled descent velocity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Flight & Testing -->
+    <section id="testing" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                Flight & Testing
+            </h2>
+            
+            <!-- Launch Footage -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-cyan-400">🚀 Launch Footage</h3>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/BlnHOM-ItQg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <!-- Parachute Tests -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/zfHItv2cbR0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/Vj-me1MMqE0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/-SENyK0R3Eo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Short: Parachute Drop</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/Mz4KYMlhKPQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Structural & Stress Analysis -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-cyan-400">🔬 Structural Analysis</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Total Deformation Analysis</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/_STlaqy4GR4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Stress Test Simulation</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/FSKDF4RFnME" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vacuum Chamber Testing -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-purple-400">🔧 Environmental Testing</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Vacuum Chamber Test</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/V4kRHyrGw84" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI During Vacuum Test</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/ZYSU60DqHMs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ground Control Station -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-cyan-400">📡 Ground Control Station</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GCS Antenna Test</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/QtMg2qHt8sk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Screen</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/Y5gkge9h9yc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Attitude Screen</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/6X_WXwlWfdY" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Command Driven Telemetry</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/VV981JAFxKw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Demo</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/EueZ1pHA4NQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hardware Assembly -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-purple-400">🔩 Hardware Assembly</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Assembly</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/7MOyV5iUIqM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Test</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/iBgmaokHsVs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 1</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/AZ5rRGwyR70" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 2</h4>
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/LeHIJvyRIXQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market Pitch -->
+            <div class="mb-12">
+                <h3 class="text-3xl font-bold mb-6 text-cyan-400">💼 Market Pitch</h3>
+                <div class="video-wrapper max-w-3xl mx-auto">
+                    <iframe src="https://www.youtube.com/embed/2vygV02hXTM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Gallery -->
+    <section id="gallery" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                Mission Gallery
+            </h2>
+            
+            <!-- 
+                📸 GALLERY IMAGES PLACEHOLDER
+                Instructions:
+                1. Create folder: /assets/images/gallery/
+                2. Add your images (recommended: 12-20 images)
+                3. Name them: gallery-1.jpg, gallery-2.jpg, etc.
+                4. Update the src attributes below
+                5. Add more or remove grid items as needed
+            -->
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Sample Gallery Items - Replace with your images -->
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-1.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/00D4FF?text=Launch+Setup" alt="Launch Setup" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-2.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/7C3AED?text=Team+Assembly" alt="Team Assembly" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-3.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/00D4FF?text=Testing" alt="Testing" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-4.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/7C3AED?text=CanSat+Hardware" alt="CanSat Hardware" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-5.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/00D4FF?text=PCB+Design" alt="PCB Design" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-6.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/7C3AED?text=Ground+Station" alt="Ground Station" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-7.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/00D4FF?text=Flight+Day" alt="Flight Day" class="w-full h-48 object-cover">
+                </div>
+                <div class="mission-card rounded-lg overflow-hidden cursor-pointer gallery-item" onclick="openModal('assets/images/gallery/gallery-8.jpg')">
+                    <img src="https://via.placeholder.com/400x300/0B0F19/7C3AED?text=Team+Photo" alt="Team Photo" class="w-full h-48 object-cover">
+                </div>
+            </div>
+            
+            <p class="text-center text-gray-400 mt-8">
+                📁 600+ images and videos from the mission are available in the memories folder
+            </p>
+        </div>
+    </section>
+
+    <!-- Modal for Gallery -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="absolute top-8 right-12 text-white text-5xl font-bold cursor-pointer hover:text-cyan-400 z-50">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Technical Archive -->
+    <section id="archive" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                Technical Archive
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 
+                    📄 DOCUMENT LINKS PLACEHOLDER
+                    Instructions for adding your local PDFs:
+                    1. Create folder: /assets/documents/
+                    2. Add all your PDFs there
+                    3. Update href attributes below to point to your files
+                    Example: href="assets/documents/pdr-round1.pdf"
+                -->
+                
+                <!-- Design Reviews -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">📋</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Preliminary Design Review</h3>
+                    <p class="text-sm text-gray-400">Round 1 - PDR Document</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-1-pdr.pdf</p>
+                </a>
+                
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">📋</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">Critical Design Review</h3>
+                    <p class="text-sm text-gray-400">Round 2 - CDR Document</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-2-cdr.pdf</p>
+                </a>
+                
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">🔧</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Physical Assessment</h3>
+                    <p class="text-sm text-gray-400">Round 3 - PA Document</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-3-pa.pdf</p>
+                </a>
+                
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">✈️</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">Flight Readiness Review</h3>
+                    <p class="text-sm text-gray-400">Round 4 - FRR Document</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 presentations/round-4-frr.pdf</p>
+                </a>
+                
+                <!-- Post Flight Reports -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Post Flight Review</h3>
+                    <p class="text-sm text-gray-400">Flight Data & Analysis</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 post-flight-review/</p>
+                </a>
+                
+                <!-- Research Report -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">📚</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">Research Report</h3>
+                    <p class="text-sm text-gray-400">Complete Documentation</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 docs/research-report.pdf</p>
+                </a>
+                
+                <!-- CAD Files -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">🔷</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">CAD Files</h3>
+                    <p class="text-sm text-gray-400">SolidWorks Models (21 parts)</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 mechanical-parts/</p>
+                </a>
+                
+                <!-- PCB Files - Google Drive -->
+                <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">PCB Files</h3>
+                    <p class="text-sm text-gray-400">Circuit Design & Schematics</p>
+                    <p class="text-xs text-cyan-400 mt-2">🔗 Google Drive</p>
+                </a>
+                
+                <!-- Expenses Sheet - Google Sheets -->
+                <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">💰</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Expenses Sheet</h3>
+                    <p class="text-sm text-gray-400">Budget & Financial Tracking</p>
+                    <p class="text-xs text-cyan-400 mt-2">🔗 Google Sheets</p>
+                </a>
+                
+                <!-- Certificates -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">🏆</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">Certificates</h3>
+                    <p class="text-sm text-gray-400">Competition Recognition</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 Certificate (1).pdf</p>
+                </a>
+                
+                <!-- Competition Guidelines -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">📖</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Competition Guidelines</h3>
+                    <p class="text-sm text-gray-400">Official Documentation (8 docs)</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 docs/</p>
+                </a>
+                
+                <!-- Banner & Standee -->
+                <a href="#" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block">
+                    <div class="text-4xl mb-3">🎨</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-2">Banner & Standee</h3>
+                    <p class="text-sm text-gray-400">Display Materials</p>
+                    <p class="text-xs text-gray-500 mt-2">📁 banner.pdf, standee-final.pdf</p>
+                </a>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-400 text-sm">
+                    💡 <strong>Note:</strong> SolidWorks files (.sldasm, .sldprt) cannot be directly viewed in browsers.
+                    <br>Consider exporting them as PDF renders or 3D models (STL/OBJ) for web viewing.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- GitHub Section -->
+    <section id="github" class="py-20 px-6">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 gradient-text">
+                Open Source Code
+            </h2>
+            <p class="text-xl text-gray-300 mb-12">
+                Explore our flight software, telemetry systems, and ground control station code
+            </p>
+            <a href="https://gitfront.io/r/Muskan-Sinha/5N6r48CaceFi/CanSat-India-Updated/" target="_blank" rel="noopener" class="glow-btn inline-flex items-center px-8 py-4 rounded-full text-white font-semibold text-lg">
+                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitFront
+            </a>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">
+                The Team
+            </h2>
+            
+            <!-- 
+                👥 TEAM MEMBERS PLACEHOLDER
+                Instructions:
+                1. Create folder: /assets/images/team/
+                2. Add circular team photos: team-1.jpg, team-2.jpg, etc.
+                3. Update the member information below
+                4. Add or remove team member cards as needed
+            -->
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Sample Team Member - Replace with your team -->
+                <div class="text-center">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-cyan-400 mb-4">
+                        <img src="https://via.placeholder.com/150/0B0F19/00D4FF?text=TM1" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Team Member 1</h3>
+                    <p class="text-sm text-cyan-400">Project Lead</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-purple-400 mb-4">
+                        <img src="https://via.placeholder.com/150/0B0F19/7C3AED?text=TM2" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Team Member 2</h3>
+                    <p class="text-sm text-purple-400">Flight Computer Lead</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-cyan-400 mb-4">
+                        <img src="https://via.placeholder.com/150/0B0F19/00D4FF?text=TM3" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Team Member 3</h3>
+                    <p class="text-sm text-cyan-400">Telemetry Engineer</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-purple-400 mb-4">
+                        <img src="https://via.placeholder.com/150/0B0F19/7C3AED?text=TM4" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Team Member 4</h3>
+                    <p class="text-sm text-purple-400">Mechanical Engineer</p>
+                </div>
+                
+                <!-- Add more team members as needed -->
+            </div>
+            
+            <p class="text-center text-gray-400 mt-12">
+                🔧 Update team member names, roles, and photos in the HTML
+            </p>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 text-center">
+        <div class="container mx-auto max-w-4xl">
+            <h3 class="text-2xl font-bold mb-4 gradient-text">N-SPACe CanSat Team</h3>
+            <p class="text-gray-400 mb-6">India Student Competition 2022-'24</p>
+            
+            <!-- 
+                📧 CONTACT EMAIL PLACEHOLDER
+                Replace with your preferred contact email
+            -->
+            <p class="text-gray-300 mb-8">
+                📧 Contact: <a href="mailto:team@nspace-cansat.edu" class="text-cyan-400 hover:text-cyan-300">team@nspace-cansat.edu</a>
+            </p>
+            
+            <div class="text-sm text-gray-500">
+                <p>&copy; 2024 N-SPACe CanSat Team. All rights reserved.</p>
+                <p class="mt-2">Designed for aerospace excellence 🛰️</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').classList.add('fade-out');
+            }, 2000);
+        });
+
+        // Gallery Modal Functions
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.classList.add('active');
+            modalImg.src = imageSrc;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+
+        // Smooth Scroll for Hero Button
+        document.querySelector('a[href="#mission"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#mission').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
