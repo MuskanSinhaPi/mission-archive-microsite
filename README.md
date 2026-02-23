@@ -1,4 +1,6 @@
 # IN-SPACe CanSat Mission Archive 🛰️
+* Re-run the bash script to make sure assets/images/gallery/index.json is up to date, since that's what powers your gallery.
+* Open with VS Code live server to ensure rendering of glb files
 
 > India Student Competition 2022-'24 | Official Mission Archive Website
 
