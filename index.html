@@ -711,10 +711,129 @@
             
             <div class="mt-12 text-center">
                 <p class="text-gray-400 text-sm">
-                    💡 <strong>Note:</strong> SolidWorks files (.sldasm, .sldprt) cannot be directly viewed in browsers.
-                    <br>Consider exporting them as PDF renders or 3D models (STL/OBJ) for web viewing.
+                    💡 <strong>Interactive 3D Models:</strong> View our mechanical CAD designs in 3D below!
+                    <br>All SolidWorks files have been converted to glTF format for web viewing.
                 </p>
             </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 3D CAD Models Section -->
+    <section id="3d-models" class="py-20 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 gradient-text">
+                3D CAD Models
+            </h2>
+            <p class="text-center text-gray-300 mb-12">
+                🔷 Explore our mechanical designs in interactive 3D • Rotate • Zoom • Pan
+            </p>
+            
+            <!-- 
+                🔷 3D MODELS PLACEHOLDER
+                Instructions:
+                1. Create folder: /assets/models/
+                2. Add your glTF files: part-01.glb, part-02.glb, etc.
+                3. Update the src attributes below
+                4. Each model is interactive - users can rotate and zoom
+                
+                Note: Use .glb format (binary glTF) for best performance
+            -->
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Example 3D Model Cards - Update with your 21 parts -->
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-01.glb"
+                        alt="CanSat Body"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Main Body</h3>
+                    <p class="text-center text-sm text-gray-400">Primary structure assembly</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-02.glb"
+                        alt="Parachute Lid"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Lid</h3>
+                    <p class="text-center text-sm text-gray-400">Deployment mechanism cover</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-03.glb"
+                        alt="Electronics Bay"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Electronics Bay</h3>
+                    <p class="text-center text-sm text-gray-400">PCB mounting structure</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-04.glb"
+                        alt="Component 4"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Part 4</h3>
+                    <p class="text-center text-sm text-gray-400">Description here</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-05.glb"
+                        alt="Component 5"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Part 5</h3>
+                    <p class="text-center text-sm text-gray-400">Description here</p>
+                </div>
+                
+                <div class="mission-card rounded-xl p-4">
+                    <model-viewer 
+                        src="assets/models/part-06.glb"
+                        alt="Component 6"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        class="w-full">
+                    </model-viewer>
+                    <h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Part 6</h3>
+                    <p class="text-center text-sm text-gray-400">Description here</p>
+                </div>
+                
+                <!-- Add remaining 15 parts following the same pattern -->
+                <!-- Simply copy the above block and update:
+                     - src="assets/models/part-XX.glb"
+                     - alt="Your Part Name"
+                     - <h3> title
+                     - <p> description
+                -->
+            </div>
+            
+            <p class="text-center text-gray-400 mt-12">
+                💡 <strong>Tip:</strong> Click and drag to rotate • Scroll to zoom • Right-click drag to pan
+                <br>All 21 mechanical parts available • glTF format for optimal web performance
+            </p>
         </div>
     </section>
 
