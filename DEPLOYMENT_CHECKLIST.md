@@ -320,7 +320,7 @@ Once deployed, share with:
 
 **Template message:**
 ```
-🚀 Excited to share our N-SPACe CanSat mission archive! 
+🚀 Excited to share our IN-SPACe CanSat mission archive! 
 
 Our team competed in the India Student Competition 2022-'24, 
 designing a dual-parachute deployment system launched to 800-900m.
