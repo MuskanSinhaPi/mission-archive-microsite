@@ -23,7 +23,7 @@ This document shows you exactly which line numbers in `index.html` to edit for d
 **Lines: 158-166**
 ```html
 <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text">
-    N-SPACe CanSat  <!-- Change this -->
+    IN-SPACe CanSat  <!-- Change this -->
 </h1>
 <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
     India Student Competition 2022-'24  <!-- Change this -->
