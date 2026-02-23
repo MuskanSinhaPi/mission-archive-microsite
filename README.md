@@ -228,7 +228,7 @@ Before going live:
 
 ## 🤝 Credits
 
-**Team:** N-SPACe CanSat  
+**Team:** IN-SPACe CanSat  
 **Competition:** India Student Competition 2022-'24  
 **Design:** Aerospace-inspired dark theme  
 **Built with:** HTML5, TailwindCSS, JavaScript  
