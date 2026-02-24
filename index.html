@@ -311,7 +311,6 @@
     
     <style>
     /* ── Team Photo Wrapper ─────────────────────────────────────── */
-/* ── Team Photo Wrapper ─────────────────────────────────────── */
 .team-photo-wrapper {
     position: relative;
     display: inline-block;
@@ -421,6 +420,24 @@
     .hotspot.active .tooltip {
         opacity: 1;
     }
+    
+    .menu-item {
+    display:block;
+    padding:0.75rem 1rem;
+    font-size:0.9rem;
+    color:#F1F5F9;
+    border-bottom:1px solid rgba(0,212,255,0.1);
+    transition:all 0.2s ease;
+}
+
+.menu-item:last-child {
+    border-bottom:none;
+}
+
+.menu-item:hover {
+    background:rgba(0,212,255,0.1);
+    color:#00D4FF;
+}
 }
     </style>
     <div class="section-divider"></div>
@@ -548,7 +565,28 @@
                 <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">⚡</div><h3 class="text-xl font-bold text-purple-400 mb-2">PCB Files</h3><p class="text-sm text-gray-400">Circuit Design & Schematics</p><p class="text-xs text-cyan-400 mt-2">🔗 Google Drive</p></a>
                 <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" rel="noopener" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">💰</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Expenses Sheet</h3><p class="text-sm text-gray-400">Budget & Financial Tracking</p><p class="text-xs text-cyan-400 mt-2">🔗 Google Sheets</p></a>
                 <a href="assets/certificate.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🏆</div><h3 class="text-xl font-bold text-purple-400 mb-2">Certificates</h3><p class="text-sm text-gray-400">Competition Recognition</p></a>
-                <a href="assets/documents/docs" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">📖</div><h3 class="text-xl font-bold text-cyan-400 mb-2">Competition Guidelines</h3><p class="text-sm text-gray-400">Official Documentation (8 docs)</p></a>
+                <div class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block relative cursor-pointer"
+     onclick="toggleGuidelinesMenu(event)">
+
+    <div class="text-4xl mb-3">📖</div>
+    <h3 class="text-xl font-bold text-cyan-400 mb-2">Competition Guidelines</h3>
+    <p class="text-sm text-gray-400">Official Documentation (8 docs)</p>
+
+    <!-- Floating Menu -->
+    <div id="guidelines-menu"
+         class="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-72 bg-slate-900/95 backdrop-blur-lg border border-cyan-400/30 rounded-xl shadow-2xl hidden z-50">
+
+        <a href="assets/documents/docs/guideline-1.pdf" target="_blank" class="menu-item">Stage 1 – Overview</a>
+        <a href="assets/documents/docs/guideline-2.pdf" target="_blank" class="menu-item">Stage 2 – Design</a>
+        <a href="assets/documents/docs/guideline-3.pdf" target="_blank" class="menu-item">Stage 3 – Physical Assessment</a>
+        <a href="assets/documents/docs/guideline-4.pdf" target="_blank" class="menu-item">Stage 4 – Flight Readiness</a>
+        <a href="assets/documents/docs/guideline-5.pdf" target="_blank" class="menu-item">Stage 5 – Launch Rules</a>
+        <a href="assets/documents/docs/guideline-6.pdf" target="_blank" class="menu-item">Stage 6 – Telemetry</a>
+        <a href="assets/documents/docs/guideline-7.pdf" target="_blank" class="menu-item">Stage 7 – Recovery</a>
+        <a href="assets/documents/docs/guideline-8.pdf" target="_blank" class="menu-item">Stage 8 – Final Evaluation</a>
+
+    </div>
+</div>
                 <a href="assets/banner.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🎨</div><h3 class="text-xl font-bold text-purple-400 mb-2">Banner</h3><p class="text-sm text-gray-400">Display Materials</p></a>
                 <a href="assets/standee-final.pdf" class="mission-card rounded-xl p-6 text-center hover:scale-105 transition-transform block"><div class="text-4xl mb-3">🎨</div><h3 class="text-xl font-bold text-purple-400 mb-2">Standee</h3><p class="text-sm text-gray-400">Display Materials</p></a>
             </div>
@@ -853,6 +891,20 @@
         if (e.key === 'ArrowLeft')   navigateModal(-1);
         if (e.key === 'ArrowRight')  navigateModal(1);
     });
+    
+    function toggleGuidelinesMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('guidelines-menu');
+    menu.classList.toggle('hidden');
+}
+
+// Close when clicking outside
+document.addEventListener('click', function() {
+    const menu = document.getElementById('guidelines-menu');
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+    }
+});
     </script>
 </body>
 </html>
