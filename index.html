@@ -901,9 +901,31 @@ function openGuidelinesMenu(e) {
 
     const rect = card.getBoundingClientRect();
 
-    // Position menu below card
-    menu.style.top = rect.bottom + window.scrollY + 10 + "px";
-    menu.style.left = rect.left + rect.width/2 - 160 + "px"; // center (160 = half of 320px width)
+    menu.classList.remove('hidden');
+
+    // Force layout so height is known
+    const menuHeight = menu.offsetHeight;
+    const menuWidth  = menu.offsetWidth;
+
+    const viewportWidth  = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // CENTER horizontally
+    let left = rect.left + rect.width / 2 - menuWidth / 2;
+
+    // Clamp within screen bounds
+    left = Math.max(10, Math.min(left, viewportWidth - menuWidth - 10));
+
+    // Default: below card
+    let top = rect.bottom + window.scrollY + 10;
+
+    // If not enough space below, show above
+    if (rect.bottom + menuHeight > viewportHeight) {
+        top = rect.top + window.scrollY - menuHeight - 10;
+    }
+
+    menu.style.left = left + "px";
+    menu.style.top  = top + "px";
 
     menu.classList.toggle('hidden');
 }
@@ -915,19 +937,18 @@ document.addEventListener('click', function() {
     </script>
     
     <!-- Floating Menu -->
-    <div id="guidelines-menu"
-         class="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-72 bg-slate-900/95 backdrop-blur-lg border border-cyan-400/30 rounded-xl shadow-2xl hidden z-50">
+  <div id="guidelines-menu"
+     class="fixed hidden max-w-[90vw] w-80 bg-slate-900/95 backdrop-blur-lg border border-cyan-400/30 rounded-xl shadow-2xl z-[9999]">
 
-        <a href="assets/documents/docs/guideline-1.pdf" target="_blank" class="menu-item">Stage 1 – Overview</a>
-        <a href="assets/documents/docs/guideline-2.pdf" target="_blank" class="menu-item">Stage 2 – Design</a>
-        <a href="assets/documents/docs/guideline-3.pdf" target="_blank" class="menu-item">Stage 3 – Physical Assessment</a>
-        <a href="assets/documents/docs/guideline-4.pdf" target="_blank" class="menu-item">Stage 4 – Flight Readiness</a>
-        <a href="assets/documents/docs/guideline-5.pdf" target="_blank" class="menu-item">Stage 5 – Launch Rules</a>
-        <a href="assets/documents/docs/guideline-6.pdf" target="_blank" class="menu-item">Stage 6 – Telemetry</a>
-        <a href="assets/documents/docs/guideline-7.pdf" target="_blank" class="menu-item">Stage 7 – Recovery</a>
-        <a href="assets/documents/docs/guideline-8.pdf" target="_blank" class="menu-item">Stage 8 – Final Evaluation</a>
-
-    </div>
+    <a href="assets/documents/docs/guideline-1.pdf" target="_blank" class="menu-item">Stage 1 – Overview</a>
+    <a href="assets/documents/docs/guideline-2.pdf" target="_blank" class="menu-item">Stage 2 – Design</a>
+    <a href="assets/documents/docs/guideline-3.pdf" target="_blank" class="menu-item">Stage 3 – Physical Assessment</a>
+    <a href="assets/documents/docs/guideline-4.pdf" target="_blank" class="menu-item">Stage 4 – Flight Readiness</a>
+    <a href="assets/documents/docs/guideline-5.pdf" target="_blank" class="menu-item">Stage 5 – Launch Rules</a>
+    <a href="assets/documents/docs/guideline-6.pdf" target="_blank" class="menu-item">Stage 6 – Telemetry</a>
+    <a href="assets/documents/docs/guideline-7.pdf" target="_blank" class="menu-item">Stage 7 – Recovery</a>
+    <a href="assets/documents/docs/guideline-8.pdf" target="_blank" class="menu-item">Stage 8 – Final Evaluation</a>
+  </div>
     
 </body>
 </html>
