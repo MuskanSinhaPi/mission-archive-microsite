@@ -16,12 +16,313 @@
         :root { --bg-primary:#0B0F19; --accent-cyan:#00D4FF; --accent-purple:#7C3AED; --text-primary:#F1F5F9; --text-secondary:#94A3B8; }
         body { background-color:var(--bg-primary); color:var(--text-primary); overflow-x:hidden; }
 
-        /* Loading */
+        /* Loading
         #loading-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-primary); display:flex; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s ease-out; }
         #loading-screen.fade-out { opacity:0; pointer-events:none; }
         .satellite-loader { width:100px; height:100px; animation:rotate 3s linear infinite; }
-        @keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} } */
+        #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: radial-gradient(ellipse at 50% 90%, #0d1b35 0%, #060b14 55%, #020408 100%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        overflow: hidden;
+    }
 
+    .pl-star {
+        position: absolute;
+        border-radius: 50%;
+        background: white;
+        animation: pl-twinkle var(--sd,2s) ease-in-out infinite var(--delay,0s);
+    }
+    @keyframes pl-twinkle {
+        0%,100%{opacity:0}
+        50%{opacity:var(--sop,0.8)}
+    }
+
+    .pl-rocket-wrap {
+        position:absolute;
+        bottom:74px;
+        left:50%;
+        transform:translateX(-50%);
+        width:56px;
+        transform-origin:50% 100%;
+    }
+
+    .pl-flame {
+        position:absolute;
+        bottom:-4px;
+        left:50%;
+        transform:translateX(-50%);
+        width:24px;
+        opacity:0;
+    }
+
+    .pl-trail {
+        position:absolute;
+        left:50%;
+        bottom:74px;
+        transform:translateX(-50%);
+        width:20px;
+        height:4px;
+
+        background:linear-gradient(
+            to bottom,
+            rgba(255,200,120,0.9),
+            rgba(255,120,40,0.6),
+            rgba(255,80,20,0.3),
+            transparent
+        );
+
+        border-radius:10px;
+        filter:blur(2px);
+        opacity:0;
+        z-index:5;
+    }
+
+    .pl-status {
+        position:absolute;
+        bottom:20px;
+        left:50%;
+        transform:translateX(-50%);
+        font-size:0.65rem;
+        letter-spacing:0.22em;
+        text-transform:uppercase;
+        color:rgba(0,212,255,0.6);
+        z-index: 20;
+    }
+
+    .pl-progress {
+        position:absolute;
+        bottom:0;
+        left:0;
+        right:0;
+        height:2px;
+        background:rgba(0,212,255,0.08);
+        z-index: 20;
+    }
+
+    .pl-progress-bar {
+        height:100%;
+        width:0;
+        background:linear-gradient(90deg,#00D4FF,#7C3AED);
+        transition:width 0.08s linear;
+    }
+
+    @keyframes pl-liftoff {
+        0%   { transform:translateX(-50%) translateY(0); }
+        100% { transform:translateX(-50%) translateY(-110vh); }
+    }
+    .pl-moon {
+        position:absolute;
+        top:9%;
+        right:16%;
+        width:54px;
+        height:54px;
+        border-radius:50%;
+        background:radial-gradient(circle at 35% 35%,#e8dcc8,#b8a888);
+        box-shadow:inset -10px -5px 16px rgba(0,0,0,0.35),
+                0 0 40px rgba(200,180,130,0.15);
+    }
+
+    .pl-moon::before {
+        content:'';
+        position:absolute;
+        top:13px;
+        left:15px;
+        width:9px;
+        height:9px;
+        border-radius:50%;
+        background:rgba(0,0,0,0.14);
+    }
+
+    .pl-moon::after {
+        content:'';
+        position:absolute;
+        top:27px;
+        left:26px;
+        width:6px;
+        height:6px;
+        border-radius:50%;
+        background:rgba(0,0,0,0.11);
+    }
+    .pl-cloud-half {
+        flex:1;
+        height:80px;
+        background:radial-gradient(
+            ellipse at center,
+            rgba(180,200,240,0.18) 0%,
+            transparent 70%
+        );
+        filter:blur(20px);
+        transition:transform 1s ease, opacity 0.7s ease;
+    }
+
+    .pl-cloud-half.l { transform-origin:left center; }
+    .pl-cloud-half.r { transform-origin:right center; }
+
+    .pl-orbit-ring {
+        position:absolute;
+        top:18%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        width:140px;
+        height:50px;
+        border:1px solid rgba(0,212,255,0.2);
+        border-radius:50%;
+        opacity:0;
+    }
+
+    .pl-satellite {
+        position:absolute;
+        top:18%;
+        left:50%;
+        width:6px;
+        height:6px;
+        border-radius:50%;
+        background:#00D4FF;
+        box-shadow:0 0 12px rgba(0,212,255,0.9);
+        transform:translate(-50%,-50%);
+        opacity:0;
+    }
+
+    @keyframes pl-sat-orbit {
+        0%   { transform:translate(-50%,-50%) translateX(70px); }
+        25%  { transform:translate(-50%,-50%) translateX(0px) translateY(-25px); }
+        50%  { transform:translate(-50%,-50%) translateX(-70px); }
+        75%  { transform:translate(-50%,-50%) translateX(0px) translateY(25px); }
+        100% { transform:translate(-50%,-50%) translateX(70px); }
+    }
+    @keyframes pl-idle-shake {
+        0%,100%{ transform:translateX(-50%) rotate(-0.4deg); }
+        50%{ transform:translateX(-50%) rotate(0.4deg); }
+    }
+    @keyframes pl-rumble {
+        0%{ transform:translateX(calc(-50% - 1.5px)); }
+        50%{ transform:translateX(calc(-50% + 1.5px)); }
+        100%{ transform:translateX(-50%); }
+    }
+    @keyframes pl-liftoff {
+        0%   { transform:translateX(-50%) translateY(0); }
+        100% { transform:translateX(-50%) translateY(-112vh); }
+    }
+    .pl-flame-inner {
+        animation:pl-flame-flicker 0.07s linear infinite alternate;
+    }
+
+    @keyframes pl-flame-flicker {
+        from { transform:scaleX(1) scaleY(1); }
+        to   { transform:scaleX(0.82) scaleY(1.12); }
+    }
+    @keyframes pl-trail-anim {
+        0%   { height:4px; opacity:0.9; }
+        100% { height:900px; opacity:0; }
+    }
+    /* ═════════════ Launchpad Structure ═════════════ */
+
+    .pl-pad {
+        position:absolute;
+        bottom:0;
+        left:50%;
+        transform:translateX(-50%);
+        width:220px;
+        z-index:6;
+    }
+
+    /* Deck */
+    .pl-pad-deck {
+        position:absolute;
+        bottom:44px;
+        left:50%;
+        transform:translateX(-50%);
+        width:80px;
+        height:10px;
+        background:linear-gradient(180deg,#3a4d75,#1e2f50);
+        border-radius:3px 3px 0 0;
+        box-shadow:0 0 16px rgba(0,212,255,0.12);
+    }
+
+    /* Legs */
+    .pl-pad-leg {
+        position:absolute;
+        bottom:0;
+        height:46px;
+        width:10px;
+        background:linear-gradient(180deg,#2a3a5c,#111c30);
+        border-radius:2px;
+    }
+    .pl-pad-leg.left  { left:72px; }
+    .pl-pad-leg.right { right:72px; }
+
+    /* Base */
+    .pl-pad-base {
+        position:absolute;
+        bottom:0;
+        left:50%;
+        transform:translateX(-50%);
+        width:180px;
+        height:14px;
+        background:linear-gradient(180deg,#222e48,#0e1726);
+        border-radius:3px 3px 0 0;
+    }
+
+    /* Gantry arms */
+    .pl-arm {
+        position:absolute;
+        bottom:50px;
+        width:6px;
+        height:48px;
+        background:linear-gradient(180deg,#4a5e88,#1e2f50);
+        border-radius:2px;
+        transform-origin:50% 100%;
+    }
+    .pl-arm.left  { left:76px; }
+    .pl-arm.right { right:76px; }
+
+    /* Arm crossbars */
+    .pl-arm.left::before {
+        content:'';
+        position:absolute;
+        top:8px;
+        left:6px;
+        width:20px;
+        height:4px;
+        background:#2a3a5c;
+        border-radius:0 2px 2px 0;
+    }
+    .pl-arm.right::before {
+        content:'';
+        position:absolute;
+        top:8px;
+        right:6px;
+        width:20px;
+        height:4px;
+        background:#2a3a5c;
+        border-radius:2px 0 0 2px;
+    }
+
+    /* Ignition glow */
+    .pl-pad-glow {
+        position:absolute;
+        bottom:44px;
+        left:50%;
+        transform:translateX(-50%);
+        width:100px;
+        height:50px;
+        border-radius:50%;
+        background:radial-gradient(
+            ellipse,
+            rgba(255,130,30,0.9),
+            rgba(255,60,10,0.4) 40%,
+            transparent 70%
+        );
+        opacity:0;
+        filter:blur(10px);
+        z-index:7;
+    }
         /* Sticky Nav */
         #sticky-nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(11,15,25,0.88); backdrop-filter:blur(16px); border-bottom:1px solid rgba(0,212,255,0.12); transform:translateY(-100%); transition:transform 0.35s ease; padding:0 1.5rem; }
         #sticky-nav.visible { transform:translateY(0); }
@@ -94,6 +395,7 @@
             max-height: 2000px; /* large enough */
             opacity: 1;
             margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
         /* Gallery */
@@ -164,10 +466,148 @@
         .replay-slider { -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:2px; background:rgba(0,212,255,0.15); outline:none; cursor:pointer; }
         .replay-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple)); cursor:pointer; border:2px solid white; box-shadow:0 0 8px rgba(0,212,255,0.5); }
 
-        model-viewer { width:100%; height:380px; background:rgba(15,23,42,0.8); border-radius:12px; --poster-color:transparent; }
+        /* model-viewer { width:100%; height:380px; background:rgba(15,23,42,0.8); border-radius:12px; --poster-color:transparent; } */
+    model-viewer {
+    width:100%;
+    height:380px;
+
+    background:
+        radial-gradient(circle at 50% 30%,
+            rgba(0,212,255,0.08),
+            transparent 60%
+        ),
+        linear-gradient(180deg,
+            #060b14 0%,
+            #0b1220 100%
+        );
+
+    border-radius:12px;
+    border:1px solid rgba(0,212,255,0.15);
+
+    box-shadow:
+        inset 0 0 40px rgba(0,0,0,0.6),
+        0 0 30px rgba(0,212,255,0.06);
+
+    --poster-color: transparent;
+}
     </style>
 </head>
 <body>
+<!-- ════════════ LAUNCH PRELOADER ════════════ -->
+    <div id="preloader">
+
+        <!-- Stars -->
+        <div id="pl-stars"></div>
+
+        <!-- Moon -->
+        <div class="pl-moon"></div>
+
+        <!-- Orbital ring + satellite -->
+        <div class="pl-orbit-ring" id="pl-orbit"></div>
+        <div class="pl-satellite" id="pl-sat"></div>
+
+        <!-- Clouds -->
+        <div class="pl-clouds">
+            <div class="pl-cloud-row" style="top:28%">
+                <div class="pl-cloud-half l"></div>
+                <div class="pl-cloud-half r"></div>
+            </div>
+            <div class="pl-cloud-row" style="top:42%">
+                <div class="pl-cloud-half l"></div>
+                <div class="pl-cloud-half r"></div>
+            </div>
+            <div class="pl-cloud-row" style="top:56%">
+                <div class="pl-cloud-half l"></div>
+                <div class="pl-cloud-half r"></div>
+            </div>
+        </div>
+
+        <!-- Rocket Scene -->
+        <div class="pl-scene">
+            <div class="pl-rocket-wrap" id="pl-rocket">
+
+                <div class="pl-flame" id="pl-flame">
+                    <!-- flame SVG -->
+                    <svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="fg1" cx="50%" cy="0%" r="100%">
+                <stop offset="0%" stop-color="#fff9e0"/>
+                <stop offset="40%" stop-color="#ffcc44"/>
+                <stop offset="80%" stop-color="#ff6600"/>
+                <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+        </defs>
+        <g class="pl-flame-inner">
+            <ellipse cx="12" cy="10" rx="7" ry="13" fill="url(#fg1)"/>
+        </g>
+    </svg>
+    </div>
+    <!-- Rocket SVG -->
+    <svg viewBox="0 0 56 140" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+        <defs>
+            <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#c8d8f0"/>
+                <stop offset="50%" stop-color="#f0f4ff"/>
+                <stop offset="100%" stop-color="#8a9ec0"/>
+            </linearGradient>
+
+            <linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0a1628"/>
+                <stop offset="50%" stop-color="#1a2a48"/>
+                <stop offset="100%" stop-color="#0a1628"/>
+            </linearGradient>
+
+            <filter id="rglow">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+
+        <!-- Nozzle -->
+        <ellipse cx="28" cy="128" rx="10" ry="5" fill="#0a1628"/>
+        <path d="M18,118 Q28,132 38,118 L36,112 L20,112 Z" fill="#1a2a48"/>
+
+        <!-- Body -->
+        <rect x="16" y="35" width="24" height="78" fill="url(#rg1)" rx="2"/>
+
+        <!-- Dark stripe -->
+        <rect x="16" y="75" width="24" height="8" fill="url(#rg2)" rx="1"/>
+
+        <!-- Fins -->
+        <path d="M16,108 L6,128 L16,120 Z" fill="#1a2a48"/>
+        <path d="M40,108 L50,128 L40,120 Z" fill="#1a2a48"/>
+
+        <!-- Nose -->
+        <path d="M16,35 Q16,10 28,4 Q40,10 40,35 Z" fill="url(#rg1)"/>
+
+        <!-- Window -->
+        <circle cx="28" cy="52" r="7" fill="url(#rg2)"/>
+        <circle cx="28" cy="52" r="4.5" fill="#0a2550" filter="url(#rglow)"/>
+    </svg>
+            </div>
+
+            <div class="pl-trail" id="pl-trail"></div>
+
+            <div class="pl-pad">
+                <div class="pl-pad-glow" id="pl-glow"></div>
+                <div class="pl-arm left" id="pl-arm-l"></div>
+                <div class="pl-arm right" id="pl-arm-r"></div>
+                <div class="pl-pad-deck"></div>
+                <div class="pl-pad-leg left"></div>
+                <div class="pl-pad-leg right"></div>
+                <div class="pl-pad-base"></div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="pl-status" id="pl-status">T-00:05 AWAITING LAUNCH</div>
+        <div class="pl-progress">
+            <div class="pl-progress-bar" id="pl-bar"></div>
+        </div>
+    </div>
 
 <!-- Sticky Nav -->
 <nav id="sticky-nav">
@@ -189,7 +629,7 @@
     </div>
 </nav>
 
-<!-- Loading -->
+<!-- Loading
 <div id="loading-screen">
     <div class="satellite-loader">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -200,7 +640,7 @@
             <circle cx="50" cy="15" r="3" fill="#00D4FF"/>
         </svg>
     </div>
-</div>
+</div> -->
 
 <!-- Hero -->
 <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -221,7 +661,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#127919;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Mission Objectives</h3><ul class="space-y-2 text-gray-300"><li>&bull; Novel descent control &amp; innovative materials</li><li>&bull; Innovative sensor &amp; communication system</li><li>&bull; Video capture from separation to touchdown</li><li>&bull; HAM radio / advanced beacon recovery</li><li>&bull; Quality &amp; reliability analysis</li></ul></div>
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#128208;</div><h3 class="text-2xl font-bold mb-4 text-purple-400">Design Constraints</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>Mass:</strong> 0.700 kg (&plusmn;0.050 kg)</li><li>&bull; <strong>Diameter:</strong> &le; 0.125 m</li><li>&bull; <strong>Height:</strong> &le; 0.310 m</li><li>&bull; <strong>Launch Altitude:</strong> 800&ndash;900 m</li></ul></div>
-            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#129410;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
+            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">🪂</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
         </div>
     </div>
 </section>
@@ -299,7 +739,7 @@
     <div class="container mx-auto max-w-6xl">
         <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Flight &amp; Testing</h2>
         <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128640; Launch Footage</h3><div class="yt-facade" onclick="loadYT(this,'BlnHOM-ItQg')"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#129410; Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
+        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" onclick="loadYT(this,'zfHItv2cbR0')"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" onclick="loadYT(this,'Vj-me1MMqE0')"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" onclick="loadYT(this,'-SENyK0R3Eo')"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
@@ -609,7 +1049,111 @@
 </footer>
 
 <script>
-window.addEventListener('load', () => setTimeout(() => document.getElementById('loading-screen').classList.add('fade-out'), 1800));
+// ═════════════════════════════════════════════════════════ LAUNCH PRELOADER ══
+(function() {
+
+    const preloader = document.getElementById('preloader');
+    const rocket    = document.getElementById('pl-rocket');
+    const flame     = document.getElementById('pl-flame');
+    const trail     = document.getElementById('pl-trail');
+    const padGlow   = document.getElementById('pl-glow');
+    const armL      = document.getElementById('pl-arm-l');
+    const armR      = document.getElementById('pl-arm-r');
+    const statusEl  = document.getElementById('pl-status');
+    const barEl     = document.getElementById('pl-bar');
+    const starsEl   = document.getElementById('pl-stars');
+    const clouds    = document.querySelectorAll('.pl-cloud-half');
+    const orbit     = document.getElementById('pl-orbit');
+    const satEl     = document.getElementById('pl-sat');
+
+    // Generate stars
+    for (let i = 0; i < 120; i++) {
+        const s = document.createElement('div');
+        s.className = 'pl-star';
+
+        const size = Math.random() * 2.2 + 0.4;
+        const opacity = Math.random() * 0.7 + 0.15;
+
+        s.style.cssText = `
+            width:${size}px;
+            height:${size}px;
+            top:${Math.random()*88}%;
+            left:${Math.random()*100}%;
+            --sd:${(Math.random()*3+1.5).toFixed(1)}s;
+            --delay:${(Math.random()*3).toFixed(1)}s;
+            --sop:${opacity.toFixed(2)};
+        `;
+
+        starsEl.appendChild(s);
+    }
+
+    function setStatus(html) { statusEl.innerHTML = html; }
+    function setBar(pct) { barEl.style.width = pct + '%'; }
+
+    const sequence = [
+        { t:0,    fn: () => { setStatus('T-00:05  SYSTEMS CHECK'); setBar(0); } },
+        { t:400,  fn: () => { setStatus('T-00:04  FUEL PRESSURED'); setBar(15); } },
+        { t:800,  fn: () => { setStatus('T-00:03  ENGINE PRIME'); setBar(30); } },
+        { t:1200, fn: () => { setStatus('T-00:02  ARM CLEAR'); setBar(45); } },
+        { t:1600, fn: () => {
+            setStatus('T-00:01  IGNITION 🔥');
+            setBar(60);
+
+            rocket.style.animation = 'pl-rumble 0.09s linear infinite';
+            flame.style.opacity = '1';
+            padGlow.style.opacity = '1';
+        }},
+        { t:2200, fn: () => {
+            setStatus('LIFTOFF 🌤');
+            setBar(75);
+
+            armL.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
+            armR.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
+            armL.style.transform = 'rotate(-72deg)';
+            armR.style.transform = 'rotate(72deg)';
+            armL.style.opacity = '0';
+            armR.style.opacity = '0';
+
+            rocket.style.animation = 'pl-liftoff 2.1s cubic-bezier(0.22,0,0.05,1) forwards';
+
+            trail.style.opacity = '1';
+            trail.style.animation = 'pl-trail-anim 2.1s cubic-bezier(0.1,0,0.3,1) forwards';
+
+            padGlow.style.opacity = '0';
+        }},
+        { t:2800, fn: () => {
+            setStatus('ASCENT 🚀 MAX-Q PASSING');
+            setBar(85);
+
+            clouds.forEach(c => {
+                c.style.transition = 'transform 1s ease, opacity 0.7s ease';
+                c.style.transform = c.classList.contains('l')
+                    ? 'translateX(-130%)'
+                    : 'translateX(130%)';
+                c.style.opacity = '0';
+            });
+        }},
+        { t:3800, fn: () => {
+            setStatus('MECO ⭐ ORBIT INSERTION');
+            setBar(95);
+
+            orbit.style.opacity = '0.6';
+            satEl.style.opacity = '1';
+            satEl.style.animation = 'pl-sat-orbit 2.5s linear infinite';
+        }},
+        { t:4400, fn: () => {
+            setStatus('MISSION SUCCESS ⭐');
+            setBar(100);
+        }},
+        { t:4900, fn: () => {
+            preloader.classList.add('pl-done');
+            setTimeout(() => { preloader.style.display = 'none'; }, 900);
+        }},
+    ];
+
+    sequence.forEach(({ t, fn }) => setTimeout(fn, t));
+
+})();
 
 // Sticky nav
 const stickyNav = document.getElementById('sticky-nav');
