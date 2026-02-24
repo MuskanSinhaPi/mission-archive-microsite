@@ -9,6 +9,9 @@
 - Upload your assets/images/gallery/, assets/models/ folders to R2, then update the paths in index.html to point to your R2 public URL 
 - Keep index.html and the rest of the code on Netlify - offloads the heavy assets to R2 
 
+For embedding the Instagram feed:
+https://fouita.com
+
 > India Student Competition 2022-'24 | Official Mission Archive Website 
 
 ![CanSat](https://img.shields.io/badge/CanSat-India%202022--24-00D4FF?style=for-the-badge)
