@@ -3,8 +3,7 @@
 * Open with VS Code live server to ensure rendering of glb files
 
 * The 7-8 minute load time is because Netlify's free tier has no CDN caching for large binary files — it serves them fresh from their origin server every time. Hence,
-* 
-###Cloudflare R2 
+##Cloudflare R2 
 - Free for first 10GB storage + 1M requests/month 
 - Much faster than Netlify for binary files since it's a proper object store with CDN 
 - Upload your assets/images/gallery/, assets/models/ folders to R2, then update the paths in index.html to point to your R2 public URL 
