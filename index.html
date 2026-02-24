@@ -901,37 +901,18 @@ function openGuidelinesMenu(e) {
 
     const rect = card.getBoundingClientRect();
 
-    menu.classList.remove('hidden');
+    // Position below card
+    menu.style.top = rect.bottom + window.scrollY + 10 + "px";
 
-    // Force layout so height is known
-    const menuHeight = menu.offsetHeight;
-    const menuWidth  = menu.offsetWidth;
-
-    const viewportWidth  = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // CENTER horizontally
-    let left = rect.left + rect.width / 2 - menuWidth / 2;
-
-    // Clamp within screen bounds
-    left = Math.max(10, Math.min(left, viewportWidth - menuWidth - 10));
-
-    // Default: below card
-    let top = rect.bottom + window.scrollY + 10;
-
-    // If not enough space below, show above
-    if (rect.bottom + menuHeight > viewportHeight) {
-        top = rect.top + window.scrollY - menuHeight - 10;
-    }
-
-    menu.style.left = left + "px";
-    menu.style.top  = top + "px";
+    // Center horizontally relative to card
+    const menuWidth = 320; // same as w-80
+    menu.style.left = rect.left + rect.width / 2 - menuWidth / 2 + "px";
 
     menu.classList.toggle('hidden');
 }
 
 // Close when clicking outside
-document.addEventListener('click', function() {
+document.addEventListener('click', function () {
     document.getElementById('guidelines-menu').classList.add('hidden');
 });
     </script>
