@@ -1,0 +1,38 @@
+If Cyberduck is also failing, let's just use rclone in Terminal instead — it's proven to work with R2 and skips all the Cyberduck authentication issues:
+# Step 1 - brew install rclone
+
+# Step 2 - Configure (just answer the prompts)
+rclone config
+When it asks questions type:
+
+n → new remote
+Name: r2
+Storage: s3
+Provider: Cloudflare
+Access Key ID: paste from Cloudflare
+Secret Access Key: paste from Cloudflare
+Endpoint: https://16398f7a7c3062774db654b8a3cef0a0.r2.cloudflarestorage.com
+Everything else: just press Enter to skip
+
+Then upload:
+rclone copy /Users/muskanshomef/Desktop/mission-archive-microsite/assets/images/gallery r2:cansat-assets/gallery --progress
+
+
+CORS Policy
+Configure CORS headers that R2 will set when accessing this bucket's contents from a browser.
+[
+  {
+    "AllowedOrigins": [
+      "https://time-capsule-cansat.netlify.app",
+      "http://localhost:5500"
+    ],
+    "AllowedMethods": [
+      "GET",
+      "HEAD"
+    ],
+    "AllowedHeaders": [
+      "*"
+    ],
+    "MaxAgeSeconds": 3600
+  }
+]
