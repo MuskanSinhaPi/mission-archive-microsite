@@ -537,6 +537,7 @@
         <span class="nav-brand">&#128752;&#65039; Team Kalpana</span>
         <div class="nav-links">
             <a class="nav-link" href="#mission">Mission</a>
+            <a class="nav-link" href="#conops">ConOps</a>
             <a class="nav-link" href="#systems">Systems</a>
             <a class="nav-link" href="#team">Team</a>
             <a class="nav-link" href="#realisation">Realisation</a>
@@ -570,24 +571,29 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#127919;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Mission Objectives</h3><ul class="space-y-2 text-gray-300"><li>&bull; Novel descent control &amp; innovative materials</li><li>&bull; Innovative sensor &amp; communication system</li><li>&bull; Video capture from separation to touchdown</li><li>&bull; HAM radio / advanced beacon recovery</li><li>&bull; Quality &amp; reliability analysis</li></ul></div>
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#128208;</div><h3 class="text-2xl font-bold mb-4 text-purple-400">Design Constraints</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>Mass:</strong> 0.700 kg (&plusmn;0.050 kg)</li><li>&bull; <strong>Diameter:</strong> &le; 0.125 m</li><li>&bull; <strong>Height:</strong> &le; 0.310 m</li><li>&bull; <strong>Launch Altitude:</strong> 800&ndash;900 m</li></ul></div>
-            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#129410;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
+            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">🪂</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
 
-        <!-- ConOps Animation -->
-        <div class="mt-16">
-            <h3 class="text-2xl font-bold text-center mb-2 text-cyan-400">&#127758; Concept of Operations</h3>
-            <p class="text-center text-gray-400 text-sm mb-0">5-stage mission from pre-launch to recovery</p>
-            <div id="conops-wrap">
-                <canvas id="conops-canvas"></canvas>
-                <div id="conops-bar">
-                    <div class="conops-legend">
-                        <div class="conops-leg"><div class="conops-dot" style="background:#ddeeff"></div>Stage 1: Pre-Launch</div>
-                        <div class="conops-leg"><div class="conops-dot" style="background:#ffd060"></div>Stage 2: Launch &amp; Ascent</div>
-                        <div class="conops-leg"><div class="conops-dot" style="background:#ff8030"></div>Stage 3: Separation &amp; 1st Chute</div>
-                        <div class="conops-leg"><div class="conops-dot" style="background:#b090ff"></div>Stage 4: 2nd Chute at 500 m</div>
-                        <div class="conops-leg"><div class="conops-dot" style="background:#60dd60"></div>Stage 5: Landing &amp; Recovery</div>
-                    </div>
-                    <button class="conops-replay" onclick="conopsReplay()">&#9654; Replay</button>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ConOps Animation -->
+<section id="conops" class="py-20 px-6">
+    <div class="container mx-auto max-w-5xl">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">&#127758; Concept of Operations</h2>
+        <p class="text-center text-gray-400 mb-10">5-stage mission from pre-launch to recovery</p>
+        <div id="conops-wrap">
+            <canvas id="conops-canvas"></canvas>
+            <div id="conops-bar">
+                <div class="conops-legend">
+                    <div class="conops-leg"><div class="conops-dot" style="background:#ddeeff"></div>Stage 1: Pre-Launch</div>
+                    <div class="conops-leg"><div class="conops-dot" style="background:#ffd060"></div>Stage 2: Launch &amp; Ascent</div>
+                    <div class="conops-leg"><div class="conops-dot" style="background:#ff8030"></div>Stage 3: Separation &amp; 1st Chute</div>
+                    <div class="conops-leg"><div class="conops-dot" style="background:#b090ff"></div>Stage 4: 2nd Chute at 500 m</div>
+                    <div class="conops-leg"><div class="conops-dot" style="background:#60dd60"></div>Stage 5: Landing &amp; Recovery</div>
                 </div>
+                <button class="conops-replay" onclick="conopsReplay()">&#9654; Replay</button>
             </div>
         </div>
     </div>
@@ -666,7 +672,7 @@
     <div class="container mx-auto max-w-6xl">
         <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Flight &amp; Testing</h2>
         <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128640; Launch Footage</h3><div class="yt-facade" onclick="loadYT(this,'BlnHOM-ItQg')"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#129410; Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
+        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" onclick="loadYT(this,'zfHItv2cbR0')"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" onclick="loadYT(this,'Vj-me1MMqE0')"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" onclick="loadYT(this,'-SENyK0R3Eo')"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
@@ -812,8 +818,8 @@
         <p class="text-center text-gray-400 mb-10">Interactive flight data &mdash; altitude, velocity &amp; descent phase annotations</p>
         <div class="flex flex-wrap gap-3 justify-center mb-8">
             <span class="event-badge" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:#00D4FF">&#128640; T+0 Launch / Separation</span>
-            <span class="event-badge" style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.3);color:#a78bfa">&#129410; Drogue Deploy (~850 m)</span>
-            <span class="event-badge" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);color:#fbbf24">&#129410; Main Deploy (500 m)</span>
+            <span class="event-badge" style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.3);color:#a78bfa">🪂 Drogue Deploy (~850 m)</span>
+            <span class="event-badge" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);color:#fbbf24">🪂 Main Deploy (500 m)</span>
             <span class="event-badge" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ade80">&#128763; Touchdown</span>
         </div>
         <div class="chart-container mb-6"><canvas id="telemetryChart" style="max-height:380px;"></canvas></div>
@@ -882,12 +888,12 @@
     <div class="container mx-auto max-w-4xl">
         <h3 class="text-2xl font-bold mb-4 gradient-text">Team Kalpana</h3>
         <p class="text-gray-400 mb-6">IN-SPACe CanSat India Student Competition 2022&ndash;'24 organised by ASI, in association with ISRO</p>
-        <p class="text-gray-300 mb-8">&#128231; Contact: <a href="mailto:aaryamuskan@gmail.com" class="text-cyan-400 hover:text-cyan-300">Muskan Sinha, Team Lead</a></p>
+        <p class="text-gray-300 mb-8">&#128231; Contact: <a href="/cdn-cgi/l/email-protection#88e9e9faf1e9e5fdfbe3e9e6c8efe5e9e1e4a6ebe7e5" class="text-cyan-400 hover:text-cyan-300">Muskan Sinha, Team Lead</a></p>
         <div class="text-sm text-gray-500"><p>&copy; 2026 IN-SPACe CanSat Team. All rights reserved.</p><p class="mt-2">Designed for aerospace excellence &#128752;&#65039;</p></div>
     </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═════════════════════════════════════════════════════════ LAUNCH PRELOADER ══
 (function() {
     const preloader = document.getElementById('preloader');
@@ -1211,7 +1217,7 @@ document.addEventListener('keydown',e=>{const modal=document.getElementById('med
     function resize() {
         const wrap = CV.parentElement;
         W = wrap.offsetWidth;
-        H = Math.max(Math.round(W * 0.375), 220);
+        H = Math.max(Math.round(W * 0.44), 260);
         CV.width = W; CV.height = H;
     }
     resize();
@@ -1434,12 +1440,4 @@ document.addEventListener('keydown',e=>{const modal=document.getElementById('med
     };
 
     const obs=new IntersectionObserver(entries=>{
-        if(entries[0].isIntersecting){conopsReplay(); obs.disconnect();}
-    },{threshold:.2});
-    obs.observe(CV);
-    drawAt(0);
-})();
-
-</script>
-</body>
-</html>
+        if(en
