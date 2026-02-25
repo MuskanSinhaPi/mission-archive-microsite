@@ -537,7 +537,6 @@
         <span class="nav-brand">&#128752;&#65039; Team Kalpana</span>
         <div class="nav-links">
             <a class="nav-link" href="#mission">Mission</a>
-            <a class="nav-link" href="#conops">ConOps</a>
             <a class="nav-link" href="#systems">Systems</a>
             <a class="nav-link" href="#team">Team</a>
             <a class="nav-link" href="#realisation">Realisation</a>
@@ -581,7 +580,7 @@
 <!-- ConOps Animation -->
 <section id="conops" class="py-20 px-6">
     <div class="container mx-auto max-w-5xl">
-        <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">&#127758; Concept of Operations</h2>
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">Concept of Operations</h2>
         <p class="text-center text-gray-400 mb-10">5-stage mission from pre-launch to recovery</p>
         <div id="conops-wrap">
             <canvas id="conops-canvas"></canvas>
@@ -1440,4 +1439,11 @@ document.addEventListener('keydown',e=>{const modal=document.getElementById('med
     };
 
     const obs=new IntersectionObserver(entries=>{
-        if(en
+        if(entries[0].isIntersecting){conopsReplay(); obs.disconnect();}
+    },{threshold:.2});
+    obs.observe(CV);
+    drawAt(0);
+})();
+</script>
+</body>
+</html>
