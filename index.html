@@ -1350,7 +1350,7 @@ const ALBUM_META = [
     {id:'videos',label:'\uD83C\uDFAC Videos'},{id:'grand-finale',label:'\uD83C\uDFC6 Grand Finale'},
     {id:'videos-mini-spy',label:'\uD83D\uDCF9 Videos \u2013 Mini Spy Cam'},{id:'good-times-2',label:'\u2728 Good Times 2'},
 ];
-const IPP=48; let galleryData={}, currentAlbum=ALBUM_META[0].id;
+const IPP=10; let galleryData={}, currentAlbum=ALBUM_META[0].id;
 const pageState={}; ALBUM_META.forEach(a=>pageState[a.id]=1);
 let modalItems=[], modalIndex=0;
 fetch('https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/index.json')
