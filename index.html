@@ -16,313 +16,12 @@
         :root { --bg-primary:#0B0F19; --accent-cyan:#00D4FF; --accent-purple:#7C3AED; --text-primary:#F1F5F9; --text-secondary:#94A3B8; }
         body { background-color:var(--bg-primary); color:var(--text-primary); overflow-x:hidden; }
 
-        /* Loading
+        /* Loading */
         #loading-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-primary); display:flex; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s ease-out; }
         #loading-screen.fade-out { opacity:0; pointer-events:none; }
         .satellite-loader { width:100px; height:100px; animation:rotate 3s linear infinite; }
-        @keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} } */
-        #preloader {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        background: radial-gradient(ellipse at 50% 90%, #0d1b35 0%, #060b14 55%, #020408 100%);
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        overflow: hidden;
-    }
+        @keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
-    .pl-star {
-        position: absolute;
-        border-radius: 50%;
-        background: white;
-        animation: pl-twinkle var(--sd,2s) ease-in-out infinite var(--delay,0s);
-    }
-    @keyframes pl-twinkle {
-        0%,100%{opacity:0}
-        50%{opacity:var(--sop,0.8)}
-    }
-
-    .pl-rocket-wrap {
-        position:absolute;
-        bottom:74px;
-        left:50%;
-        transform:translateX(-50%);
-        width:56px;
-        transform-origin:50% 100%;
-    }
-
-    .pl-flame {
-        position:absolute;
-        bottom:-4px;
-        left:50%;
-        transform:translateX(-50%);
-        width:24px;
-        opacity:0;
-    }
-
-    .pl-trail {
-        position:absolute;
-        left:50%;
-        bottom:74px;
-        transform:translateX(-50%);
-        width:20px;
-        height:4px;
-
-        background:linear-gradient(
-            to bottom,
-            rgba(255,200,120,0.9),
-            rgba(255,120,40,0.6),
-            rgba(255,80,20,0.3),
-            transparent
-        );
-
-        border-radius:10px;
-        filter:blur(2px);
-        opacity:0;
-        z-index:5;
-    }
-
-    .pl-status {
-        position:absolute;
-        bottom:20px;
-        left:50%;
-        transform:translateX(-50%);
-        font-size:0.65rem;
-        letter-spacing:0.22em;
-        text-transform:uppercase;
-        color:rgba(0,212,255,0.6);
-        z-index: 20;
-    }
-
-    .pl-progress {
-        position:absolute;
-        bottom:0;
-        left:0;
-        right:0;
-        height:2px;
-        background:rgba(0,212,255,0.08);
-        z-index: 20;
-    }
-
-    .pl-progress-bar {
-        height:100%;
-        width:0;
-        background:linear-gradient(90deg,#00D4FF,#7C3AED);
-        transition:width 0.08s linear;
-    }
-
-    @keyframes pl-liftoff {
-        0%   { transform:translateX(-50%) translateY(0); }
-        100% { transform:translateX(-50%) translateY(-110vh); }
-    }
-    .pl-moon {
-        position:absolute;
-        top:9%;
-        right:16%;
-        width:54px;
-        height:54px;
-        border-radius:50%;
-        background:radial-gradient(circle at 35% 35%,#e8dcc8,#b8a888);
-        box-shadow:inset -10px -5px 16px rgba(0,0,0,0.35),
-                0 0 40px rgba(200,180,130,0.15);
-    }
-
-    .pl-moon::before {
-        content:'';
-        position:absolute;
-        top:13px;
-        left:15px;
-        width:9px;
-        height:9px;
-        border-radius:50%;
-        background:rgba(0,0,0,0.14);
-    }
-
-    .pl-moon::after {
-        content:'';
-        position:absolute;
-        top:27px;
-        left:26px;
-        width:6px;
-        height:6px;
-        border-radius:50%;
-        background:rgba(0,0,0,0.11);
-    }
-    .pl-cloud-half {
-        flex:1;
-        height:80px;
-        background:radial-gradient(
-            ellipse at center,
-            rgba(180,200,240,0.18) 0%,
-            transparent 70%
-        );
-        filter:blur(20px);
-        transition:transform 1s ease, opacity 0.7s ease;
-    }
-
-    .pl-cloud-half.l { transform-origin:left center; }
-    .pl-cloud-half.r { transform-origin:right center; }
-
-    .pl-orbit-ring {
-        position:absolute;
-        top:18%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        width:140px;
-        height:50px;
-        border:1px solid rgba(0,212,255,0.2);
-        border-radius:50%;
-        opacity:0;
-    }
-
-    .pl-satellite {
-        position:absolute;
-        top:18%;
-        left:50%;
-        width:6px;
-        height:6px;
-        border-radius:50%;
-        background:#00D4FF;
-        box-shadow:0 0 12px rgba(0,212,255,0.9);
-        transform:translate(-50%,-50%);
-        opacity:0;
-    }
-
-    @keyframes pl-sat-orbit {
-        0%   { transform:translate(-50%,-50%) translateX(70px); }
-        25%  { transform:translate(-50%,-50%) translateX(0px) translateY(-25px); }
-        50%  { transform:translate(-50%,-50%) translateX(-70px); }
-        75%  { transform:translate(-50%,-50%) translateX(0px) translateY(25px); }
-        100% { transform:translate(-50%,-50%) translateX(70px); }
-    }
-    @keyframes pl-idle-shake {
-        0%,100%{ transform:translateX(-50%) rotate(-0.4deg); }
-        50%{ transform:translateX(-50%) rotate(0.4deg); }
-    }
-    @keyframes pl-rumble {
-        0%{ transform:translateX(calc(-50% - 1.5px)); }
-        50%{ transform:translateX(calc(-50% + 1.5px)); }
-        100%{ transform:translateX(-50%); }
-    }
-    @keyframes pl-liftoff {
-        0%   { transform:translateX(-50%) translateY(0); }
-        100% { transform:translateX(-50%) translateY(-112vh); }
-    }
-    .pl-flame-inner {
-        animation:pl-flame-flicker 0.07s linear infinite alternate;
-    }
-
-    @keyframes pl-flame-flicker {
-        from { transform:scaleX(1) scaleY(1); }
-        to   { transform:scaleX(0.82) scaleY(1.12); }
-    }
-    @keyframes pl-trail-anim {
-        0%   { height:4px; opacity:0.9; }
-        100% { height:900px; opacity:0; }
-    }
-    /* ═════════════ Launchpad Structure ═════════════ */
-
-    .pl-pad {
-        position:absolute;
-        bottom:0;
-        left:50%;
-        transform:translateX(-50%);
-        width:220px;
-        z-index:6;
-    }
-
-    /* Deck */
-    .pl-pad-deck {
-        position:absolute;
-        bottom:44px;
-        left:50%;
-        transform:translateX(-50%);
-        width:80px;
-        height:10px;
-        background:linear-gradient(180deg,#3a4d75,#1e2f50);
-        border-radius:3px 3px 0 0;
-        box-shadow:0 0 16px rgba(0,212,255,0.12);
-    }
-
-    /* Legs */
-    .pl-pad-leg {
-        position:absolute;
-        bottom:0;
-        height:46px;
-        width:10px;
-        background:linear-gradient(180deg,#2a3a5c,#111c30);
-        border-radius:2px;
-    }
-    .pl-pad-leg.left  { left:72px; }
-    .pl-pad-leg.right { right:72px; }
-
-    /* Base */
-    .pl-pad-base {
-        position:absolute;
-        bottom:0;
-        left:50%;
-        transform:translateX(-50%);
-        width:180px;
-        height:14px;
-        background:linear-gradient(180deg,#222e48,#0e1726);
-        border-radius:3px 3px 0 0;
-    }
-
-    /* Gantry arms */
-    .pl-arm {
-        position:absolute;
-        bottom:50px;
-        width:6px;
-        height:48px;
-        background:linear-gradient(180deg,#4a5e88,#1e2f50);
-        border-radius:2px;
-        transform-origin:50% 100%;
-    }
-    .pl-arm.left  { left:76px; }
-    .pl-arm.right { right:76px; }
-
-    /* Arm crossbars */
-    .pl-arm.left::before {
-        content:'';
-        position:absolute;
-        top:8px;
-        left:6px;
-        width:20px;
-        height:4px;
-        background:#2a3a5c;
-        border-radius:0 2px 2px 0;
-    }
-    .pl-arm.right::before {
-        content:'';
-        position:absolute;
-        top:8px;
-        right:6px;
-        width:20px;
-        height:4px;
-        background:#2a3a5c;
-        border-radius:2px 0 0 2px;
-    }
-
-    /* Ignition glow */
-    .pl-pad-glow {
-        position:absolute;
-        bottom:44px;
-        left:50%;
-        transform:translateX(-50%);
-        width:100px;
-        height:50px;
-        border-radius:50%;
-        background:radial-gradient(
-            ellipse,
-            rgba(255,130,30,0.9),
-            rgba(255,60,10,0.4) 40%,
-            transparent 70%
-        );
-        opacity:0;
-        filter:blur(10px);
-        z-index:7;
-    }
         /* Sticky Nav */
         #sticky-nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(11,15,25,0.88); backdrop-filter:blur(16px); border-bottom:1px solid rgba(0,212,255,0.12); transform:translateY(-100%); transition:transform 0.35s ease; padding:0 1.5rem; }
         #sticky-nav.visible { transform:translateY(0); }
@@ -384,19 +83,8 @@
         .yt-facade iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
 
         /* Hidden */
-        .hidden-more {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.6s ease, opacity 0.4s ease;
-            opacity: 0;
-        }
-
-        .hidden-more.open {
-            max-height: 2000px; /* large enough */
-            opacity: 1;
-            margin-top: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
+        .hidden-more { max-height:0; overflow:hidden; transition:max-height 0.6s ease, opacity 0.4s ease; opacity:0; }
+        .hidden-more.open { max-height:2000px; opacity:1; margin-top:1.5rem; }
 
         /* Gallery */
         .album-tab { background:rgba(15,23,42,0.6); border:1px solid rgba(0,212,255,0.2); color:var(--text-secondary); padding:0.5rem 1.2rem; border-radius:9999px; cursor:pointer; transition:all 0.3s ease; white-space:nowrap; font-size:0.9rem; }
@@ -466,148 +154,382 @@
         .replay-slider { -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:2px; background:rgba(0,212,255,0.15); outline:none; cursor:pointer; }
         .replay-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple)); cursor:pointer; border:2px solid white; box-shadow:0 0 8px rgba(0,212,255,0.5); }
 
-        /* model-viewer { width:100%; height:380px; background:rgba(15,23,42,0.8); border-radius:12px; --poster-color:transparent; } */
+/* ═══════════════════════════════════════════ LAUNCH PRELOADER ══ */
+        #preloader {
+            position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999;
+            background:radial-gradient(ellipse at 50% 90%, #0d1b35 0%, #060b14 55%, #020408 100%);
+            display:flex; align-items:flex-end; justify-content:center;
+            overflow:hidden; font-family:'Space Grotesk',sans-serif;
+        }
+        #preloader.pl-done {
+            animation:pl-out 0.8s cubic-bezier(0.4,0,0.2,1) 0s forwards;
+            pointer-events:none;
+        }
+        @keyframes pl-out {
+            0%   { opacity:1; clip-path:ellipse(120% 120% at 50% 50%); }
+            70%  { opacity:1; clip-path:ellipse(120% 120% at 50% -10%); }
+            100% { opacity:0; clip-path:ellipse(0%   0%   at 50% -10%); }
+        }
+
+        /* Stars */
+        .pl-star { position:absolute; border-radius:50%; background:white;
+            animation:pl-twinkle var(--sd,2s) ease-in-out infinite var(--delay,0s); }
+        @keyframes pl-twinkle { 0%,100%{opacity:0} 50%{opacity:var(--sop,0.8)} }
+
+        /* Moon */
+        .pl-moon { position:absolute; top:9%; right:16%; width:54px; height:54px;
+            border-radius:50%;
+            background:radial-gradient(circle at 35% 35%,#e8dcc8,#b8a888);
+            box-shadow:inset -10px -5px 16px rgba(0,0,0,0.35), 0 0 40px rgba(200,180,130,0.15); }
+        .pl-moon::before { content:''; position:absolute; top:13px; left:15px; width:9px; height:9px; border-radius:50%; background:rgba(0,0,0,0.14); }
+        .pl-moon::after  { content:''; position:absolute; top:27px; left:26px; width:6px; height:6px; border-radius:50%; background:rgba(0,0,0,0.11); }
+
+        /* Rocket wrapper — sits at bottom center */
+        .pl-scene { position:relative; width:100%; height:100vh; display:flex; align-items:flex-end; justify-content:center; }
+
+        .pl-rocket-wrap {
+            position:absolute; bottom:74px; /* sit on pad */
+            left:50%; transform:translateX(-50%);
+            width:56px; z-index:10;
+            transform-origin:50% 100%;
+        }
+        /* Idle shake */
+        @keyframes pl-idle-shake {
+            0%,100%{ transform:translateX(-50%) rotate(-0.4deg); }
+            50%    { transform:translateX(-50%) rotate(0.4deg); }
+        }
+        /* Ignition rumble */
+        @keyframes pl-rumble {
+            0%  { transform:translateX(calc(-50% - 1.5px)) rotate(-0.6deg); }
+            25% { transform:translateX(calc(-50% + 1.5px)) rotate(0.6deg); }
+            50% { transform:translateX(calc(-50% - 1px))  rotate(-0.3deg); }
+            75% { transform:translateX(calc(-50% + 1px))  rotate(0.3deg); }
+            100%{ transform:translateX(-50%) rotate(0deg); }
+        }
+        /* Liftoff */
+        @keyframes pl-liftoff {
+            0%   { transform:translateX(-50%) translateY(0)    scale(1);    bottom:74px; }
+            4%   { transform:translateX(-50%) translateY(3px)  scale(1.005) rotate(0deg); }
+            12%  { transform:translateX(-50%) translateY(-20px) scale(0.995); }
+            35%  { transform:translateX(-50%) translateY(-160px) scale(0.97); bottom:74px; }
+            65%  { transform:translateX(-50%) translateY(-400px) scale(0.92) rotate(-0.5deg); }
+            85%  { transform:translateX(-50%) translateY(-650px) scale(0.85); }
+            100% { transform:translateX(-50%) translateY(-112vh) scale(0.7); }
+        }
+
+        /* Flame / exhaust */
+        .pl-flame { position:absolute; bottom:-4px; left:50%; transform:translateX(-50%); width:24px; opacity:0; pointer-events:none; z-index:9; }
+        .pl-flame svg { width:100%; display:block; }
+        .pl-flame-inner { animation:pl-flame-flicker 0.07s linear infinite alternate; transform-origin:50% 0%; }
+        @keyframes pl-flame-flicker {
+            from { transform:scaleX(1)    scaleY(1); }
+            to   { transform:scaleX(0.82) scaleY(1.12); }
+        }
+
+        /* Smoke trail */
+        .pl-trail {
+            position:absolute; left:50%; bottom:74px;
+            transform:translateX(-50%);
+            width:20px; height:4px;
+            background:linear-gradient(0deg,rgba(180,180,220,0.08) 0%,rgba(255,120,40,0.5) 100%);
+            border-radius:50% 50% 0 0;
+            transform-origin:50% 100%;
+            opacity:0; pointer-events:none; z-index:8;
+        }
+
+        /* Launchpad */
+        .pl-pad { position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:220px; z-index:6; }
+        .pl-pad-deck {
+            position:absolute; bottom:44px; left:50%; transform:translateX(-50%);
+            width:80px; height:10px;
+            background:linear-gradient(180deg,#3a4d75,#1e2f50);
+            border-radius:3px 3px 0 0;
+            box-shadow:0 0 16px rgba(0,212,255,0.12);
+        }
+        .pl-pad-leg { position:absolute; bottom:0; height:46px; width:10px;
+            background:linear-gradient(180deg,#2a3a5c,#111c30);
+            border-radius:2px; }
+        .pl-pad-leg.left  { left:72px; }
+        .pl-pad-leg.right { right:72px; }
+        .pl-pad-base {
+            position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+            width:180px; height:14px;
+            background:linear-gradient(180deg,#222e48,#0e1726);
+            border-radius:3px 3px 0 0;
+        }
+        /* Gantry arms */
+        .pl-arm { position:absolute; bottom:50px; width:6px; height:48px;
+            background:linear-gradient(180deg,#4a5e88,#1e2f50);
+            border-radius:2px; transform-origin:50% 100%; }
+        .pl-arm.left  { left:76px; }
+        .pl-arm.right { right:76px; }
+        /* arm crossbars */
+        .pl-arm.left::before  { content:''; position:absolute; top:8px;  left:6px; width:20px; height:4px; background:#2a3a5c; border-radius:0 2px 2px 0; }
+        .pl-arm.right::before { content:''; position:absolute; top:8px;  right:6px; width:20px; height:4px; background:#2a3a5c; border-radius:2px 0 0 2px; }
+        .pl-arm.left::after   { content:''; position:absolute; top:22px; left:6px; width:14px; height:3px; background:#233048; border-radius:0 2px 2px 0; }
+        .pl-arm.right::after  { content:''; position:absolute; top:22px; right:6px; width:14px; height:3px; background:#233048; border-radius:2px 0 0 2px; }
+
+        /* Pad ignition glow */
+        .pl-pad-glow {
+            position:absolute; bottom:44px; left:50%; transform:translateX(-50%);
+            width:100px; height:50px; border-radius:50%;
+            background:radial-gradient(ellipse,rgba(255,130,30,0.9),rgba(255,60,10,0.4) 40%,transparent 70%);
+            opacity:0; filter:blur(10px); pointer-events:none; z-index:7;
+        }
+
+        /* Clouds */
+        .pl-clouds { position:absolute; left:0; right:0; pointer-events:none; z-index:11; }
+        .pl-cloud-row { position:absolute; left:0; right:0; display:flex; }
+        .pl-cloud-half {
+            flex:1; height:80px;
+            background:radial-gradient(ellipse at center, rgba(180,200,240,0.18) 0%, transparent 70%);
+            filter:blur(20px);
+        }
+        .pl-cloud-half.l { transform-origin:left center; }
+        .pl-cloud-half.r { transform-origin:right center; }
+
+        /* Status + progress */
+        .pl-status {
+            position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+            font-size:0.65rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase;
+            color:rgba(0,212,255,0.6); white-space:nowrap; z-index:20;
+        }
+        .pl-progress { position:absolute; bottom:0; left:0; right:0; height:2px; background:rgba(0,212,255,0.08); z-index:20; }
+        .pl-progress-bar {
+            height:100%; width:0;
+            background:linear-gradient(90deg,#00D4FF,#7C3AED);
+            box-shadow:0 0 8px rgba(0,212,255,0.5);
+            transition:width 0.08s linear;
+        }
+
+        /* Orbital ring (appears when rocket becomes distant) */
+        .pl-orbit-ring {
+            position:absolute; top:18%; left:50%; transform:translate(-50%,-50%);
+            width:140px; height:50px;
+            border:1px solid rgba(0,212,255,0.2);
+            border-radius:50%; opacity:0;
+            animation:none;
+        }
+        .pl-satellite {
+            position:absolute; top:18%; left:50%;
+            width:6px; height:6px; border-radius:50%;
+            background:#00D4FF;
+            box-shadow:0 0 12px rgba(0,212,255,0.9), 0 0 24px rgba(0,212,255,0.4);
+            transform:translate(-50%,-50%);
+            opacity:0;
+        }
+
+        /* 3D model-viewer — deep dark background for contrast */
     model-viewer {
     width:100%;
     height:380px;
-
     background:
-        radial-gradient(circle at 50% 30%,
-            rgba(0,212,255,0.08),
-            transparent 60%
-        ),
-        linear-gradient(180deg,
-            #060b14 0%,
-            #0b1220 100%
-        );
-
+        radial-gradient(circle at 50% 30%, rgba(0,212,255,0.08), transparent 60%),
+        linear-gradient(180deg, #060b14 0%, #0b1220 100%);
     border-radius:12px;
     border:1px solid rgba(0,212,255,0.15);
-
-    box-shadow:
-        inset 0 0 40px rgba(0,0,0,0.6),
-        0 0 30px rgba(0,212,255,0.06);
-
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,212,255,0.06);
     --poster-color: transparent;
 }
+
+        @keyframes pl-trail-anim {
+            0%   { height:4px;   width:20px; opacity:0.9; }
+            15%  { height:60px;  width:22px; opacity:0.85; }
+            45%  { height:240px; width:28px; opacity:0.65; }
+            75%  { height:480px; width:35px; opacity:0.35; }
+            100% { height:900px; width:42px; opacity:0; }
+        }
+        @keyframes pl-sat-orbit {
+            0%   { transform:translate(-50%,-50%) translateX(70px); }
+            25%  { transform:translate(-50%,-50%) translateX(0px) translateY(-25px); }
+            50%  { transform:translate(-50%,-50%) translateX(-70px); }
+            75%  { transform:translate(-50%,-50%) translateX(0px) translateY(25px); }
+            100% { transform:translate(-50%,-50%) translateX(70px); }
+        }
+        /* ── ConOps Mission Animation ──────────────────────────────────── */
+        #conops-wrap {
+            position: relative; width: 100%; margin-top: 3.5rem;
+            border-radius: 16px; overflow: hidden;
+            border: 1px solid rgba(0,212,255,0.2);
+            box-shadow: 0 0 60px rgba(0,212,255,0.08);
+        }
+        #conops-canvas { display: block; width: 100%; }
+        #conops-bar {
+            display: flex; flex-wrap: wrap; align-items: center;
+            justify-content: space-between; gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            background: rgba(6,11,20,0.96);
+            border-top: 1px solid rgba(0,212,255,0.1);
+        }
+        .conops-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
+        .conops-leg { display: flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+        .conops-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .conops-replay {
+            background: linear-gradient(135deg,#00D4FF,#7C3AED); border: none; color: white;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.08em; padding: 0.4rem 1.1rem; border-radius: 9999px;
+            cursor: pointer; white-space: nowrap; transition: opacity 0.2s, transform 0.2s;
+        }
+        .conops-replay:hover { opacity: 0.88; transform: scale(1.04); }
+
     </style>
 </head>
 <body>
+
 <!-- ════════════ LAUNCH PRELOADER ════════════ -->
-    <div id="preloader">
+<div id="preloader">
+    <!-- Stars (generated by JS) -->
+    <div id="pl-stars"></div>
 
-        <!-- Stars -->
-        <div id="pl-stars"></div>
+    <!-- Moon -->
+    <div class="pl-moon"></div>
 
-        <!-- Moon -->
-        <div class="pl-moon"></div>
+    <!-- Orbital ring + satellite dot (end state) -->
+    <div class="pl-orbit-ring" id="pl-orbit"></div>
+    <div class="pl-satellite"  id="pl-sat"></div>
 
-        <!-- Orbital ring + satellite -->
-        <div class="pl-orbit-ring" id="pl-orbit"></div>
-        <div class="pl-satellite" id="pl-sat"></div>
-
-        <!-- Clouds -->
-        <div class="pl-clouds">
-            <div class="pl-cloud-row" style="top:28%">
-                <div class="pl-cloud-half l"></div>
-                <div class="pl-cloud-half r"></div>
-            </div>
-            <div class="pl-cloud-row" style="top:42%">
-                <div class="pl-cloud-half l"></div>
-                <div class="pl-cloud-half r"></div>
-            </div>
-            <div class="pl-cloud-row" style="top:56%">
-                <div class="pl-cloud-half l"></div>
-                <div class="pl-cloud-half r"></div>
-            </div>
+    <!-- Cloud layers at different heights -->
+    <div class="pl-clouds" id="pl-clouds">
+        <div class="pl-cloud-row" style="top:28%">
+            <div class="pl-cloud-half l" id="cl0l"></div>
+            <div class="pl-cloud-half r" id="cl0r"></div>
         </div>
-
-        <!-- Rocket Scene -->
-        <div class="pl-scene">
-            <div class="pl-rocket-wrap" id="pl-rocket">
-
-                <div class="pl-flame" id="pl-flame">
-                    <!-- flame SVG -->
-                    <svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <radialGradient id="fg1" cx="50%" cy="0%" r="100%">
-                <stop offset="0%" stop-color="#fff9e0"/>
-                <stop offset="40%" stop-color="#ffcc44"/>
-                <stop offset="80%" stop-color="#ff6600"/>
-                <stop offset="100%" stop-color="transparent"/>
-            </radialGradient>
-        </defs>
-        <g class="pl-flame-inner">
-            <ellipse cx="12" cy="10" rx="7" ry="13" fill="url(#fg1)"/>
-        </g>
-    </svg>
-    </div>
-    <!-- Rocket SVG -->
-    <svg viewBox="0 0 56 140" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
-        <defs>
-            <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#c8d8f0"/>
-                <stop offset="50%" stop-color="#f0f4ff"/>
-                <stop offset="100%" stop-color="#8a9ec0"/>
-            </linearGradient>
-
-            <linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#0a1628"/>
-                <stop offset="50%" stop-color="#1a2a48"/>
-                <stop offset="100%" stop-color="#0a1628"/>
-            </linearGradient>
-
-            <filter id="rglow">
-                <feGaussianBlur stdDeviation="1.5" result="blur"/>
-                <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-            </filter>
-        </defs>
-
-        <!-- Nozzle -->
-        <ellipse cx="28" cy="128" rx="10" ry="5" fill="#0a1628"/>
-        <path d="M18,118 Q28,132 38,118 L36,112 L20,112 Z" fill="#1a2a48"/>
-
-        <!-- Body -->
-        <rect x="16" y="35" width="24" height="78" fill="url(#rg1)" rx="2"/>
-
-        <!-- Dark stripe -->
-        <rect x="16" y="75" width="24" height="8" fill="url(#rg2)" rx="1"/>
-
-        <!-- Fins -->
-        <path d="M16,108 L6,128 L16,120 Z" fill="#1a2a48"/>
-        <path d="M40,108 L50,128 L40,120 Z" fill="#1a2a48"/>
-
-        <!-- Nose -->
-        <path d="M16,35 Q16,10 28,4 Q40,10 40,35 Z" fill="url(#rg1)"/>
-
-        <!-- Window -->
-        <circle cx="28" cy="52" r="7" fill="url(#rg2)"/>
-        <circle cx="28" cy="52" r="4.5" fill="#0a2550" filter="url(#rglow)"/>
-    </svg>
-            </div>
-
-            <div class="pl-trail" id="pl-trail"></div>
-
-            <div class="pl-pad">
-                <div class="pl-pad-glow" id="pl-glow"></div>
-                <div class="pl-arm left" id="pl-arm-l"></div>
-                <div class="pl-arm right" id="pl-arm-r"></div>
-                <div class="pl-pad-deck"></div>
-                <div class="pl-pad-leg left"></div>
-                <div class="pl-pad-leg right"></div>
-                <div class="pl-pad-base"></div>
-            </div>
+        <div class="pl-cloud-row" style="top:42%">
+            <div class="pl-cloud-half l" id="cl1l"></div>
+            <div class="pl-cloud-half r" id="cl1r"></div>
         </div>
-
-        <!-- Status -->
-        <div class="pl-status" id="pl-status">T-00:05 AWAITING LAUNCH</div>
-        <div class="pl-progress">
-            <div class="pl-progress-bar" id="pl-bar"></div>
+        <div class="pl-cloud-row" style="top:56%">
+            <div class="pl-cloud-half l" id="cl2l"></div>
+            <div class="pl-cloud-half r" id="cl2r"></div>
         </div>
     </div>
+
+    <!-- Launch scene -->
+    <div class="pl-scene">
+        <!-- Rocket -->
+        <div class="pl-rocket-wrap" id="pl-rocket">
+            <!-- Exhaust flame (below rocket nozzle) -->
+            <div class="pl-flame" id="pl-flame">
+                <svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="fg1" cx="50%" cy="0%" r="100%">
+                            <stop offset="0%"   stop-color="#fff9e0"/>
+                            <stop offset="30%"  stop-color="#ffcc44"/>
+                            <stop offset="65%"  stop-color="#ff6600"/>
+                            <stop offset="100%" stop-color="transparent"/>
+                        </radialGradient>
+                        <radialGradient id="fg2" cx="50%" cy="0%" r="100%">
+                            <stop offset="0%"  stop-color="#ffaa22" stop-opacity="0.9"/>
+                            <stop offset="100%" stop-color="transparent"/>
+                        </radialGradient>
+                    </defs>
+                    <g class="pl-flame-inner">
+                        <!-- outer flame -->
+                        <ellipse cx="12" cy="18" rx="11" ry="20" fill="url(#fg2)" opacity="0.7"/>
+                        <!-- core flame -->
+                        <ellipse cx="12" cy="10" rx="7"  ry="13" fill="url(#fg1)"/>
+                        <!-- inner white core -->
+                        <ellipse cx="12" cy="5"  rx="3"  ry="6"  fill="rgba(255,255,240,0.95)"/>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Rocket SVG -->
+            <svg viewBox="0 0 56 140" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+                <defs>
+                    <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"   stop-color="#c8d8f0"/>
+                        <stop offset="45%"  stop-color="#f0f4ff"/>
+                        <stop offset="100%" stop-color="#8a9ec0"/>
+                    </linearGradient>
+                    <linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"   stop-color="#0a1628"/>
+                        <stop offset="50%"  stop-color="#1a2a48"/>
+                        <stop offset="100%" stop-color="#0a1628"/>
+                    </linearGradient>
+                    <linearGradient id="rg3" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"  stop-color="#7C3AED"/>
+                        <stop offset="50%" stop-color="#9B59F5"/>
+                        <stop offset="100%" stop-color="#7C3AED"/>
+                    </linearGradient>
+                    <filter id="rglow">
+                        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Nozzle bell -->
+                <ellipse cx="28" cy="128" rx="10" ry="5" fill="#0a1628"/>
+                <path d="M18,118 Q28,132 38,118 L36,112 L20,112 Z" fill="#1a2a48"/>
+                <ellipse cx="28" cy="112" rx="8" ry="3" fill="#243050"/>
+
+                <!-- Main body -->
+                <rect x="16" y="35" width="24" height="78" fill="url(#rg1)" rx="2"/>
+
+                <!-- Dark stripe bands -->
+                <rect x="16" y="75" width="24" height="8"  fill="url(#rg2)" rx="1"/>
+                <rect x="16" y="58" width="24" height="5"  fill="url(#rg2)" rx="1" opacity="0.6"/>
+
+                <!-- Accent stripe (cyan) -->
+                <rect x="16" y="83" width="24" height="3" fill="#00D4FF" opacity="0.8"/>
+                <rect x="16" y="95" width="24" height="2" fill="#00D4FF" opacity="0.4"/>
+
+                <!-- Fins (left, right) -->
+                <path d="M16,108 L6,128 L16,120 Z"  fill="#1a2a48"/>
+                <path d="M40,108 L50,128 L40,120 Z" fill="#1a2a48"/>
+                <path d="M16,108 L10,120 L16,118 Z" fill="#243050"/>
+                <path d="M40,108 L46,120 L40,118 Z" fill="#243050"/>
+
+                <!-- Payload fairing (nose cone) -->
+                <path d="M16,35 Q16,10 28,4 Q40,10 40,35 Z" fill="url(#rg1)"/>
+                <path d="M22,35 Q22,14 28,7 Q34,14 34,35 Z" fill="rgba(240,244,255,0.6)"/>
+
+                <!-- Nose tip -->
+                <circle cx="28" cy="5" r="3" fill="#f0f4ff"/>
+
+                <!-- Porthole window -->
+                <circle cx="28" cy="52" r="7"   fill="url(#rg2)"/>
+                <circle cx="28" cy="52" r="5.5" fill="#0d1e3a"/>
+                <circle cx="28" cy="52" r="4.5" fill="#0a2550" filter="url(#rglow)"/>
+                <!-- window glint -->
+                <circle cx="25" cy="49" r="1.5" fill="rgba(0,212,255,0.7)" opacity="0.9"/>
+
+                <!-- KALPANA text -->
+                <text x="28" y="70" text-anchor="middle" font-size="4.5" font-family="Space Grotesk,sans-serif" font-weight="700" fill="rgba(0,212,255,0.85)" letter-spacing="0.5">KALPANA</text>
+
+                <!-- Stage separator line -->
+                <line x1="16" y1="105" x2="40" y2="105" stroke="rgba(0,212,255,0.3)" stroke-width="0.8"/>
+
+                <!-- IN-SPACe flag patch -->
+                <rect x="30" y="88" width="8" height="5" rx="0.5" fill="#7C3AED" opacity="0.9"/>
+                <rect x="30" y="88" width="8" height="2" rx="0.5" fill="#9B59F5"/>
+
+                <!-- Antenna -->
+                <line x1="28" y1="4" x2="28" y2="1" stroke="#00D4FF" stroke-width="0.8" opacity="0.7"/>
+                <circle cx="28" cy="1" r="0.8" fill="#00D4FF" opacity="0.9"/>
+            </svg>
+        </div>
+
+        <!-- Smoke trail below rocket -->
+        <div class="pl-trail" id="pl-trail"></div>
+
+        <!-- Launchpad -->
+        <div class="pl-pad">
+            <div class="pl-pad-glow" id="pl-glow"></div>
+            <div class="pl-arm left"  id="pl-arm-l"></div>
+            <div class="pl-arm right" id="pl-arm-r"></div>
+            <div class="pl-pad-deck"></div>
+            <div class="pl-pad-leg left"></div>
+            <div class="pl-pad-leg right"></div>
+            <div class="pl-pad-base"></div>
+        </div>
+    </div>
+
+    <!-- Status & progress -->
+    <div class="pl-status" id="pl-status">T-00:05 AWAITING LAUNCH</div>
+    <div class="pl-progress"><div class="pl-progress-bar" id="pl-bar"></div></div>
+</div>
+
 
 <!-- Sticky Nav -->
 <nav id="sticky-nav">
@@ -629,19 +551,6 @@
     </div>
 </nav>
 
-<!-- Loading
-<div id="loading-screen">
-    <div class="satellite-loader">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <rect x="35" y="35" width="30" height="30" fill="#00D4FF" opacity="0.8"/>
-            <rect x="10" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
-            <rect x="70" y="40" width="20" height="20" fill="#7C3AED" opacity="0.6"/>
-            <line x1="50" y1="35" x2="50" y2="15" stroke="#00D4FF" stroke-width="2"/>
-            <circle cx="50" cy="15" r="3" fill="#00D4FF"/>
-        </svg>
-    </div>
-</div> -->
-
 <!-- Hero -->
 <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div class="telemetry-bg"></div>
@@ -661,7 +570,25 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#127919;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Mission Objectives</h3><ul class="space-y-2 text-gray-300"><li>&bull; Novel descent control &amp; innovative materials</li><li>&bull; Innovative sensor &amp; communication system</li><li>&bull; Video capture from separation to touchdown</li><li>&bull; HAM radio / advanced beacon recovery</li><li>&bull; Quality &amp; reliability analysis</li></ul></div>
             <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#128208;</div><h3 class="text-2xl font-bold mb-4 text-purple-400">Design Constraints</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>Mass:</strong> 0.700 kg (&plusmn;0.050 kg)</li><li>&bull; <strong>Diameter:</strong> &le; 0.125 m</li><li>&bull; <strong>Height:</strong> &le; 0.310 m</li><li>&bull; <strong>Launch Altitude:</strong> 800&ndash;900 m</li></ul></div>
-            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">🪂</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
+            <div class="mission-card rounded-2xl p-8"><div class="text-4xl mb-4">&#129410;</div><h3 class="text-2xl font-bold mb-4 text-cyan-400">Parachute System</h3><ul class="space-y-2 text-gray-300"><li>&bull; <strong>1st Deploy:</strong> At separation</li><li>&bull; <strong>Initial Descent:</strong> 20 m/s (&plusmn;5 m/s)</li><li>&bull; <strong>2nd Deploy:</strong> 500 m (&plusmn;10 m)</li><li>&bull; <strong>Final Descent:</strong> 5 m/s</li></ul></div>
+
+        <!-- ConOps Animation -->
+        <div class="mt-16">
+            <h3 class="text-2xl font-bold text-center mb-2 text-cyan-400">&#127758; Concept of Operations</h3>
+            <p class="text-center text-gray-400 text-sm mb-0">5-stage mission from pre-launch to recovery</p>
+            <div id="conops-wrap">
+                <canvas id="conops-canvas"></canvas>
+                <div id="conops-bar">
+                    <div class="conops-legend">
+                        <div class="conops-leg"><div class="conops-dot" style="background:#ddeeff"></div>Stage 1: Pre-Launch</div>
+                        <div class="conops-leg"><div class="conops-dot" style="background:#ffd060"></div>Stage 2: Launch &amp; Ascent</div>
+                        <div class="conops-leg"><div class="conops-dot" style="background:#ff8030"></div>Stage 3: Separation &amp; 1st Chute</div>
+                        <div class="conops-leg"><div class="conops-dot" style="background:#b090ff"></div>Stage 4: 2nd Chute at 500 m</div>
+                        <div class="conops-leg"><div class="conops-dot" style="background:#60dd60"></div>Stage 5: Landing &amp; Recovery</div>
+                    </div>
+                    <button class="conops-replay" onclick="conopsReplay()">&#9654; Replay</button>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -739,7 +666,7 @@
     <div class="container mx-auto max-w-6xl">
         <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Flight &amp; Testing</h2>
         <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128640; Launch Footage</h3><div class="yt-facade" onclick="loadYT(this,'BlnHOM-ItQg')"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
+        <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#129410; Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" onclick="loadYT(this,'zfHItv2cbR0')"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" onclick="loadYT(this,'Vj-me1MMqE0')"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
             <div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" onclick="loadYT(this,'-SENyK0R3Eo')"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
@@ -790,21 +717,16 @@
 </section>
 
 <div class="section-divider"></div>
+
 <section id="instagram" class="py-20 px-6">
     <div class="container mx-auto max-w-6xl text-center">
-        <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">
-            Instagram
-        </h2>
-        <p class="text-gray-400 mb-12">
-            Behind-the-scenes moments, testing days & launch highlights <br>
-            <a href="https://www.instagram.com/timcalpana.spamzzz?igsh=M242NzF3MTNzbGFv">@timcalpana.spamzzz</a>
-        </p>
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">Instagram</h2>
+        <p class="text-gray-400 mb-12">Behind-the-scenes moments, testing days &amp; launch highlights<br><a href="https://www.instagram.com/timcalpana.spamzzz?igsh=M242NzF3MTNzbGFv" target="_blank" class="text-cyan-400 hover:underline">@timcalpana.spamzzz</a></p>
         <div class="rounded-2xl overflow-hidden border border-cyan-400/20 shadow-lg p-4">
             <div data-key="Instagram Feed" class="ft" id="ft4begmek"></div>
         </div>
     </div>
 </section>
-
 <script src="https://wdg.fouita.com/widgets/0x3e57d1.js"></script>
 
 <div id="mediaModal" class="modal" onclick="handleModalClick(event)">
@@ -822,134 +744,61 @@
         <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">Technical Archive</h2>
         <p class="text-center text-gray-400 mb-14">Click any card to expand its documents</p>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <!-- Presentations -->
             <div class="arc-card" id="ac-presentations">
-                <div class="arc-header" onclick="toggleCard('ac-presentations')">
-                    <div class="icon">&#128203;</div>
-                    <h3 class="text-cyan-400">Presentations</h3>
-                    <div class="arc-sub">All Competition Rounds (4) <span class="arc-chevron">&#9660;</span></div>
-                </div>
-                <div class="arc-body"><div class="arc-body-inner">
-                    <div class="arc-divider"></div>
-                    <div class="arc-list">
-                        <a href="assets/documents/presentations/round-1-pdr.pdf" target="_blank" class="arc-item"><span class="ai">&#128203;</span><div class="at"><strong>Preliminary Design Review</strong><span>Round 1 &ndash; PDR</span></div></a>
-                        <a href="assets/documents/presentations/round-2-cdr.pdf" target="_blank" class="arc-item"><span class="ai">&#128203;</span><div class="at"><strong>Critical Design Review</strong><span>Round 2 &ndash; CDR</span></div></a>
-                        <a href="assets/documents/presentations/round-3-pa.pdf" target="_blank" class="arc-item"><span class="ai">&#128295;</span><div class="at"><strong>Physical Assessment</strong><span>Round 3 &ndash; PA</span></div></a>
-                        <a href="assets/documents/presentations/round-4-frr.pdf" target="_blank" class="arc-item"><span class="ai">&#9992;&#65039;</span><div class="at"><strong>Flight Readiness Review</strong><span>Round 4 &ndash; FRR</span></div></a>
-                    </div>
-                </div></div>
+                <div class="arc-header" onclick="toggleCard('ac-presentations')"><div class="icon">&#128203;</div><h3 class="text-cyan-400">Presentations</h3><div class="arc-sub">All Competition Rounds (4) <span class="arc-chevron">&#9660;</span></div></div>
+                <div class="arc-body"><div class="arc-body-inner"><div class="arc-divider"></div><div class="arc-list">
+                    <a href="assets/documents/presentations/round-1-pdr.pdf" target="_blank" class="arc-item"><span class="ai">&#128203;</span><div class="at"><strong>Preliminary Design Review</strong><span>Round 1 &ndash; PDR</span></div></a>
+                    <a href="assets/documents/presentations/round-2-cdr.pdf" target="_blank" class="arc-item"><span class="ai">&#128203;</span><div class="at"><strong>Critical Design Review</strong><span>Round 2 &ndash; CDR</span></div></a>
+                    <a href="assets/documents/presentations/round-3-pa.pdf" target="_blank" class="arc-item"><span class="ai">&#128295;</span><div class="at"><strong>Physical Assessment</strong><span>Round 3 &ndash; PA</span></div></a>
+                    <a href="assets/documents/presentations/round-4-frr.pdf" target="_blank" class="arc-item"><span class="ai">&#9992;&#65039;</span><div class="at"><strong>Flight Readiness Review</strong><span>Round 4 &ndash; FRR</span></div></a>
+                </div></div></div>
             </div>
-
-            <!-- Post Flight Review -->
             <div class="arc-card" id="ac-postflight">
-                <div class="arc-header" onclick="toggleCard('ac-postflight')">
-                    <div class="icon">&#128202;</div>
-                    <h3 class="text-purple-400">Post Flight Review</h3>
-                    <div class="arc-sub">Flight Data &amp; Analysis (4) <span class="arc-chevron">&#9660;</span></div>
-                </div>
-                <div class="arc-body"><div class="arc-body-inner">
-                    <div class="arc-divider"></div>
-                    <div class="arc-list">
-                        <a href="assets/documents/post-flight-review/flight-report-1.jpeg" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Post Flight Review Screen 1</strong><span>GCS Data Screenshot</span></div></a>
-                        <a href="assets/documents/post-flight-review/flight-report-2.jpeg" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Post Flight Review Screen 2</strong><span>GCS Data Screenshot</span></div></a>
-                        <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Flight Data CSV</strong><span>Raw telemetry data</span></div></a>
-                        <a href="assets/documents/post-flight-review/presentation.pdf" target="_blank" class="arc-item"><span class="ai">&#128218;</span><div class="at"><strong>Board of Governors Presentation</strong><span>Complete Documentation</span></div></a>
-                    </div>
-                </div></div>
+                <div class="arc-header" onclick="toggleCard('ac-postflight')"><div class="icon">&#128202;</div><h3 class="text-purple-400">Post Flight Review</h3><div class="arc-sub">Flight Data &amp; Analysis (4) <span class="arc-chevron">&#9660;</span></div></div>
+                <div class="arc-body"><div class="arc-body-inner"><div class="arc-divider"></div><div class="arc-list">
+                    <a href="assets/documents/post-flight-review/flight-report-1.jpeg" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Post Flight Review Screen 1</strong><span>GCS Data Screenshot</span></div></a>
+                    <a href="assets/documents/post-flight-review/flight-report-2.jpeg" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Post Flight Review Screen 2</strong><span>GCS Data Screenshot</span></div></a>
+                    <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" target="_blank" class="arc-item"><span class="ai">&#128202;</span><div class="at"><strong>Flight Data CSV</strong><span>Raw telemetry data</span></div></a>
+                    <a href="assets/documents/post-flight-review/presentation.pdf" target="_blank" class="arc-item"><span class="ai">&#128218;</span><div class="at"><strong>Board of Governors Presentation</strong><span>Complete Documentation</span></div></a>
+                </div></div></div>
             </div>
-
-            <!-- Competition Guidelines -->
             <div class="arc-card" id="ac-guidelines">
-                <div class="arc-header" onclick="toggleCard('ac-guidelines')">
-                    <div class="icon">&#128214;</div>
-                    <h3 class="text-cyan-400">Competition Guidelines</h3>
-                    <div class="arc-sub">Official Documentation (6) <span class="arc-chevron">&#9660;</span></div>
-                </div>
-                <div class="arc-body"><div class="arc-body-inner">
-                    <div class="arc-divider"></div>
-                    <div class="arc-list">
-                        <a href="assets/documents/docs/CANSAT-CDR-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128196;</span><div class="at"><strong>CDR Guidelines</strong><span>Critical Design Review rules</span></div></a>
-                        <a href="assets/documents/docs/CANSAT-finale-brochure.pdf" target="_blank" class="arc-item"><span class="ai">&#127942;</span><div class="at"><strong>Finale Brochure</strong><span>Grand Finale event guide</span></div></a>
-                        <a href="assets/documents/docs/CANSAT-registration-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128221;</span><div class="at"><strong>Registration Guidelines</strong><span>Team registration process</span></div></a>
-                        <a href="assets/documents/docs/CDR-Documentation-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128196;</span><div class="at"><strong>CDR Documentation Guide</strong><span>Documentation standards</span></div></a>
-                        <a href="assets/documents/docs/Mission-Requirements-EPS.pdf" target="_blank" class="arc-item"><span class="ai">&#9889;</span><div class="at"><strong>Mission Requirements &ndash; EPS</strong><span>Electrical power specs</span></div></a>
-                        <a href="assets/documents/docs/Mission-Requirements-PDR-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128208;</span><div class="at"><strong>Mission Requirements &ndash; PDR</strong><span>Design requirements</span></div></a>
-                    </div>
-                </div></div>
+                <div class="arc-header" onclick="toggleCard('ac-guidelines')"><div class="icon">&#128214;</div><h3 class="text-cyan-400">Competition Guidelines</h3><div class="arc-sub">Official Documentation (6) <span class="arc-chevron">&#9660;</span></div></div>
+                <div class="arc-body"><div class="arc-body-inner"><div class="arc-divider"></div><div class="arc-list">
+                    <a href="assets/documents/docs/CANSAT-CDR-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128196;</span><div class="at"><strong>CDR Guidelines</strong><span>Critical Design Review rules</span></div></a>
+                    <a href="assets/documents/docs/CANSAT-finale-brochure.pdf" target="_blank" class="arc-item"><span class="ai">&#127942;</span><div class="at"><strong>Finale Brochure</strong><span>Grand Finale event guide</span></div></a>
+                    <a href="assets/documents/docs/CANSAT-registration-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128221;</span><div class="at"><strong>Registration Guidelines</strong><span>Team registration process</span></div></a>
+                    <a href="assets/documents/docs/CDR-Documentation-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128196;</span><div class="at"><strong>CDR Documentation Guide</strong><span>Documentation standards</span></div></a>
+                    <a href="assets/documents/docs/Mission-Requirements-EPS.pdf" target="_blank" class="arc-item"><span class="ai">&#9889;</span><div class="at"><strong>Mission Requirements &ndash; EPS</strong><span>Electrical power specs</span></div></a>
+                    <a href="assets/documents/docs/Mission-Requirements-PDR-guidelines.pdf" target="_blank" class="arc-item"><span class="ai">&#128208;</span><div class="at"><strong>Mission Requirements &ndash; PDR</strong><span>Design requirements</span></div></a>
+                </div></div></div>
             </div>
-
-            <!-- Spreadsheets -->
             <div class="arc-card" id="ac-sheets">
-                <div class="arc-header" onclick="toggleCard('ac-sheets')">
-                    <div class="icon">&#128200;</div>
-                    <h3 class="text-purple-400">Spreadsheets</h3>
-                    <div class="arc-sub">Budget &amp; Calculations (2) <span class="arc-chevron">&#9660;</span></div>
-                </div>
-                <div class="arc-body"><div class="arc-body-inner">
-                    <div class="arc-divider"></div>
-                    <div class="arc-list">
-                        <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" class="arc-item"><span class="ai">&#128176;</span><div class="at"><strong>Expenses Sheet</strong><span>Budget &amp; financial tracking</span></div></a>
-                        <a href="https://docs.google.com/spreadsheets/d/1CuRNToGmSGoxp1io8L4cOpx0a6WaJnS-/edit?usp=sharing&ouid=107383534322879724249&rtpof=true&sd=true" target="_blank" class="arc-item"><span class="ai">&#127788;&#65039;</span><div class="at"><strong>Touchdown Calculations</strong><span>Wind vectors provided by ISRO</span></div></a>
-                    </div>
-                </div></div>
+                <div class="arc-header" onclick="toggleCard('ac-sheets')"><div class="icon">&#128200;</div><h3 class="text-purple-400">Spreadsheets</h3><div class="arc-sub">Budget &amp; Calculations (2) <span class="arc-chevron">&#9660;</span></div></div>
+                <div class="arc-body"><div class="arc-body-inner"><div class="arc-divider"></div><div class="arc-list">
+                    <a href="https://docs.google.com/spreadsheets/d/1UrNcDHcNbDJlOdZoYKsPUh3RoyIXFAcneJwhZDgFGjg/edit?usp=sharing" target="_blank" class="arc-item"><span class="ai">&#128176;</span><div class="at"><strong>Expenses Sheet</strong><span>Budget &amp; financial tracking</span></div></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1CuRNToGmSGoxp1io8L4cOpx0a6WaJnS-/edit?usp=sharing&ouid=107383534322879724249&rtpof=true&sd=true" target="_blank" class="arc-item"><span class="ai">&#127788;&#65039;</span><div class="at"><strong>Touchdown Calculations</strong><span>Wind vectors provided by ISRO</span></div></a>
+                </div></div></div>
             </div>
-
-            <!-- Display Materials -->
             <div class="arc-card" id="ac-display">
-                <div class="arc-header" onclick="toggleCard('ac-display')">
-                    <div class="icon">&#127912;</div>
-                    <h3 class="text-purple-400">Display Materials</h3>
-                    <div class="arc-sub">Print &amp; Exhibition (2) <span class="arc-chevron">&#9660;</span></div>
-                </div>
-                <div class="arc-body"><div class="arc-body-inner">
-                    <div class="arc-divider"></div>
-                    <div class="arc-list">
-                        <a href="assets/banner.pdf" target="_blank" class="arc-item"><span class="ai">&#128444;&#65039;</span><div class="at"><strong>Banner</strong><span>Competition display banner</span></div></a>
-                        <a href="assets/standee-final.pdf" target="_blank" class="arc-item"><span class="ai">&#129159;</span><div class="at"><strong>Standee</strong><span>Exhibition standee design</span></div></a>
-                    </div>
-                </div></div>
+                <div class="arc-header" onclick="toggleCard('ac-display')"><div class="icon">&#127912;</div><h3 class="text-purple-400">Display Materials</h3><div class="arc-sub">Print &amp; Exhibition (2) <span class="arc-chevron">&#9660;</span></div></div>
+                <div class="arc-body"><div class="arc-body-inner"><div class="arc-divider"></div><div class="arc-list">
+                    <a href="assets/banner.pdf" target="_blank" class="arc-item"><span class="ai">&#128444;&#65039;</span><div class="at"><strong>Banner</strong><span>Competition display banner</span></div></a>
+                    <a href="assets/standee-final.pdf" target="_blank" class="arc-item"><span class="ai">&#129159;</span><div class="at"><strong>Standee</strong><span>Exhibition standee design</span></div></a>
+                </div></div></div>
             </div>
+            <a href="assets/certificate.pdf" target="_blank" class="arc-card-link"><div class="icon">&#127942;</div><h3 class="text-purple-400">Certificate</h3><p>Competition Recognition</p></a>
+        </div>
 
-            <!-- Certificate -->
-            <a href="assets/certificate.pdf" target="_blank" class="arc-card-link">
-                <div class="icon">&#127942;</div>
-                <h3 class="text-purple-400">Certificate</h3>
-                <p>Competition Recognition</p>
-            </a>
-
-            <!-- More Archive Items (Hidden by Default) -->
-            <div id="archive-more" class="hidden-more">
-                
-                <!-- PCB Files -->
-                <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing"
-                target="_blank" rel="noopener"
-                class="arc-card-link">
-                    <div class="icon">&#9889;</div>
-                    <h3 class="text-cyan-400">PCB Files</h3>
-                    <p>Circuit Design & Schematics</p>
-                    <p class="badge">&#128279; Google Drive</p>
+        <div id="archive-more" class="hidden-more">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-2">
+                <a href="https://drive.google.com/drive/folders/1-6vWWqyMcqOk9krhG9UcuysliCXriQcr?usp=sharing" target="_blank" rel="noopener" class="arc-card-link">
+                    <div class="icon">&#9889;</div><h3 class="text-cyan-400">PCB Files</h3><p>Circuit Design &amp; Schematics</p><p class="badge">&#128279; Google Drive</p>
                 </a>
-
-                <!-- 3D Models Anchor
-                <a href="#3d-models" class="arc-card-link">
-                    <div class="icon">&#128311;</div>
-                    <h3 class="text-cyan-400">3D CAD Models</h3>
-                    <p>Interactive 3D viewer below</p>
-                    <p class="badge">&darr; Scroll to models</p>
-                </a> -->
-
             </div>
-
-            <!-- More Button -->
-            <div class="text-center mt-10">
-                <button id="archive-more-btn"
-                    onclick="toggleArchiveMore()"
-                    class="glow-btn px-6 py-3 rounded-full text-white font-semibold text-sm">
-                    More!
-                </button>
-            </div>
-
+        </div>
+        <div class="text-center mt-10">
+            <button id="archive-more-btn" onclick="toggleArchiveMore()" class="glow-btn px-6 py-3 rounded-full text-white font-semibold text-sm">More!</button>
         </div>
     </div>
 </section>
@@ -967,21 +816,13 @@
             <span class="event-badge" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);color:#fbbf24">&#129410; Main Deploy (500 m)</span>
             <span class="event-badge" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ade80">&#128763; Touchdown</span>
         </div>
-        <div class="chart-container mb-6">
-            <canvas id="telemetryChart" style="max-height:380px;"></canvas>
-        </div>
+        <div class="chart-container mb-6"><canvas id="telemetryChart" style="max-height:380px;"></canvas></div>
         <div class="flex flex-col sm:flex-row items-center gap-4 mb-4">
-            <button id="replayBtn" onclick="toggleReplay()" class="glow-btn px-6 py-2.5 rounded-full text-white font-semibold text-sm flex items-center gap-2">
-                <span id="replayIcon">&#9654;</span> Replay Flight
-            </button>
-            <div class="flex-1 w-full">
-                <input type="range" id="replaySlider" class="replay-slider" min="0" max="100" value="100" oninput="sliderScrub(this.value)">
-            </div>
+            <button id="replayBtn" onclick="toggleReplay()" class="glow-btn px-6 py-2.5 rounded-full text-white font-semibold text-sm flex items-center gap-2"><span id="replayIcon">&#9654;</span> Replay Flight</button>
+            <div class="flex-1 w-full"><input type="range" id="replaySlider" class="replay-slider" min="0" max="100" value="100" oninput="sliderScrub(this.value)"></div>
             <span id="replayTime" class="text-sm text-gray-400 whitespace-nowrap">T+180s</span>
         </div>
-        <p class="text-center text-gray-500 text-sm">
-            &#128194; Source: <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" class="text-cyan-400 hover:underline">2022ASI049_flight.csv</a> &nbsp;&bull;&nbsp; Altitude (m) and velocity (m/s) vs time
-        </p>
+        <p class="text-center text-gray-500 text-sm">&#128194; Source: <a href="assets/documents/post-flight-review/2022ASI049_flight.csv" class="text-cyan-400 hover:underline">2022ASI049_flight.csv</a> &nbsp;&bull;&nbsp; Altitude (m) and velocity (m/s) vs time</p>
     </div>
 </section>
 
@@ -993,35 +834,32 @@
         <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 gradient-text">3D CAD Models</h2>
         <p class="text-center text-gray-300 mb-12">&#128311; Rotate &nbsp;&bull;&nbsp; Zoom &nbsp;&bull;&nbsp; Pan</p>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-01.glb" alt="Assembled CanSat" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Assembled CanSat</h3><p class="text-center text-sm text-gray-400">Primary structure assembly</p></div>
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-02.glb" alt="Gyro Assembly" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Gyro Assembly</h3><p class="text-center text-sm text-gray-400">3-DoF Active Control Gyro Mechanism</p></div>
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/pcb.glb" alt="Our PCB" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Our PCB</h3><p class="text-center text-sm text-gray-400">Printed circuit board for electronics</p></div>
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-08.glb" alt="Lower Body" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Lower Body</h3><p class="text-center text-sm text-gray-400">Lower body structure</p></div>
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-09.glb" alt="Parachute Lid" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Parachute Lid</h3><p class="text-center text-sm text-gray-400">Deployment mechanism cover</p></div>
-            <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-12.glb" alt="Parachute Compartment" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Compartment</h3><p class="text-center text-sm text-gray-400">Compartment for housing the parachute</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-01.glb" alt="Assembled CanSat" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Assembled CanSat</h3><p class="text-center text-sm text-gray-400">Primary structure assembly</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-02.glb" alt="Gyro Assembly" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Gyro Assembly</h3><p class="text-center text-sm text-gray-400">3-DoF Active Control Gyro Mechanism</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/pcb.glb" alt="Our PCB" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Our PCB</h3><p class="text-center text-sm text-gray-400">Printed circuit board for electronics</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-08.glb" alt="Lower Body" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Lower Body</h3><p class="text-center text-sm text-gray-400">Lower body structure</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-09.glb" alt="Parachute Lid" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Parachute Lid</h3><p class="text-center text-sm text-gray-400">Deployment mechanism cover</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-12.glb" alt="Parachute Compartment" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Parachute Compartment</h3><p class="text-center text-sm text-gray-400">Compartment for housing the parachute</p></div>
         </div>
         <p class="text-center text-gray-400 mt-12">&#128161; Click and drag to rotate &nbsp;&bull;&nbsp; Scroll to zoom &nbsp;&bull;&nbsp; Right-click drag to pan</p>
     </div>
 
-    <div id="models-more" class="hidden-more grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-    <!-- extra <div class="mission-card"> model blocks -->
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-03.glb" alt="Gyro Pitch Gimbal" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Pitch Gimbal</h3><p class="text-center text-sm text-gray-400">Pitch Servo &amp; BLDC Motor Mounting</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-04.glb" alt="Gyro Roll Gimbal" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Roll Gimbal</h3><p class="text-center text-sm text-gray-400">Roll Servo Mounting Structure</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-05.glb" alt="Hinge Part 1" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Part 1</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-06.glb" alt="Hinge Part 2" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Hinge Part 2</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-07.glb" alt="Hinge Shaft" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Shaft</h3><p class="text-center text-sm text-gray-400">Hinge shaft structure</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-10.glb" alt="Electronics Bay" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Electronics Bay</h3><p class="text-center text-sm text-gray-400">Bay for housing electronics</p></div>
-        <div class="mission-card rounded-xl p-4"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-11.glb" alt="Gyro Mounting Bracket" auto-rotate camera-controls shadow-intensity="1" loading="lazy"></model-viewer><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Mounting Bracket</h3><p class="text-center text-sm text-gray-400">Bracket for mounting the gyro assembly</p></div>    
-    </div>
-
-        <div class="text-center mt-10">
-            <button id="models-more-btn"
-                onclick="toggleModelsMore()"
-                class="glow-btn px-6 py-3 rounded-full text-white font-semibold text-sm">
-                More!
-            </button>
+    <div id="models-more" class="hidden-more">
+        <div class="container mx-auto max-w-6xl mt-4">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-03.glb" alt="Gyro Pitch Gimbal" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Pitch Gimbal</h3><p class="text-center text-sm text-gray-400">Pitch Servo &amp; BLDC Motor Mounting</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-04.glb" alt="Gyro Roll Gimbal" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Roll Gimbal</h3><p class="text-center text-sm text-gray-400">Roll Servo Mounting Structure</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-05.glb" alt="Hinge Part 1" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Part 1</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-06.glb" alt="Hinge Part 2" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Hinge Part 2</h3><p class="text-center text-sm text-gray-400">Hinge mounting structure</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-07.glb" alt="Hinge Shaft" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Hinge Shaft</h3><p class="text-center text-sm text-gray-400">Hinge shaft structure</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-10.glb" alt="Electronics Bay" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-purple-400">Electronics Bay</h3><p class="text-center text-sm text-gray-400">Bay for housing electronics</p></div>
+            <div class="mission-card rounded-xl p-4"><div class="model-viewer-wrap"><model-viewer src="https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/models/part-11.glb" alt="Gyro Mounting Bracket" auto-rotate camera-controls shadow-intensity="2" exposure="0.35" environment-image="neutral" loading="lazy"></model-viewer></div><h3 class="text-center mt-4 text-lg font-semibold text-cyan-400">Gyro Mounting Bracket</h3><p class="text-center text-sm text-gray-400">Bracket for mounting the gyro assembly</p></div>
         </div>
-
+        </div>
+    </div>
+    <div class="text-center mt-10">
+        <button id="models-more-btn" onclick="toggleModelsMore()" class="glow-btn px-6 py-3 rounded-full text-white font-semibold text-sm">More!</button>
+    </div>
 </section>
 
 <div class="section-divider"></div>
@@ -1052,7 +890,6 @@
 <script>
 // ═════════════════════════════════════════════════════════ LAUNCH PRELOADER ══
 (function() {
-
     const preloader = document.getElementById('preloader');
     const rocket    = document.getElementById('pl-rocket');
     const flame     = document.getElementById('pl-flame');
@@ -1071,90 +908,93 @@
     for (let i = 0; i < 120; i++) {
         const s = document.createElement('div');
         s.className = 'pl-star';
-
         const size = Math.random() * 2.2 + 0.4;
         const opacity = Math.random() * 0.7 + 0.15;
-
         s.style.cssText = `
-            width:${size}px;
-            height:${size}px;
-            top:${Math.random()*88}%;
-            left:${Math.random()*100}%;
+            width:${size}px; height:${size}px;
+            top:${Math.random()*88}%; left:${Math.random()*100}%;
             --sd:${(Math.random()*3+1.5).toFixed(1)}s;
             --delay:${(Math.random()*3).toFixed(1)}s;
             --sop:${opacity.toFixed(2)};
         `;
-
         starsEl.appendChild(s);
     }
 
-    function setStatus(html) { statusEl.innerHTML = html; }
-    function setBar(pct) { barEl.style.width = pct + '%'; }
-
-    const sequence = [
+    // Animation timeline
+    const seq = [
         { t:0,    fn: () => { setStatus('T-00:05  SYSTEMS CHECK'); setBar(0); } },
         { t:400,  fn: () => { setStatus('T-00:04  FUEL PRESSURED'); setBar(15); } },
-        { t:800,  fn: () => { setStatus('T-00:03  ENGINE PRIME'); setBar(30); } },
-        { t:1200, fn: () => { setStatus('T-00:02  ARM CLEAR'); setBar(45); } },
+        { t:800,  fn: () => { setStatus('T-00:03  ENGINE PRIME');   setBar(30); } },
+        { t:1200, fn: () => { setStatus('T-00:02  ARM CLEAR');      setBar(45); } },
         { t:1600, fn: () => {
-            setStatus('T-00:01  IGNITION 🔥');
+            setStatus('T-00:01  IGNITION &#128293;');
             setBar(60);
-
+            // Rumble
             rocket.style.animation = 'pl-rumble 0.09s linear infinite';
+            // Flame ignition
             flame.style.opacity = '1';
+            flame.style.transition = 'opacity 0.2s';
+            // Pad glow
             padGlow.style.opacity = '1';
+            padGlow.style.transition = 'opacity 0.3s';
+            padGlow.style.animation = 'none';
         }},
         { t:2200, fn: () => {
-            setStatus('LIFTOFF 🌤');
+            setStatus('LIFTOFF &#127777;&#65039;');
             setBar(75);
-
+            // Retract gantry arms
             armL.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
             armR.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
             armL.style.transform = 'rotate(-72deg)';
             armR.style.transform = 'rotate(72deg)';
             armL.style.opacity = '0';
             armR.style.opacity = '0';
-
+            // Liftoff animation
             rocket.style.animation = 'pl-liftoff 2.1s cubic-bezier(0.22,0,0.05,1) forwards';
-
+            // Smoke trail grows
             trail.style.opacity = '1';
+            trail.style.transition = 'none';
             trail.style.animation = 'pl-trail-anim 2.1s cubic-bezier(0.1,0,0.3,1) forwards';
-
             padGlow.style.opacity = '0';
         }},
         { t:2800, fn: () => {
-            setStatus('ASCENT 🚀 MAX-Q PASSING');
+            setStatus('ASCENT &#128640; MAX-Q PASSING');
             setBar(85);
-
-            clouds.forEach(c => {
-                c.style.transition = 'transform 1s ease, opacity 0.7s ease';
-                c.style.transform = c.classList.contains('l')
-                    ? 'translateX(-130%)'
-                    : 'translateX(130%)';
+            // Clouds part
+            clouds.forEach((c, i) => {
+                const delay = i % 2 === 0 ? '0ms' : `${Math.floor(i/2)*150}ms`;
+                c.style.transition = `transform ${0.9 + (i%2)*0.1}s cubic-bezier(0.4,0,0.2,1) ${delay}, opacity 0.7s ease ${delay}`;
+                c.style.transform = c.classList.contains('l') ? 'translateX(-130%)' : 'translateX(130%)';
                 c.style.opacity = '0';
             });
         }},
         { t:3800, fn: () => {
-            setStatus('MECO ⭐ ORBIT INSERTION');
+            setStatus('MECO &#11088; ORBIT INSERTION');
             setBar(95);
-
+            // Show orbital ring + satellite
+            orbit.style.transition = 'opacity 0.6s ease';
             orbit.style.opacity = '0.6';
+            satEl.style.transition = 'opacity 0.6s ease';
             satEl.style.opacity = '1';
             satEl.style.animation = 'pl-sat-orbit 2.5s linear infinite';
         }},
         { t:4400, fn: () => {
-            setStatus('MISSION SUCCESS ⭐');
+            setStatus('MISSION SUCCESS &#9733;');
             setBar(100);
         }},
         { t:4900, fn: () => {
+            // Dismiss preloader
             preloader.classList.add('pl-done');
             setTimeout(() => { preloader.style.display = 'none'; }, 900);
         }},
     ];
 
-    sequence.forEach(({ t, fn }) => setTimeout(fn, t));
+    seq.forEach(({ t, fn }) => setTimeout(fn, t));
 
+    function setStatus(html) { statusEl.innerHTML = html; }
+    function setBar(pct) { barEl.style.width = pct + '%'; }
 })();
+
 
 // Sticky nav
 const stickyNav = document.getElementById('sticky-nav');
@@ -1198,6 +1038,19 @@ function toggleCard(id) {
     const wasOpen = card.classList.contains('open');
     document.querySelectorAll('.arc-card').forEach(c => c.classList.remove('open'));
     if (!wasOpen) card.classList.add('open');
+}
+
+function toggleArchiveMore() {
+    const box = document.getElementById('archive-more');
+    const btn = document.getElementById('archive-more-btn');
+    box.classList.toggle('open');
+    btn.textContent = box.classList.contains('open') ? 'Show Less' : 'More!';
+}
+function toggleModelsMore() {
+    const box = document.getElementById('models-more');
+    const btn = document.getElementById('models-more-btn');
+    box.classList.toggle('open');
+    btn.textContent = box.classList.contains('open') ? 'Show Less' : 'More!';
 }
 
 // Realisation Carousel
@@ -1256,13 +1109,10 @@ function toggleCard(id) {
     const ctx = document.getElementById('telemetryChart').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'line',
-        data: {
-            labels: timeLabels,
-            datasets: [
-                { label: 'Altitude (m)', data: altData, borderColor:'#00D4FF', backgroundColor:'rgba(0,212,255,0.06)', borderWidth:2.5, pointRadius:0, tension:0.35, yAxisID:'yAlt', fill:true },
-                { label: 'Velocity (m/s)', data: velData, borderColor:'#a78bfa', backgroundColor:'rgba(124,58,237,0.06)', borderWidth:2, pointRadius:0, tension:0.35, yAxisID:'yVel', fill:true, borderDash:[5,3] }
-            ]
-        },
+        data: { labels: timeLabels, datasets: [
+            { label: 'Altitude (m)', data: altData, borderColor:'#00D4FF', backgroundColor:'rgba(0,212,255,0.06)', borderWidth:2.5, pointRadius:0, tension:0.35, yAxisID:'yAlt', fill:true },
+            { label: 'Velocity (m/s)', data: velData, borderColor:'#a78bfa', backgroundColor:'rgba(124,58,237,0.06)', borderWidth:2, pointRadius:0, tension:0.35, yAxisID:'yVel', fill:true, borderDash:[5,3] }
+        ]},
         options: {
             responsive:true, maintainAspectRatio:true, animation:{duration:0},
             interaction:{mode:'index',intersect:false},
@@ -1302,7 +1152,6 @@ function toggleCard(id) {
             }
         }]
     });
-
     let replayTimer=null, replayPct=100;
     const slider=document.getElementById('replaySlider');
     const timeEl=document.getElementById('replayTime');
@@ -1324,25 +1173,6 @@ function toggleCard(id) {
         }, 30);
     };
 })();
-
-    // Archive & Models More Toggle
-    function toggleArchiveMore() {
-        const box = document.getElementById('archive-more');
-        const btn = document.getElementById('archive-more-btn');
-
-        box.classList.toggle('open');
-
-        btn.textContent = box.classList.contains('open') ? "Show Less" : "More!";
-    }
-
-    function toggleModelsMore() {
-        const box = document.getElementById('models-more');
-        const btn = document.getElementById('models-more-btn');
-
-        box.classList.toggle('open');
-
-        btn.textContent = box.classList.contains('open') ? "Show Less" : "More!";
-    }
 
 // Gallery
 const ALBUM_META = [
@@ -1369,6 +1199,246 @@ function navigateModal(dir){if(!modalItems.length)return;modalIndex=(modalIndex+
 function closeModal(){document.getElementById('mediaModal').classList.remove('active');const vid=document.getElementById('modalVideo');vid.pause();vid.src='';}
 function handleModalClick(e){if(e.target===document.getElementById('mediaModal'))closeModal();}
 document.addEventListener('keydown',e=>{const modal=document.getElementById('mediaModal');if(modal.classList.contains('active')){if(e.key==='Escape')closeModal();if(e.key==='ArrowLeft')navigateModal(-1);if(e.key==='ArrowRight')navigateModal(1);return;}if(e.key==='ArrowLeft')rcMove(-1);if(e.key==='ArrowRight')rcMove(1);});
+
+// ══════════════════════ ConOps Canvas Animation ══════════════════════
+(function() {
+    const CV = document.getElementById('conops-canvas');
+    if (!CV) return;
+    const cx = CV.getContext('2d');
+    let W, H, raf = null, t0 = null;
+    const DUR = 7200;
+
+    function resize() {
+        const wrap = CV.parentElement;
+        W = wrap.offsetWidth;
+        H = Math.max(Math.round(W * 0.375), 220);
+        CV.width = W; CV.height = H;
+    }
+    resize();
+    let lastP = 0;
+    window.addEventListener('resize', () => { resize(); drawAt(lastP); });
+
+    function eio(t) { return t<.5?2*t*t:1-2*(1-t)*(1-t); }
+    function eo(t)  { return 1-(1-t)*(1-t); }
+    function clamp(v,a,b) { return Math.max(a,Math.min(b,v)); }
+    function rng(t,a,b)   { return clamp((t-a)/(b-a),0,1); }
+
+    function bg() {
+        const sk = cx.createLinearGradient(0,0,0,H);
+        sk.addColorStop(0,'#020610'); sk.addColorStop(.08,'#041020');
+        sk.addColorStop(.22,'#071d3a'); sk.addColorStop(.45,'#0d3a6a');
+        sk.addColorStop(.62,'#1a6aaa'); sk.addColorStop(.70,'#3aacde');
+        sk.addColorStop(.73,'#68c8ea');
+        cx.fillStyle = sk; cx.fillRect(0,0,W,H*0.73);
+        const gn = cx.createLinearGradient(0,H*.73,0,H);
+        gn.addColorStop(0,'#55bb44'); gn.addColorStop(.4,'#3a9030'); gn.addColorStop(1,'#1c5018');
+        cx.fillStyle = gn; cx.fillRect(0,H*.73,W,H*.27);
+        cx.fillStyle='rgba(100,200,240,.1)'; cx.fillRect(0,H*.71,W,H*.04);
+    }
+
+    function grid() {
+        const GND=H*.73;
+        [{a:900,y:GND-GND*.82},{a:800,y:GND-GND*.55},{a:500,y:GND-GND*.32}].forEach(({a,y})=>{
+            cx.setLineDash([4,5]); cx.strokeStyle='rgba(255,255,255,.14)'; cx.lineWidth=1;
+            cx.beginPath(); cx.moveTo(W*.055,y); cx.lineTo(W*.35,y); cx.stroke();
+            cx.setLineDash([]);
+            const fs=Math.max(8,W*.013);
+            cx.font=`500 ${fs}px 'Space Grotesk',sans-serif`;
+            cx.fillStyle='rgba(255,255,255,.5)'; cx.textAlign='right'; cx.textBaseline='middle';
+            cx.fillText(a+'m',W*.052,y);
+        });
+    }
+
+    function rkt(x,y,sc,ang,alpha,fl) {
+        cx.save(); cx.globalAlpha=clamp(alpha,0,1);
+        cx.translate(x,y); cx.rotate(ang); cx.scale(sc,sc);
+        const bw=W*.016, bh=W*.05;
+        const bg2=cx.createLinearGradient(-bw,0,bw,0);
+        bg2.addColorStop(0,'#aabcd8'); bg2.addColorStop(.5,'#eef2ff'); bg2.addColorStop(1,'#7090b8');
+        cx.fillStyle=bg2; cx.beginPath(); cx.roundRect(-bw,-bh/2,bw*2,bh,3); cx.fill();
+        cx.fillStyle='#d8e8f8'; cx.beginPath(); cx.moveTo(-bw,-bh/2); cx.quadraticCurveTo(0,-bh*.9,bw,-bh/2); cx.fill();
+        cx.fillStyle='rgba(10,20,50,.5)'; cx.fillRect(-bw,-bh*.05,bw*2,bh*.11);
+        cx.fillStyle='#1a2a48';
+        cx.beginPath(); cx.moveTo(-bw,bh*.28); cx.lineTo(-bw*2.5,bh*.5); cx.lineTo(-bw,bh*.48); cx.closePath(); cx.fill();
+        cx.beginPath(); cx.moveTo(bw,bh*.28); cx.lineTo(bw*2.5,bh*.5); cx.lineTo(bw,bh*.48); cx.closePath(); cx.fill();
+        cx.fillStyle='#0a2040'; cx.beginPath(); cx.arc(0,-bh*.2,bw*.42,0,Math.PI*2); cx.fill();
+        cx.fillStyle='rgba(0,170,255,.28)'; cx.beginPath(); cx.arc(-bw*.12,-bh*.22,bw*.16,0,Math.PI*2); cx.fill();
+        if(fl>0){
+            const fg=cx.createRadialGradient(0,bh*.55,0,0,bh*.55,bw*1.4);
+            fg.addColorStop(0,'rgba(255,240,100,.9)'); fg.addColorStop(.35,'rgba(255,110,20,.7)'); fg.addColorStop(1,'rgba(255,50,0,0)');
+            cx.globalAlpha=clamp(alpha*fl,0,1); cx.fillStyle=fg;
+            cx.beginPath(); cx.ellipse(0,bh*.6,bw*.55,bw*1.2,0,0,Math.PI*2); cx.fill();
+        }
+        cx.restore();
+    }
+
+    function csat(x,y,sc,alpha) {
+        cx.save(); cx.globalAlpha=clamp(alpha,0,1);
+        cx.translate(x,y); cx.scale(sc,sc);
+        const r=W*.011, h=W*.034;
+        const cg=cx.createLinearGradient(-r,0,r,0);
+        cg.addColorStop(0,'#c05800'); cg.addColorStop(.5,'#ff8c1a'); cg.addColorStop(1,'#c05800');
+        cx.fillStyle=cg; cx.beginPath(); cx.roundRect(-r,-h/2,r*2,h,2); cx.fill();
+        cx.fillStyle='#ffc860'; cx.beginPath(); cx.ellipse(0,-h/2,r,r*.4,0,Math.PI,0); cx.fill();
+        cx.restore();
+    }
+
+    function chute(x,y,sc,alpha) {
+        cx.save(); cx.globalAlpha=clamp(alpha,0,1);
+        cx.translate(x,y); cx.scale(sc,sc);
+        const r=W*.026;
+        for(let i=0;i<6;i++){
+            const a1=Math.PI+(i/6)*Math.PI, a2=Math.PI+((i+1)/6)*Math.PI;
+            cx.beginPath(); cx.moveTo(0,0); cx.arc(0,0,r,a1,a2); cx.closePath();
+            cx.fillStyle=i%2===0?'#e03030':'#f8f8f8'; cx.fill();
+            cx.strokeStyle='rgba(0,0,0,.2)'; cx.lineWidth=.5; cx.stroke();
+        }
+        cx.strokeStyle='rgba(200,200,200,.6)'; cx.lineWidth=.7;
+        for(let i=0;i<4;i++){
+            const a=Math.PI+(i/3)*Math.PI;
+            cx.beginPath(); cx.moveTo(Math.cos(a)*r*.75,Math.sin(a)*r*.75); cx.lineTo(0,r*.25); cx.stroke();
+        }
+        cx.restore();
+    }
+
+    function ant(x,y,sc,alpha) {
+        cx.save(); cx.globalAlpha=clamp(alpha,0,1);
+        cx.translate(x,y); cx.scale(sc,sc);
+        const h=W*.038;
+        cx.strokeStyle='#334'; cx.lineWidth=2; cx.beginPath(); cx.moveTo(0,0); cx.lineTo(0,-h); cx.stroke();
+        cx.fillStyle='#445'; cx.beginPath(); cx.arc(0,-h,3,0,Math.PI*2); cx.fill();
+        [.35,.65,.95].forEach(r=>{
+            cx.strokeStyle=`rgba(0,212,255,${.6-r*.35})`; cx.lineWidth=1.2;
+            cx.beginPath(); cx.arc(0,-h,W*.016*r,-Math.PI*.65,-Math.PI*.35); cx.stroke();
+            cx.beginPath(); cx.arc(0,-h,W*.016*r,Math.PI*1.35,Math.PI*1.65); cx.stroke();
+        });
+        cx.restore();
+    }
+
+    function rnrs(x,y,sc,alpha) {
+        cx.save(); cx.globalAlpha=clamp(alpha,0,1);
+        cx.translate(x,y); cx.scale(sc,sc);
+        [-.026,0].forEach(dx=>{
+            const ox=dx*W;
+            cx.fillStyle=cx.strokeStyle='rgba(20,20,20,.85)'; cx.lineWidth=1.6;
+            cx.beginPath(); cx.arc(ox,-W*.036,W*.007,0,Math.PI*2); cx.fill();
+            cx.beginPath(); cx.moveTo(ox,-W*.028); cx.lineTo(ox+W*.003,W*.002); cx.stroke();
+            cx.beginPath(); cx.moveTo(ox+W*.003,W*.002); cx.lineTo(ox-W*.009,W*.018); cx.stroke();
+            cx.beginPath(); cx.moveTo(ox+W*.003,W*.002); cx.lineTo(ox+W*.013,W*.012); cx.stroke();
+            cx.beginPath(); cx.moveTo(ox,-W*.016); cx.lineTo(ox-W*.013,-W*.005); cx.stroke();
+            cx.beginPath(); cx.moveTo(ox,-W*.016); cx.lineTo(ox+W*.013,W*.004); cx.stroke();
+        });
+        cx.restore();
+    }
+
+    function lbl(txt,x,y,a) {
+        cx.save(); cx.globalAlpha=clamp(a*1.4,0,1);
+        const fs=Math.max(8,W*.0125);
+        cx.font=`700 ${fs}px 'Space Grotesk',sans-serif`;
+        const m=cx.measureText(txt), p=5;
+        cx.fillStyle='rgba(255,255,255,.92)';
+        cx.beginPath(); cx.roundRect(x-m.width/2-p,y-fs/2-p,m.width+p*2,fs+p*2,4); cx.fill();
+        cx.fillStyle='#0a1628'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(txt,x,y);
+        cx.restore();
+    }
+    function sub(txt,x,y,a) {
+        cx.save(); cx.globalAlpha=clamp(a*1.2,0,1);
+        cx.font=`${Math.max(7,W*.011)}px 'Space Grotesk',sans-serif`;
+        cx.fillStyle='rgba(255,255,255,.82)'; cx.textAlign='center'; cx.textBaseline='top';
+        cx.fillText(txt,x,y);
+        cx.restore();
+    }
+
+    function dots(p) {
+        const ST=[{f:.04,c:'#ddeeff'},{f:.22,c:'#ffd060'},{f:.42,c:'#ff8030'},{f:.60,c:'#b090ff'},{f:.82,c:'#60dd60'}];
+        const r=Math.max(5,W*.009), y=H*.04, x1=W*.07, x2=W*.93;
+        cx.save(); cx.strokeStyle='rgba(255,255,255,.18)'; cx.lineWidth=1.5;
+        cx.setLineDash([3,4]); cx.beginPath(); cx.moveTo(x1,y); cx.lineTo(x2,y); cx.stroke(); cx.setLineDash([]);
+        ST.forEach((s,i)=>{
+            const sx=x1+(x2-x1)*s.f, on=p>=s.f-.04;
+            cx.beginPath(); cx.arc(sx,y,r,0,Math.PI*2);
+            cx.fillStyle=on?s.c:'rgba(255,255,255,.12)'; cx.fill();
+            cx.strokeStyle='rgba(0,0,0,.25)'; cx.lineWidth=1; cx.stroke();
+            cx.font=`700 ${r*1.3}px 'Space Grotesk',sans-serif`;
+            cx.fillStyle=on?'#0a1628':'rgba(255,255,255,.3)';
+            cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(i+1,sx,y);
+        });
+        cx.restore();
+    }
+
+    function drawAt(p) {
+        lastP=p;
+        cx.clearRect(0,0,W,H); bg(); grid(); dots(p);
+        const GND=H*.73;
+
+        // S1: pre-launch
+        const s1a=eo(rng(p,0,.06));
+        rkt(W*.12,GND-H*.09,1,0,s1a,0);
+        if(p<.26){lbl('Stage 1',W*.22,GND-H*.04,s1a); sub('Pre-launch',W*.22,GND+H*.01,s1a);}
+
+        // S2: ascent
+        if(p>=.07){
+            const t2=eio(rng(p,.07,.40));
+            rkt(W*(.12+t2*.22), GND-H*.09-t2*GND*.95, 1, -t2*.38, eo(rng(p,.07,.12)), 1-rng(p,.34,.40));
+            const la=eo(rng(p,.15,.22))*(1-rng(p,.32,.40));
+            if(la>0){lbl('Stage 2',W*.28,GND-H*.07,la); sub('Launch',W*.28,GND-H*.02,la);}
+        }
+
+        // GCS
+        const ga=eo(rng(p,.22,.32));
+        ant(W*.50,GND,1,ga);
+        if(p>.22&&p<.72) sub('Ground Control',W*.50,GND+H*.03,ga*(1-rng(p,.65,.72)));
+
+        // S3: drogue
+        if(p>=.36){
+            const t3=eio(rng(p,.36,.64));
+            const s3a=eo(rng(p,.36,.41));
+            chute(W*(.50+t3*.04), H*.10+t3*H*.40-H*.08, .68, s3a);
+            csat(W*(.50+t3*.04), H*.10+t3*H*.40, 1, s3a);
+            const la=eo(rng(p,.36,.42))*(1-rng(p,.58,.64));
+            if(la>0){lbl('Stage 3',W*.63,H*.09,la); sub('1st Chute Deployed',W*.63,H*.135,la);}
+        }
+
+        // S4: main chute
+        if(p>=.56){
+            const t4=eio(rng(p,.56,.84));
+            const s4a=eo(rng(p,.56,.61));
+            const cx4=W*(.74-t4*.02), cy4=H*.46+t4*H*.22;
+            chute(cx4, cy4-H*.10, .82, s4a);
+            csat(cx4, cy4, 1, s4a);
+            const la=eo(rng(p,.56,.62))*(1-rng(p,.78,.84));
+            if(la>0){lbl('Stage 4',W*.85,H*.40,la); sub('2nd Chute at 500 m',W*.85,H*.445,la);}
+        }
+
+        // S5: landing
+        if(p>=.80){
+            const s5a=eo(rng(p,.80,1.0));
+            cx.save(); cx.globalAlpha=s5a; cx.translate(W*.87,GND-H*.025); cx.rotate(.42);
+            csat(0,0,.82,1); chute(-W*.02,-H*.05,.4,.75); cx.restore();
+            rnrs(W*.72,GND-H*.015,1,s5a);
+            lbl('Stage 5',W*.87,GND-H*.12,s5a); sub('Landing & Recovery',W*.87,GND-H*.07,s5a);
+            sub('Recovery Team',W*.72,GND+H*.035,s5a);
+        }
+    }
+
+    function frame(ts) {
+        if(!t0) t0=ts;
+        const p=Math.min(1,(ts-t0)/DUR);
+        drawAt(p);
+        if(p<1) raf=requestAnimationFrame(frame); else raf=null;
+    }
+
+    window.conopsReplay=function(){
+        if(raf) cancelAnimationFrame(raf);
+        t0=null; raf=requestAnimationFrame(frame);
+    };
+
+    const obs=new IntersectionObserver(entries=>{
+        if(entries[0].isIntersecting){conopsReplay(); obs.disconnect();}
+    },{threshold:.2});
+    obs.observe(CV);
+    drawAt(0);
+})();
 
 </script>
 </body>
