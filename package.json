@@ -1,0 +1,24 @@
+{
+  "name": "mission-archive-microsite",
+  "version": "1.0.0",
+  "description": "* Re-run the bash script to make sure assets/images/gallery/index.json is up to date, since that's what powers your gallery. * Open with VS Code live server to ensure rendering of glb files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuskanSinhaPi/mission-archive-microsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MuskanSinhaPi/mission-archive-microsite/issues"
+  },
+  "homepage": "https://github.com/MuskanSinhaPi/mission-archive-microsite#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
