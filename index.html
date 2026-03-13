@@ -409,6 +409,10 @@ white-space: nowrap;
 transition: opacity 0.4s ease;
 }
 
+.yt-facade .yt-play-btn { z-index: 3; }
+.yt-facade > img { z-index: 2; transition: opacity 0.4s ease; }
+.yt-facade:hover > img { opacity: 0; }
+
 </style>
 </head>
 <body>
@@ -1683,7 +1687,84 @@ n.querySelectorAll && n.querySelectorAll('model-viewer').forEach(initMV);
 });
 mo.observe(document.body, { childList: true, subtree: true });
 })();
-
 </script>
+
+<script>
+// ── YouTube Hover/Scroll Preview ─────────────────────────────────
+(function() {
+  // Load YouTube IFrame API
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  const previews = new Map(); // facade el → { player, id, active }
+
+  window.onYouTubeIframeAPIReady = function() {
+    document.querySelectorAll('.yt-facade').forEach(facade => {
+      // Extract video ID from onclick attribute
+      const match = facade.getAttribute('onclick').match(/'([a-zA-Z0-9_-]{11})'/);
+      if (!match) return;
+      const videoId = match[1];
+
+      // Create hidden iframe container inside facade
+      const container = document.createElement('div');
+      container.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 0.4s ease;z-index:1;';
+      facade.appendChild(container);
+
+      const player = new YT.Player(container, {
+        videoId,
+        playerVars: {
+          autoplay: 0,
+          mute: 1,
+          controls: 0,
+          disablekb: 1,
+          loop: 1,
+          playlist: videoId,
+          rel: 0,
+          showinfo: 0,
+          modestbranding: 1,
+          start: 5, // skip first 5s which are often blank
+        },
+        events: {
+          onReady: e => e.target.setVolume(0),
+        }
+      });
+
+      previews.set(facade, { player, container, id: videoId, active: false });
+    });
+  };
+
+  // IntersectionObserver — play preview when >60% visible
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const data = previews.get(entry.target);
+      if (!data) return;
+
+      // Don't preview if already playing as full video
+      if (entry.target.querySelector('iframe[src*="autoplay=1"]')) return;
+
+      if (entry.intersectionRatio >= 0.6 && !data.active) {
+        try { data.player.playVideo(); } catch(e) {}
+        data.container.style.opacity = '1';
+        data.container.style.pointerEvents = 'none';
+        data.active = true;
+      } else if (entry.intersectionRatio < 0.3 && data.active) {
+        try { data.player.pauseVideo(); } catch(e) {}
+        data.container.style.opacity = '0';
+        data.active = false;
+      }
+    });
+  }, { threshold: [0.3, 0.6] });
+
+  // Wait for API + DOM to be ready before observing
+  function startObserving() {
+    document.querySelectorAll('.yt-facade').forEach(f => obs.observe(f));
+  }
+
+  if (document.readyState === 'complete') startObserving();
+  else window.addEventListener('load', startObserving);
+})();
+</script>
+
 </body>
 </html>
