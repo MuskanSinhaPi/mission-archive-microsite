@@ -1685,5 +1685,52 @@ mo.observe(document.body, { childList: true, subtree: true });
 })();
 
 </script>
+
+<script>
+// ── YouTube Hover Preview (direct iframe swap) ────────────────────
+(function() {
+  document.querySelectorAll('.yt-facade').forEach(facade => {
+    const match = facade.getAttribute('onclick').match(/'([a-zA-Z0-9_-]{11})'/);
+    if (!match) return;
+    const videoId = match[1];
+
+    let previewFrame = null;
+
+    facade.addEventListener('mouseenter', () => {
+      // Don't preview if full video already loaded
+      if (facade.querySelector('iframe[src*="autoplay=1"]')) return;
+      if (previewFrame) { previewFrame.style.opacity = '1'; return; }
+
+      previewFrame = document.createElement('iframe');
+      previewFrame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=4&disablekb=1`;
+      previewFrame.allow = 'autoplay; encrypted-media';
+      previewFrame.style.cssText = [
+        'position:absolute', 'top:-10%', 'left:-10%',
+        'width:120%', 'height:120%',
+        'border:none', 'pointer-events:none',
+        'opacity:0', 'transition:opacity 0.4s ease',
+        'z-index:1'
+      ].join(';');
+
+      facade.appendChild(previewFrame);
+
+      // Small delay before showing to let it start playing
+      setTimeout(() => {
+        if (previewFrame) previewFrame.style.opacity = '1';
+        const thumb = facade.querySelector('img');
+        if (thumb) thumb.style.opacity = '0';
+      }, 800);
+    });
+
+    facade.addEventListener('mouseleave', () => {
+      if (facade.querySelector('iframe[src*="autoplay=1"]')) return;
+      if (previewFrame) previewFrame.style.opacity = '0';
+      const thumb = facade.querySelector('img');
+      if (thumb) thumb.style.opacity = '1';
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
