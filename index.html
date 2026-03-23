@@ -76,12 +76,25 @@ html { scroll-behavior:smooth; }
 
 /* YouTube */
 .yt-facade { position:relative; width:100%; padding-bottom:56.25%; background:#000; border-radius:12px; border:1px solid rgba(0,212,255,0.2); overflow:hidden; cursor:pointer; }
-.yt-facade img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; transition:opacity 0.3s; }
-.yt-facade:hover img { opacity:0.7; }
-.yt-play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:68px; height:48px; background:rgba(0,0,0,0.8); border-radius:12px; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:2; }
-.yt-facade:hover .yt-play-btn { background:#FF0000; }
+.yt-facade img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; transition:opacity 0.3s; z-index:2; }
+.yt-play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:68px; height:48px; background:rgba(0,0,0,0.8); border-radius:12px; display:flex; align-items:center; justify-content:center; transition:opacity 0.35s ease, background 0.2s; z-index:3; }
 .yt-play-btn svg { width:28px; height:28px; fill:white; }
-.yt-facade iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+.yt-facade iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; z-index:1; }
+
+/* Mute toggle button */
+.yt-mute-btn {
+  position:absolute; bottom:8px; right:8px;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.25);
+  color:white; font-size:14px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:5;
+  opacity:0; transition:opacity 0.25s ease;
+  pointer-events:none;
+}
+.yt-facade.previewing .yt-mute-btn { opacity:1; pointer-events:auto; }
+.yt-facade.previewing img { opacity:0; }
+.yt-facade.previewing .yt-play-btn { opacity:0; pointer-events:none; }
 
 /* Hidden */
 .hidden-more { max-height:0; overflow:hidden; transition:max-height 0.6s ease, opacity 0.4s ease; opacity:0; }
@@ -708,40 +721,40 @@ transition: opacity 0.4s ease;
 <section id="testing" class="py-20 px-6">
 <div class="container mx-auto max-w-6xl">
 <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 gradient-text">Flight &amp; Testing</h2>
-<div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128640; Launch Footage</h3><div class="yt-facade" onclick="loadYT(this,'BlnHOM-ItQg')"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128640; Launch Footage</h3><div class="yt-facade" data-vid="BlnHOM-ItQg"><img src="https://i.ytimg.com/vi/BlnHOM-ItQg/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">🪂 Parachute Testing</h3><div class="grid md:grid-cols-2 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" onclick="loadYT(this,'zfHItv2cbR0')"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" onclick="loadYT(this,'Vj-me1MMqE0')"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" onclick="loadYT(this,'-SENyK0R3Eo')"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Short: Parachute Drop</h4><div class="yt-facade" onclick="loadYT(this,'Mz4KYMlhKPQ')"><img src="https://i.ytimg.com/vi/Mz4KYMlhKPQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Test 1</h4><div class="yt-facade" onclick="loadYT(this,'C3dBkWsMyNM')"><img src="https://i.ytimg.com/vi/C3dBkWsMyNM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Drop Test</h4><div class="yt-facade" data-vid="zfHItv2cbR0"><img src="https://i.ytimg.com/vi/zfHItv2cbR0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS POV During Drop</h4><div class="yt-facade" data-vid="Vj-me1MMqE0"><img src="https://i.ytimg.com/vi/Vj-me1MMqE0/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Lid Opening</h4><div class="yt-facade" data-vid="-SENyK0R3Eo"><img src="https://i.ytimg.com/vi/-SENyK0R3Eo/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Short: Parachute Drop</h4><div class="yt-facade" data-vid="Mz4KYMlhKPQ"><img src="https://i.ytimg.com/vi/Mz4KYMlhKPQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Parachute Test 1</h4><div class="yt-facade" data-vid="C3dBkWsMyNM"><img src="https://i.ytimg.com/vi/C3dBkWsMyNM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#127919; Sensor Testing</h3><div class="grid md:grid-cols-2 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gyroscope Test</h4><div class="yt-facade" onclick="loadYT(this,'MfQjgFuOVNc')"><img src="https://i.ytimg.com/vi/MfQjgFuOVNc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">General Testing Video</h4><div class="yt-facade" onclick="loadYT(this,'zf4PJpYdRZw')"><img src="https://i.ytimg.com/vi/zf4PJpYdRZw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gyroscope Test</h4><div class="yt-facade" data-vid="MfQjgFuOVNc"><img src="https://i.ytimg.com/vi/MfQjgFuOVNc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">General Testing Video</h4><div class="yt-facade" data-vid="zf4PJpYdRZw"><img src="https://i.ytimg.com/vi/zf4PJpYdRZw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128300; Structural Analysis</h3><div class="grid md:grid-cols-2 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Total Deformation Analysis</h4><div class="yt-facade" onclick="loadYT(this,'_STlaqy4GR4')"><img src="https://i.ytimg.com/vi/_STlaqy4GR4/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Stress Test Simulation</h4><div class="yt-facade" onclick="loadYT(this,'FSKDF4RFnME')"><img src="https://i.ytimg.com/vi/FSKDF4RFnME/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Total Deformation Analysis</h4><div class="yt-facade" data-vid="_STlaqy4GR4"><img src="https://i.ytimg.com/vi/_STlaqy4GR4/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Stress Test Simulation</h4><div class="yt-facade" data-vid="FSKDF4RFnME"><img src="https://i.ytimg.com/vi/FSKDF4RFnME/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#128295; Environmental Testing</h3><div class="grid md:grid-cols-2 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Vacuum Chamber Test</h4><div class="yt-facade" onclick="loadYT(this,'V4kRHyrGw84')"><img src="https://i.ytimg.com/vi/V4kRHyrGw84/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI During Vacuum Test</h4><div class="yt-facade" onclick="loadYT(this,'ZYSU60DqHMs')"><img src="https://i.ytimg.com/vi/ZYSU60DqHMs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Vacuum Chamber Test</h4><div class="yt-facade" data-vid="V4kRHyrGw84"><img src="https://i.ytimg.com/vi/V4kRHyrGw84/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI During Vacuum Test</h4><div class="yt-facade" data-vid="ZYSU60DqHMs"><img src="https://i.ytimg.com/vi/ZYSU60DqHMs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128225; Ground Control Station</h3><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS Antenna Test</h4><div class="yt-facade" onclick="loadYT(this,'QtMg2qHt8sk')"><img src="https://i.ytimg.com/vi/QtMg2qHt8sk/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Screen</h4><div class="yt-facade" onclick="loadYT(this,'Y5gkge9h9yc')"><img src="https://i.ytimg.com/vi/Y5gkge9h9yc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Attitude Screen</h4><div class="yt-facade" onclick="loadYT(this,'6X_WXwlWfdY')"><img src="https://i.ytimg.com/vi/6X_WXwlWfdY/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Command Driven Telemetry</h4><div class="yt-facade" onclick="loadYT(this,'VV981JAFxKw')"><img src="https://i.ytimg.com/vi/VV981JAFxKw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Demo</h4><div class="yt-facade" onclick="loadYT(this,'EueZ1pHA4NQ')"><img src="https://i.ytimg.com/vi/EueZ1pHA4NQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GCS Antenna Test</h4><div class="yt-facade" data-vid="QtMg2qHt8sk"><img src="https://i.ytimg.com/vi/QtMg2qHt8sk/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Screen</h4><div class="yt-facade" data-vid="Y5gkge9h9yc"><img src="https://i.ytimg.com/vi/Y5gkge9h9yc/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Attitude Screen</h4><div class="yt-facade" data-vid="6X_WXwlWfdY"><img src="https://i.ytimg.com/vi/6X_WXwlWfdY/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Command Driven Telemetry</h4><div class="yt-facade" data-vid="VV981JAFxKw"><img src="https://i.ytimg.com/vi/VV981JAFxKw/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">GUI Demo</h4><div class="yt-facade" data-vid="EueZ1pHA4NQ"><img src="https://i.ytimg.com/vi/EueZ1pHA4NQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
 <div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-purple-400">&#128297; Hardware Assembly</h3><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Assembly</h4><div class="yt-facade" onclick="loadYT(this,'7MOyV5iUIqM')"><img src="https://i.ytimg.com/vi/7MOyV5iUIqM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Test</h4><div class="yt-facade" onclick="loadYT(this,'iBgmaokHsVs')"><img src="https://i.ytimg.com/vi/iBgmaokHsVs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 1</h4><div class="yt-facade" onclick="loadYT(this,'AZ5rRGwyR70')"><img src="https://i.ytimg.com/vi/AZ5rRGwyR70/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
-<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 2</h4><div class="yt-facade" onclick="loadYT(this,'LeHIJvyRIXQ')"><img src="https://i.ytimg.com/vi/LeHIJvyRIXQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Assembly</h4><div class="yt-facade" data-vid="7MOyV5iUIqM"><img src="https://i.ytimg.com/vi/7MOyV5iUIqM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Gimbals Test</h4><div class="yt-facade" data-vid="iBgmaokHsVs"><img src="https://i.ytimg.com/vi/iBgmaokHsVs/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 1</h4><div class="yt-facade" data-vid="AZ5rRGwyR70"><img src="https://i.ytimg.com/vi/AZ5rRGwyR70/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
+<div><h4 class="text-xl font-semibold mb-3 text-gray-300">Fit Check 2</h4><div class="yt-facade" data-vid="LeHIJvyRIXQ"><img src="https://i.ytimg.com/vi/LeHIJvyRIXQ/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div>
 </div></div>
-<div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128188; Market Pitch</h3><div class="max-w-3xl mx-auto"><div class="yt-facade" onclick="loadYT(this,'2vygV02hXTM')"><img src="https://i.ytimg.com/vi/2vygV02hXTM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div></div>
+<div class="mb-12"><h3 class="text-3xl font-bold mb-6 text-cyan-400">&#128188; Market Pitch</h3><div class="max-w-3xl mx-auto"><div class="yt-facade" data-vid="2vygV02hXTM"><img src="https://i.ytimg.com/vi/2vygV02hXTM/hqdefault.jpg" loading="lazy"><div class="yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><button class="yt-mute-btn" title="Toggle mute">&#128263;</button></div></div></div>
 </div>
 </section>
 
@@ -925,8 +938,6 @@ View on GitFront
 <div class="container mx-auto max-w-4xl">
 <h3 class="text-2xl font-bold mb-4 gradient-text">Team Kalpana</h3>
 <p class="text-gray-400 mb-6">IN-SPACe CanSat India Student Competition 2022&ndash;'24 organised by ASI, in association with ISRO</p>
-<!-- <p class="text-gray-300 mb-8">&#128231; Contact: <a href="/cdn-cgi/l/email-protection#88e9e9faf1e9e5fdfbe3e9e6c8efe5e9e1e4a6ebe7e5" class="text-cyan-400 hover:text-cyan-300">Muskan Sinha, Team Lead</a></p> -->
-<!-- Partner & Organiser Logos -->
 <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mt-8 mb-10">
   <img src="assets/logos/team-kalpana.png" alt="Team Kalpana" class="w-24 h-22 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300">
   <img src="assets/logos/nsut.png" alt="NSUT" class="w-24 h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300">
@@ -934,13 +945,11 @@ View on GitFront
   <img src="assets/logos/inspace.png" alt="IN-SPACe" class="w-24 h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300">
   <img src="assets/logos/asi.png" alt="Astronautical Society of India" class="w-24 h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300">
 </div>
-<!-- thin rule to separate from copyright -->
 <div class="border-t border-white/10 mb-6"></div>
   <div class="text-sm text-gray-500"><p>&copy; 2026 IN-SPACe registered CanSat Team. All rights reserved.</p><p class="mt-2">Designed for aerospace excellence &#128752;&#65039;</p></div>
 </div>
 </footer>
 
-<!-- <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
 <script>
 // ═════════════════════════════════════════════════════════ LAUNCH PRELOADER ══
 (function() {
@@ -983,12 +992,9 @@ const seq = [
 { t:1600, fn: () => {
 setStatus('T-00:01 IGNITION &#128293;');
 setBar(60);
-// Rumble
 rocket.style.animation = 'pl-rumble 0.09s linear infinite';
-// Flame ignition
 flame.style.opacity = '1';
 flame.style.transition = 'opacity 0.2s';
-// Pad glow
 padGlow.style.opacity = '1';
 padGlow.style.transition = 'opacity 0.3s';
 padGlow.style.animation = 'none';
@@ -996,16 +1002,13 @@ padGlow.style.animation = 'none';
 { t:2200, fn: () => {
 setStatus('LIFTOFF &#127777;&#65039;');
 setBar(75);
-// Retract gantry arms
 armL.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
 armR.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in';
 armL.style.transform = 'rotate(-72deg)';
 armR.style.transform = 'rotate(72deg)';
 armL.style.opacity = '0';
 armR.style.opacity = '0';
-// Liftoff animation
 rocket.style.animation = 'pl-liftoff 2.1s cubic-bezier(0.22,0,0.05,1) forwards';
-// Smoke trail grows
 trail.style.opacity = '1';
 trail.style.transition = 'none';
 trail.style.animation = 'pl-trail-anim 2.1s cubic-bezier(0.1,0,0.3,1) forwards';
@@ -1014,7 +1017,6 @@ padGlow.style.opacity = '0';
 { t:2800, fn: () => {
 setStatus('ASCENT &#128640; MAX-Q PASSING');
 setBar(85);
-// Clouds part
 clouds.forEach((c, i) => {
 const delay = i % 2 === 0 ? '0ms' : `${Math.floor(i/2)*150}ms`;
 c.style.transition = `transform ${0.9 + (i%2)*0.1}s cubic-bezier(0.4,0,0.2,1) ${delay}, opacity 0.7s ease ${delay}`;
@@ -1025,7 +1027,6 @@ c.style.opacity = '0';
 { t:3800, fn: () => {
 setStatus('MECO &#11088; ORBIT INSERTION');
 setBar(95);
-// Show orbital ring + satellite
 orbit.style.transition = 'opacity 0.6s ease';
 orbit.style.opacity = '0.6';
 satEl.style.transition = 'opacity 0.6s ease';
@@ -1037,14 +1038,12 @@ setStatus('MISSION SUCCESS &#9733;');
 setBar(100);
 }},
 { t:4900, fn: () => {
-// Dismiss preloader
 preloader.classList.add('pl-done');
 setTimeout(() => { preloader.style.display = 'none'; }, 900);
 }},
 ];
 
 seq.forEach(({ t, fn }) => setTimeout(fn, t));
-
 function setStatus(html) { statusEl.innerHTML = html; }
 function setBar(pct) { barEl.style.width = pct + '%'; }
 })();
@@ -1074,17 +1073,6 @@ h.classList.toggle('active');
 });
 });
 document.addEventListener('click', () => { if (!isMobile()) return; document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active')); });
-
-// YouTube
-function loadYT(el, id) {
-if (el.querySelector('iframe')) return;
-const f = document.createElement('iframe');
-f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-f.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
-f.allowFullscreen = true;
-el.querySelectorAll('img,.yt-play-btn').forEach(c => c.style.display = 'none');
-el.appendChild(f);
-}
 
 // Archive expand cards
 function toggleCard(id) {
@@ -1369,58 +1357,36 @@ cx.beginPath(); cx.arc(0,-h,W*.016*r,Math.PI*1.35,Math.PI*1.65); cx.stroke();
 cx.restore();
 }
 
-function rnrs(x,y,sc,alpha) {
-cx.save(); cx.globalAlpha=clamp(alpha,0,1);
-cx.translate(x,y); cx.scale(sc,sc);
-[-.026,0].forEach(dx=>{
-const ox=dx*W;
-cx.fillStyle=cx.strokeStyle='rgba(20,20,20,.85)'; cx.lineWidth=1.6;
-cx.beginPath(); cx.arc(ox,-W*.036,W*.007,0,Math.PI*2); cx.fill();
-cx.beginPath(); cx.moveTo(ox,-W*.028); cx.lineTo(ox+W*.003,W*.002); cx.stroke();
-cx.beginPath(); cx.moveTo(ox+W*.003,W*.002); cx.lineTo(ox-W*.009,W*.018); cx.stroke();
-cx.beginPath(); cx.moveTo(ox+W*.003,W*.002); cx.lineTo(ox+W*.013,W*.012); cx.stroke();
-cx.beginPath(); cx.moveTo(ox,-W*.016); cx.lineTo(ox-W*.013,-W*.005); cx.stroke();
-cx.beginPath(); cx.moveTo(ox,-W*.016); cx.lineTo(ox+W*.013,W*.004); cx.stroke();
-});
-cx.restore();
-}
-
-// Sound beacon — pulsing rings from antenna tip
 function beacon(x, y, sc, alpha, pulse) {
 cx.save(); cx.globalAlpha = clamp(alpha,0,1);
 cx.translate(x,y); cx.scale(sc,sc);
-// box body
 const bw = W*.009, bh = W*.012;
 cx.fillStyle = '#e06010';
 cx.beginPath(); cx.roundRect(-bw,-bh,bw*2,bh*2,2); cx.fill();
 cx.fillStyle = '#ff9933';
 cx.beginPath(); cx.roundRect(-bw,-bh,bw*2,bh*.45,1); cx.fill();
-// antenna
 cx.strokeStyle='#ffcc44'; cx.lineWidth=1.2;
 cx.beginPath(); cx.moveTo(0,-bh); cx.lineTo(0,-bh-W*.016); cx.stroke();
 cx.fillStyle='#ffe066';
 cx.beginPath(); cx.arc(0,-bh-W*.018,W*.004,0,Math.PI*2); cx.fill();
-// 3 expanding arcs staggered by pulse
 for(let i=0;i<3;i++){
 const ph = (pulse + i/3) % 1;
 const r = W*.012 + ph * W*.06;
 const a = (1-ph) * 0.75;
 cx.strokeStyle = 'rgba(255,160,20,'+a+')';
 cx.lineWidth = 1.4;
-const ty = -bh - W*.018; // center at antenna tip
+const ty = -bh - W*.018;
 cx.beginPath(); cx.arc(0, ty, r, -Math.PI*.72, -Math.PI*.28); cx.stroke();
 cx.beginPath(); cx.arc(0, ty, r, Math.PI*.28, Math.PI*.72); cx.stroke();
 }
 cx.restore();
 }
 
-// Stick figures running TOWARD targetX
-// dir is inferred from fromX vs targetX
 function rnrsToward(fromX, targetX, y, sc, alpha, walkPhase) {
 const facingRight = targetX > fromX;
 cx.save(); cx.globalAlpha = clamp(alpha,0,1);
 cx.translate(fromX, y);
-if(!facingRight) cx.scale(-1,1); // flip to face direction of travel
+if(!facingRight) cx.scale(-1,1);
 cx.scale(sc,sc);
 [0, W*.030].forEach((ox,i) => {
 const swing = Math.sin((walkPhase + i*0.5) * Math.PI * 2) * 0.28;
@@ -1428,12 +1394,10 @@ cx.fillStyle = cx.strokeStyle = 'rgba(15,15,15,.9)';
 cx.lineWidth = 1.7;
 cx.beginPath(); cx.arc(ox,-W*.036,W*.007,0,Math.PI*2); cx.fill();
 cx.beginPath(); cx.moveTo(ox,-W*.028); cx.lineTo(ox+W*.003,W*.002); cx.stroke();
-// legs with stride
 cx.beginPath(); cx.moveTo(ox+W*.003,W*.002);
 cx.lineTo(ox - W*.008 + swing*W*.010, W*.019); cx.stroke();
 cx.beginPath(); cx.moveTo(ox+W*.003,W*.002);
 cx.lineTo(ox + W*.014 - swing*W*.010, W*.013); cx.stroke();
-// arms swinging opposite
 cx.beginPath(); cx.moveTo(ox,-W*.016);
 cx.lineTo(ox - W*.012 - swing*W*.007,-W*.004); cx.stroke();
 cx.beginPath(); cx.moveTo(ox,-W*.016);
@@ -1485,12 +1449,10 @@ if (ts !== undefined) beaconTs = ts;
 cx.clearRect(0,0,W,H); bg(); grid(); dots(p);
 const GND = H * .73;
 
-// Stage 1 — pre-launch
 const s1a = eo(rng(p,0,.06));
 rkt(W*.12, GND-H*.09, 1, 0, s1a, 0);
 if(p < .26){ lbl('Stage 1',W*.22,GND-H*.04,s1a); sub('Pre-launch',W*.22,GND+H*.01,s1a); }
 
-// Stage 2 — ascent
 if(p >= .07){
 const t2 = eio(rng(p,.07,.40));
 rkt(W*(.12+t2*.22), GND-H*.09-t2*GND*.95, 1, -t2*.38, eo(rng(p,.07,.12)), 1-rng(p,.34,.40));
@@ -1498,114 +1460,87 @@ const la = eo(rng(p,.15,.22))*(1-rng(p,.32,.40));
 if(la > 0){ lbl('Stage 2',W*.28,GND-H*.07,la); sub('Launch',W*.28,GND-H*.02,la); }
 }
 
-// GCS
 const ga = eo(rng(p,.22,.32));
 ant(W*.50, GND, 1, ga);
 if(p>.22 && p<.72) sub('Ground Control',W*.50,GND+H*.03,ga*(1-rng(p,.65,.72)));
 
-// Stage 3+4 — unified descent ─────────────────────────────────
-//
-// One continuous trajectory, cansat drifts W*0.50 → W*0.82
-//
-// chute() dome opens DOWNWARD from its center (x,y).
-// Offsets are measured upward (negative Y) from cansat (descY):
-// main chute center: descY - H*0.13 r_eff = W*0.027
-// drogue center: descY - H*0.28 r_eff = W*0.011
-// Drogue dome bottom = descY-H*0.28+W*0.011 is well above main center ✓
-//
-// Draw order (painter): cansat → main → drogue (drogue on top = correct)
 if(p >= .36){
-  const tFast = rng(p, .36, .54);
-  const tSlow = rng(p, .54, .88);
-  const t_tot = rng(p, .36, .88);
+const tFast = rng(p, .36, .54);
+const tSlow = rng(p, .54, .88);
+const t_tot = rng(p, .36, .88);
 
-  const descY = H*.10 + eio(tFast)*H*.39 + eio(tSlow)*H*.22;
-  const sway = Math.sin(t_tot * Math.PI * 2.5) * W*.007;
-  const descX = W*.50 + eio(t_tot) * W*.32 + sway;
+const descY = H*.10 + eio(tFast)*H*.39 + eio(tSlow)*H*.22;
+const sway = Math.sin(t_tot * Math.PI * 2.5) * W*.007;
+const descX = W*.50 + eio(t_tot) * W*.32 + sway;
 
-  // ← NEW: fade the whole descent block out as it lands
-  const s3_end = 1 - eo(rng(p, .86, .91));
-  const s3a = eo(rng(p,.36,.41)) * s3_end;
-  const pendulum = Math.sin(t_tot * Math.PI * 4) * W*.006;
-  const main_a = eo(rng(p,.54,.60)) * s3_end;  // ← multiply by s3_end
+const s3_end = 1 - eo(rng(p, .86, .91));
+const s3a = eo(rng(p,.36,.41)) * s3_end;
+const pendulum = Math.sin(t_tot * Math.PI * 4) * W*.006;
+const main_a = eo(rng(p,.54,.60)) * s3_end;
 
-  const mainCY = descY - H*.13;
-  const drogueCY = descY - H*.28;
-  const mainR = W*.026 * 1.05;
-  const drogueR = W*.026 * 0.42;
+const mainCY = descY - H*.13;
+const drogueCY = descY - H*.28;
+const mainR = W*.026 * 1.05;
+const drogueR = W*.026 * 0.42;
 
-  // 1. CanSat body
-  csat(descX + pendulum, descY, 1, s3a);
+csat(descX + pendulum, descY, 1, s3a);
 
-  // 2. Suspension lines — converging (fan from narrow attachment → spread at chute rim)
-  cx.save();
-  cx.strokeStyle = 'rgba(210,225,240,0.55)'; cx.lineWidth = 0.8;
-  if(main_a > 0.05){
-    cx.globalAlpha = clamp(main_a * s3a, 0, 1);
-    // 4 lines: cansat top (narrow band) → main chute rim (spread)
-    const lineCount = 4;
-    for(let i = 0; i < lineCount; i++){
-      const tf = (i / (lineCount-1)) - 0.5;          // -0.5 to +0.5
-      const topX = descX + tf * W*.008;               // narrow at top of cansat
-      const botX = descX + tf * mainR * 1.6;          // spread at chute rim
-      cx.beginPath(); cx.moveTo(topX, descY - W*.017); cx.lineTo(botX, mainCY + mainR*.28); cx.stroke();
-    }
-    // 4 lines: main chute top → drogue rim (spread)
-    for(let i = 0; i < lineCount; i++){
-      const tf = (i / (lineCount-1)) - 0.5;
-      const topX = descX + tf * W*.004;
-      const botX = descX + tf * drogueR * 1.6;
-      cx.beginPath(); cx.moveTo(topX, mainCY - W*.004); cx.lineTo(botX, drogueCY + drogueR*.28); cx.stroke();
-    }
-  } else {
-    cx.globalAlpha = clamp(s3a, 0, 1);
-    // drogue → cansat: 4 converging lines
-    const lineCount = 4;
-    for(let i = 0; i < lineCount; i++){
-      const tf = (i / (lineCount-1)) - 0.5;
-      const topX = descX + tf * W*.004;
-      const botX = descX + tf * drogueR * 1.6;
-      cx.beginPath(); cx.moveTo(topX, descY - W*.017); cx.lineTo(botX, drogueCY + drogueR*.28); cx.stroke();
-    }
-  }
-  cx.restore();
+cx.save();
+cx.strokeStyle = 'rgba(210,225,240,0.55)'; cx.lineWidth = 0.8;
+if(main_a > 0.05){
+cx.globalAlpha = clamp(main_a * s3a, 0, 1);
+const lineCount = 4;
+for(let i = 0; i < lineCount; i++){
+const tf = (i / (lineCount-1)) - 0.5;
+const topX = descX + tf * W*.008;
+const botX = descX + tf * mainR * 1.6;
+cx.beginPath(); cx.moveTo(topX, descY - W*.017); cx.lineTo(botX, mainCY + mainR*.28); cx.stroke();
+}
+for(let i = 0; i < lineCount; i++){
+const tf = (i / (lineCount-1)) - 0.5;
+const topX = descX + tf * W*.004;
+const botX = descX + tf * drogueR * 1.6;
+cx.beginPath(); cx.moveTo(topX, mainCY - W*.004); cx.lineTo(botX, drogueCY + drogueR*.28); cx.stroke();
+}
+} else {
+cx.globalAlpha = clamp(s3a, 0, 1);
+const lineCount = 4;
+for(let i = 0; i < lineCount; i++){
+const tf = (i / (lineCount-1)) - 0.5;
+const topX = descX + tf * W*.004;
+const botX = descX + tf * drogueR * 1.6;
+cx.beginPath(); cx.moveTo(topX, descY - W*.017); cx.lineTo(botX, drogueCY + drogueR*.28); cx.stroke();
+}
+}
+cx.restore();
 
-  // 3. Main chute
-  if(main_a > 0.01) chute(descX, mainCY, 1.05, main_a);
+if(main_a > 0.01) chute(descX, mainCY, 1.05, main_a);
+chute(descX, drogueCY, 0.42, s3a);
 
-  // 4. Drogue (on top)
-  chute(descX, drogueCY, 0.42, s3a);
-
-  const la3 = eo(rng(p,.36,.43)) * (1-rng(p,.52,.58));
-  if(la3 > 0.01){ lbl('Stage 3',W*.66,H*.09,la3); sub('Separation + Drogue',W*.66,H*.135,la3); }
-  const la4 = eo(rng(p,.56,.63)) * (1-rng(p,.78,.84));
-  if(la4 > 0.01){ lbl('Stage 4',W*.79,descY-H*.22,la4); sub('2nd Chute at 500 m',W*.79,descY-H*.175,la4); }
+const la3 = eo(rng(p,.36,.43)) * (1-rng(p,.52,.58));
+if(la3 > 0.01){ lbl('Stage 3',W*.66,H*.09,la3); sub('Separation + Drogue',W*.66,H*.135,la3); }
+const la4 = eo(rng(p,.56,.63)) * (1-rng(p,.78,.84));
+if(la4 > 0.01){ lbl('Stage 4',W*.79,descY-H*.22,la4); sub('2nd Chute at 500 m',W*.79,descY-H*.175,la4); }
 }
 
-// Stage 5 — landed, beacon, recovery team
-// Landing position matches end of descent: W*0.50 + eio(1)*W*0.32 = W*0.82
 const LAND_X = W*.82;
 const LAND_Y = GND - H*.03;
 if(p >= .83){
 const s5a = eo(rng(p,.83,1.0));
 
-// Tilted cansat + collapsed chute on ground
 cx.save(); cx.globalAlpha = s5a;
 cx.translate(LAND_X, LAND_Y); cx.rotate(.38);
 csat(0, 0, .85, 1);
 chute(W*.024, -H*.018, .30, .45);
 cx.restore();
 
-// Beacon — real-time pulse so it animates even during scrub
 const pulse = (beaconTs * 0.00075) % 1;
 beacon(LAND_X - W*.024, LAND_Y - H*.06, 1, s5a, pulse);
 
-// Recovery team — starts at W*0.52, walks toward cansat (LAND_X)
 const walkCycle = (beaconTs * 0.00045) % 1;
 const runX = W*.52 + s5a * W*.17;
 rnrsToward(runX, LAND_X, GND - H*.01, 1, s5a, walkCycle);
 
-// Labels
 lbl('Stage 5', LAND_X, GND-H*.16, s5a);
 sub('Landing & Recovery', LAND_X, GND-H*.105, s5a);
 const bLa = eo(rng(p,.87,1.0));
@@ -1626,12 +1561,16 @@ if(raf) cancelAnimationFrame(raf);
 t0=null; raf=requestAnimationFrame(frame);
 };
 
-const obs=new IntersectionObserver(entries=>{
-if(entries[0].isIntersecting){conopsReplay(); obs.disconnect();}
-},{threshold:.2});
-obs.observe(CV);
-drawAt(0);
+const conopsObserver = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting && !raf) {
+t0 = null; raf = requestAnimationFrame(frame);
+}
+});
+}, { threshold: 0.25 });
+conopsObserver.observe(CV);
 })();
+
 // ── Model Viewer Progress Bars ──────────────────────────────────────
 (function() {
 function initMV(mv) {
@@ -1660,17 +1599,14 @@ if (lbl) lbl.style.display = 'none';
 }, 300);
 });
 
-// If already loaded (cached)
 if (mv.loaded) {
 track.style.display = 'none';
 if (lbl) lbl.style.display = 'none';
 }
 }
 
-// Init all existing model-viewers
 document.querySelectorAll('model-viewer').forEach(initMV);
 
-// Also catch any that get added later (models-more expand)
 const mo = new MutationObserver(mutations => {
 mutations.forEach(m => {
 m.addedNodes.forEach(n => {
@@ -1683,52 +1619,136 @@ n.querySelectorAll && n.querySelectorAll('model-viewer').forEach(initMV);
 });
 mo.observe(document.body, { childList: true, subtree: true });
 })();
-
 </script>
 
 <script>
-// ── YouTube Hover Preview (direct iframe swap) ────────────────────
-(function() {
+// ══ YouTube: IntersectionObserver scroll-preview + hover-preview + mute toggle ══
+(function () {
+
+  // Shared IntersectionObserver — dispatches to per-facade helpers via _startPreview/_stopPreview
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const f = entry.target;
+      f._isVisible = entry.isIntersecting;
+      if (entry.isIntersecting) {
+        f._startPreview && f._startPreview();
+      } else {
+        f._stopPreview && f._stopPreview();
+      }
+    });
+  }, { threshold: 0.25 });
+
   document.querySelectorAll('.yt-facade').forEach(facade => {
-    const match = facade.getAttribute('onclick').match(/'([a-zA-Z0-9_-]{11})'/);
-    if (!match) return;
-    const videoId = match[1];
+    const videoId = facade.dataset.vid;
+    if (!videoId) return;
 
-    let previewFrame = null;
+    const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
+    // ── Per-facade state ────────────────────────────────────────────
+    let hoverActive   = false;  // true while mouse is over the card
+    let scrollFrame   = null;   // iframe injected by scroll/intersection
+    let hoverFrame    = null;   // iframe injected by hover
+    let isMuted       = true;   // tracks mute state of active iframe
+    const muteBtn     = facade.querySelector('.yt-mute-btn');
+
+    // Build an embed URL for a muted or unmuted autoplay preview
+    function embedUrl(muted) {
+      const m = muted ? 1 : 0;
+      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=${m}&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1`;
+    }
+
+    // Create and append an iframe, fading it in after a delay
+    function makeFrame(muted, fadeDelay) {
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText = 'position:absolute;top:-10%;left:-10%;width:120%;height:120%;border:none;pointer-events:none;opacity:0;transition:opacity 0.4s ease;z-index:1;';
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.src = embedUrl(muted);
+      facade.appendChild(iframe);
+      setTimeout(() => { iframe.style.opacity = '1'; }, fadeDelay);
+      return iframe;
+    }
+
+    // Remove an iframe from the DOM
+    function removeFrame(iframe) {
+      if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    }
+
+    // ── Scroll / IntersectionObserver preview (muted, auto) ────────
+    function startScrollPreview() {
+      if (hoverActive) return;   // hover takes priority
+      if (scrollFrame) return;   // already running
+      isMuted = true;
+      scrollFrame = makeFrame(true, 800);
+      facade.classList.add('previewing');
+      if (muteBtn) muteBtn.textContent = '🔇';
+    }
+
+    function stopScrollPreview() {
+      if (!scrollFrame) return;
+      removeFrame(scrollFrame);
+      scrollFrame = null;
+      if (!hoverActive) {
+        facade.classList.remove('previewing');
+      }
+    }
+
+    // ── Hover preview (muted, slightly faster fade-in) ──────────────
     facade.addEventListener('mouseenter', () => {
-      // Don't preview if full video already loaded
-      if (facade.querySelector('iframe[src*="autoplay=1"]')) return;
-      if (previewFrame) { previewFrame.style.opacity = '1'; return; }
-
-      previewFrame = document.createElement('iframe');
-      previewFrame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=4&disablekb=1`;
-      previewFrame.allow = 'autoplay; encrypted-media';
-      previewFrame.style.cssText = [
-        'position:absolute', 'top:-10%', 'left:-10%',
-        'width:120%', 'height:120%',
-        'border:none', 'pointer-events:none',
-        'opacity:0', 'transition:opacity 0.4s ease',
-        'z-index:1'
-      ].join(';');
-
-      facade.appendChild(previewFrame);
-
-      // Small delay before showing to let it start playing
-      setTimeout(() => {
-        if (previewFrame) previewFrame.style.opacity = '1';
-        const thumb = facade.querySelector('img');
-        if (thumb) thumb.style.opacity = '0';
-      }, 800);
+      hoverActive = true;
+      // Remove scroll preview so hover takes over cleanly
+      stopScrollPreview();
+      if (hoverFrame) return;
+      isMuted = true;
+      hoverFrame = makeFrame(true, 500);
+      facade.classList.add('previewing');
+      if (muteBtn) muteBtn.textContent = '🔇';
     });
 
     facade.addEventListener('mouseleave', () => {
-      if (facade.querySelector('iframe[src*="autoplay=1"]')) return;
-      if (previewFrame) previewFrame.style.opacity = '0';
-      const thumb = facade.querySelector('img');
-      if (thumb) thumb.style.opacity = '1';
+      hoverActive = false;
+      // Fade out and remove hover frame
+      if (hoverFrame) {
+        hoverFrame.style.opacity = '0';
+        const f = hoverFrame;
+        hoverFrame = null;
+        setTimeout(() => removeFrame(f), 420);
+      }
+      // Re-start scroll preview if still visible
+      if (facade._isVisible) startScrollPreview();
+      // Hide mute button if no scroll preview is coming
+      if (!facade._isVisible) facade.classList.remove('previewing');
     });
+
+    // ── Mute toggle ─────────────────────────────────────────────────
+    if (muteBtn) {
+      muteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();   // don't open YouTube
+        isMuted = !isMuted;
+
+        // Replace the active iframe with a new one at the desired mute state
+        const activeFrame = hoverFrame || scrollFrame;
+        if (activeFrame) {
+          // Swap src in-place (fastest, avoids flicker)
+          activeFrame.src = embedUrl(isMuted);
+        }
+        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+      });
+    }
+
+    // ── Click → open on YouTube ─────────────────────────────────────
+    facade.addEventListener('click', (e) => {
+      // Don't fire if mute button was clicked
+      if (e.target === muteBtn) return;
+      window.open(ytUrl, '_blank', 'noopener');
+    });
+
+    // ── Expose helpers for the shared observer ──────────────────────
+    facade._startPreview = startScrollPreview;
+    facade._stopPreview  = stopScrollPreview;
+
+    observer.observe(facade);
   });
+
 })();
 </script>
 
