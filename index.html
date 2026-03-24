@@ -1622,18 +1622,22 @@ mo.observe(document.body, { childList: true, subtree: true });
 </script>
 
 <script>
-// ══ YouTube: IntersectionObserver scroll-preview + hover-preview + mute toggle ══
+// ══ YouTube: desktop hover-preview + mobile tap-to-embed ══
 (function () {
 
-  // Shared IntersectionObserver — dispatches to per-facade helpers via _startPreview/_stopPreview
+  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
+  // ── Shared IntersectionObserver (desktop scroll-preview only) ────
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const f = entry.target;
       f._isVisible = entry.isIntersecting;
-      if (entry.isIntersecting) {
-        f._startPreview && f._startPreview();
-      } else {
-        f._stopPreview && f._stopPreview();
+      if (!isTouchDevice()) {
+        if (entry.isIntersecting) {
+          f._startPreview && f._startPreview();
+        } else {
+          f._stopPreview && f._stopPreview();
+        }
       }
     });
   }, { threshold: 0.25 });
@@ -1642,43 +1646,56 @@ mo.observe(document.body, { childList: true, subtree: true });
     const videoId = facade.dataset.vid;
     if (!videoId) return;
 
-    const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    const ytUrl        = `https://www.youtube.com/watch?v=${videoId}`;
+    const muteBtn      = facade.querySelector('.yt-mute-btn');
+    let hoverActive    = false;
+    let scrollFrame    = null;
+    let hoverFrame     = null;
+    let mobileFrame    = null;   // full-controls embed for mobile tap
+    let isMuted        = true;
 
-    // ── Per-facade state ────────────────────────────────────────────
-    let hoverActive   = false;  // true while mouse is over the card
-    let scrollFrame   = null;   // iframe injected by scroll/intersection
-    let hoverFrame    = null;   // iframe injected by hover
-    let isMuted       = true;   // tracks mute state of active iframe
-    const muteBtn     = facade.querySelector('.yt-mute-btn');
-
-    // Build an embed URL for a muted or unmuted autoplay preview
-    function embedUrl(muted) {
-      const m = muted ? 1 : 0;
-      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=${m}&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1`;
+    // ── URL builders ────────────────────────────────────────────────
+    // Desktop: no controls, muted autoplay background preview
+    function previewUrl(muted) {
+      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=${muted?1:0}&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1`;
+    }
+    // Mobile: full native controls, unmuted, lets user interact properly
+    function mobileUrl() {
+      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
     }
 
-    // Create and append an iframe, fading it in after a delay
-    function makeFrame(muted, fadeDelay) {
+    // ── Frame helpers ────────────────────────────────────────────────
+    function makePreviewFrame(muted, fadeDelay) {
       const iframe = document.createElement('iframe');
       iframe.style.cssText = 'position:absolute;top:-10%;left:-10%;width:120%;height:120%;border:none;pointer-events:none;opacity:0;transition:opacity 0.4s ease;z-index:1;';
       iframe.allow = 'autoplay; encrypted-media';
-      iframe.src = embedUrl(muted);
+      iframe.src = previewUrl(muted);
       facade.appendChild(iframe);
       setTimeout(() => { iframe.style.opacity = '1'; }, fadeDelay);
       return iframe;
     }
 
-    // Remove an iframe from the DOM
+    function makeMobileFrame() {
+      const iframe = document.createElement('iframe');
+      // Full-size, pointer-events ON so user can interact with player controls
+      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:auto;opacity:0;transition:opacity 0.35s ease;z-index:4;';
+      iframe.allow = 'autoplay; encrypted-media; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.src = mobileUrl();
+      facade.appendChild(iframe);
+      setTimeout(() => { iframe.style.opacity = '1'; }, 150);
+      return iframe;
+    }
+
     function removeFrame(iframe) {
       if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
     }
 
-    // ── Scroll / IntersectionObserver preview (muted, auto) ────────
+    // ── Desktop: scroll preview (muted background autoplay) ─────────
     function startScrollPreview() {
-      if (hoverActive) return;   // hover takes priority
-      if (scrollFrame) return;   // already running
+      if (hoverActive || scrollFrame) return;
       isMuted = true;
-      scrollFrame = makeFrame(true, 800);
+      scrollFrame = makePreviewFrame(true, 800);
       facade.classList.add('previewing');
       if (muteBtn) muteBtn.textContent = '🔇';
     }
@@ -1687,62 +1704,70 @@ mo.observe(document.body, { childList: true, subtree: true });
       if (!scrollFrame) return;
       removeFrame(scrollFrame);
       scrollFrame = null;
-      if (!hoverActive) {
-        facade.classList.remove('previewing');
-      }
+      if (!hoverActive) facade.classList.remove('previewing');
     }
 
-    // ── Hover preview (muted, slightly faster fade-in) ──────────────
+    // ── Desktop: hover preview ───────────────────────────────────────
     facade.addEventListener('mouseenter', () => {
+      if (isTouchDevice()) return;
       hoverActive = true;
-      // Remove scroll preview so hover takes over cleanly
       stopScrollPreview();
       if (hoverFrame) return;
       isMuted = true;
-      hoverFrame = makeFrame(true, 500);
+      hoverFrame = makePreviewFrame(true, 400);
       facade.classList.add('previewing');
       if (muteBtn) muteBtn.textContent = '🔇';
     });
 
     facade.addEventListener('mouseleave', () => {
+      if (isTouchDevice()) return;
       hoverActive = false;
-      // Fade out and remove hover frame
       if (hoverFrame) {
         hoverFrame.style.opacity = '0';
-        const f = hoverFrame;
-        hoverFrame = null;
+        const f = hoverFrame; hoverFrame = null;
         setTimeout(() => removeFrame(f), 420);
       }
-      // Re-start scroll preview if still visible
       if (facade._isVisible) startScrollPreview();
-      // Hide mute button if no scroll preview is coming
-      if (!facade._isVisible) facade.classList.remove('previewing');
+      else facade.classList.remove('previewing');
     });
 
-    // ── Mute toggle ─────────────────────────────────────────────────
+    // ── Desktop: mute toggle ─────────────────────────────────────────
     if (muteBtn) {
       muteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();   // don't open YouTube
+        e.stopPropagation();
         isMuted = !isMuted;
-
-        // Replace the active iframe with a new one at the desired mute state
         const activeFrame = hoverFrame || scrollFrame;
-        if (activeFrame) {
-          // Swap src in-place (fastest, avoids flicker)
-          activeFrame.src = embedUrl(isMuted);
-        }
+        if (activeFrame) activeFrame.src = previewUrl(isMuted);
         muteBtn.textContent = isMuted ? '🔇' : '🔊';
       });
     }
 
-    // ── Click → open on YouTube ─────────────────────────────────────
+    // ── Desktop: click → open YouTube ───────────────────────────────
+    // ── Mobile: first tap → embed player; second tap on thumbnail → YouTube
     facade.addEventListener('click', (e) => {
-      // Don't fire if mute button was clicked
       if (e.target === muteBtn) return;
+
+      if (isTouchDevice()) {
+        // If player already embedded, tapping the visible thumbnail area
+        // (which is hidden under the iframe) shouldn't do anything —
+        // the iframe handles its own interaction. But if no frame yet, embed it.
+        if (mobileFrame) return;   // player is already live, do nothing
+        e.preventDefault();
+        mobileFrame = makeMobileFrame();
+        facade.classList.add('previewing');
+        // Hide the thumbnail and play button immediately
+        const img = facade.querySelector('img');
+        const btn = facade.querySelector('.yt-play-btn');
+        if (img) img.style.opacity = '0';
+        if (btn) btn.style.opacity = '0';
+        return;
+      }
+
+      // Desktop fallback (shouldn't normally reach here in hover flow)
       window.open(ytUrl, '_blank', 'noopener');
     });
 
-    // ── Expose helpers for the shared observer ──────────────────────
+    // ── Expose helpers for observer ──────────────────────────────────
     facade._startPreview = startScrollPreview;
     facade._stopPreview  = stopScrollPreview;
 
