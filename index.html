@@ -1623,153 +1623,117 @@ mo.observe(document.body, { childList: true, subtree: true });
 
 <script>
 // ══ YouTube: desktop hover-preview + mobile tap-to-embed ══
+// ══ YouTube: hover/scroll-preview (desktop) + scroll-preview (mobile) ══
+// Both platforms: muted autoplay on viewport entry, mute toggle, click → YouTube
 (function () {
 
-  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+  // ── URL builder ──────────────────────────────────────────────────────────
+  function previewUrl(videoId, muted) {
+    return (
+      `https://www.youtube-nocookie.com/embed/${videoId}` +
+      `?autoplay=1&mute=${muted ? 1 : 0}&controls=0&loop=1&playlist=${videoId}` +
+      `&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1`
+    );
+  }
 
-  // ── Shared IntersectionObserver (desktop scroll-preview only) ────
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const f = entry.target;
-      f._isVisible = entry.isIntersecting;
-      if (!isTouchDevice()) {
-        if (entry.isIntersecting) {
-          f._startPreview && f._startPreview();
-        } else {
-          f._stopPreview && f._stopPreview();
-        }
-      }
-    });
-  }, { threshold: 0.25 });
-
+  // ── Per-facade setup ─────────────────────────────────────────────────────
   document.querySelectorAll('.yt-facade').forEach(facade => {
     const videoId = facade.dataset.vid;
     if (!videoId) return;
 
-    const ytUrl        = `https://www.youtube.com/watch?v=${videoId}`;
-    const muteBtn      = facade.querySelector('.yt-mute-btn');
-    let hoverActive    = false;
-    let scrollFrame    = null;
-    let hoverFrame     = null;
-    let mobileFrame    = null;   // full-controls embed for mobile tap
-    let isMuted        = true;
+    const ytUrl   = `https://www.youtube.com/watch?v=${videoId}`;
+    const muteBtn = facade.querySelector('.yt-mute-btn');
+    let iframe    = null;   // the single preview iframe (shared for all triggers)
+    let isMuted   = true;   // source-of-truth for mute state
+    let isVisible = false;  // tracked by IntersectionObserver
+    let isHovered = false;  // desktop only
 
-    // ── URL builders ────────────────────────────────────────────────
-    // Desktop: no controls, muted autoplay background preview
-    function previewUrl(muted) {
-      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=${muted?1:0}&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1`;
-    }
-    // Mobile: full native controls, unmuted, lets user interact properly
-    function mobileUrl() {
-      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&playsinline=1`;
-    }
-
-    // ── Frame helpers ────────────────────────────────────────────────
-    function makePreviewFrame(muted, fadeDelay) {
-      const iframe = document.createElement('iframe');
-      iframe.style.cssText = 'position:absolute;top:-10%;left:-10%;width:120%;height:120%;border:none;pointer-events:none;opacity:0;transition:opacity 0.4s ease;z-index:1;';
+    // ── Iframe lifecycle ─────────────────────────────────────────────────
+    function ensureFrame() {
+      if (iframe) return;
+      iframe = document.createElement('iframe');
+      iframe.style.cssText = [
+        'position:absolute;top:-10%;left:-10%;',
+        'width:120%;height:120%;border:none;',
+        'pointer-events:none;',   // clicks fall through to the facade
+        'opacity:0;transition:opacity 0.4s ease;z-index:1;'
+      ].join('');
       iframe.allow = 'autoplay; encrypted-media';
-      iframe.src = previewUrl(muted);
+      iframe.src   = previewUrl(videoId, isMuted);
       facade.appendChild(iframe);
-      setTimeout(() => { iframe.style.opacity = '1'; }, fadeDelay);
-      return iframe;
-    }
-
-    function makeMobileFrame() {
-      const iframe = document.createElement('iframe');
-      // Full-size, pointer-events ON so user can interact with player controls
-      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:auto;opacity:0;transition:opacity 0.35s ease;z-index:4;';
-      iframe.allow = 'autoplay; encrypted-media; fullscreen';
-      iframe.allowFullscreen = true;
-      iframe.src = mobileUrl();
-      facade.appendChild(iframe);
-      setTimeout(() => { iframe.style.opacity = '1'; }, 150);
-      return iframe;
-    }
-
-    function removeFrame(iframe) {
-      if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
-    }
-
-    // ── Desktop: scroll preview (muted background autoplay) ─────────
-    function startScrollPreview() {
-      if (hoverActive || scrollFrame) return;
-      isMuted = true;
-      scrollFrame = makePreviewFrame(true, 800);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (iframe) iframe.style.opacity = '1';
+      }));
       facade.classList.add('previewing');
-      if (muteBtn) muteBtn.textContent = '🔇';
+      syncMuteBtn();
     }
 
-    function stopScrollPreview() {
-      if (!scrollFrame) return;
-      removeFrame(scrollFrame);
-      scrollFrame = null;
-      if (!hoverActive) facade.classList.remove('previewing');
+    function destroyFrame() {
+      if (!iframe) return;
+      iframe.style.opacity = '0';
+      const old = iframe; iframe = null;
+      setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 420);
+      facade.classList.remove('previewing');
     }
 
-    // ── Desktop: hover preview ───────────────────────────────────────
-    facade.addEventListener('mouseenter', () => {
-      if (isTouchDevice()) return;
-      hoverActive = true;
-      stopScrollPreview();
-      if (hoverFrame) return;
-      isMuted = true;
-      hoverFrame = makePreviewFrame(true, 400);
-      facade.classList.add('previewing');
-      if (muteBtn) muteBtn.textContent = '🔇';
-    });
+    // Rebuild iframe src without destroying/recreating the element
+    function applyMute() {
+      if (!iframe) return;
+      iframe.src = previewUrl(videoId, isMuted);
+    }
 
-    facade.addEventListener('mouseleave', () => {
-      if (isTouchDevice()) return;
-      hoverActive = false;
-      if (hoverFrame) {
-        hoverFrame.style.opacity = '0';
-        const f = hoverFrame; hoverFrame = null;
-        setTimeout(() => removeFrame(f), 420);
-      }
-      if (facade._isVisible) startScrollPreview();
-      else facade.classList.remove('previewing');
-    });
+    function syncMuteBtn() {
+      if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    }
 
-    // ── Desktop: mute toggle ─────────────────────────────────────────
+    function shouldShowPreview() {
+      return isVisible && (isHovered || true); // always show when visible
+    }
+
+    // ── Mute toggle (works whether hovering or just scroll-visible) ───────
     if (muteBtn) {
-      muteBtn.addEventListener('click', (e) => {
+      muteBtn.addEventListener('click', e => {
         e.stopPropagation();
         isMuted = !isMuted;
-        const activeFrame = hoverFrame || scrollFrame;
-        if (activeFrame) activeFrame.src = previewUrl(isMuted);
-        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+        applyMute();   // swap src on existing iframe — one operation, one click
+        syncMuteBtn();
       });
     }
 
-    // ── Desktop: click → open YouTube ───────────────────────────────
-    // ── Mobile: first tap → embed player; second tap on thumbnail → YouTube
-    facade.addEventListener('click', (e) => {
+    // ── Click → open YouTube (both desktop and mobile) ────────────────────
+    facade.addEventListener('click', e => {
       if (e.target === muteBtn) return;
-
-      if (isTouchDevice()) {
-        // If player already embedded, tapping the visible thumbnail area
-        // (which is hidden under the iframe) shouldn't do anything —
-        // the iframe handles its own interaction. But if no frame yet, embed it.
-        if (mobileFrame) return;   // player is already live, do nothing
-        e.preventDefault();
-        mobileFrame = makeMobileFrame();
-        facade.classList.add('previewing');
-        // Hide the thumbnail and play button immediately
-        const img = facade.querySelector('img');
-        const btn = facade.querySelector('.yt-play-btn');
-        if (img) img.style.opacity = '0';
-        if (btn) btn.style.opacity = '0';
-        return;
-      }
-
-      // Desktop fallback (shouldn't normally reach here in hover flow)
       window.open(ytUrl, '_blank', 'noopener');
     });
 
-    // ── Expose helpers for observer ──────────────────────────────────
-    facade._startPreview = startScrollPreview;
-    facade._stopPreview  = stopScrollPreview;
+    // ── Desktop: hover starts/stops preview independently ─────────────────
+    const isTouch = window.matchMedia('(hover: none)').matches;
+
+    if (!isTouch) {
+      facade.addEventListener('mouseenter', () => {
+        isHovered = true;
+        if (!iframe) ensureFrame();
+      });
+
+      facade.addEventListener('mouseleave', () => {
+        isHovered = false;
+        // Keep playing if still in viewport; kill if scrolled away
+        if (!isVisible) destroyFrame();
+      });
+    }
+
+    // ── IntersectionObserver: show when ≥25 % visible, hide when gone ─────
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          ensureFrame();
+        } else {
+          // On desktop keep alive while hovering (edge case: very large monitor)
+          if (!isHovered) destroyFrame();
+        }
+      });
+    }, { threshold: 0.25 });
 
     observer.observe(facade);
   });
