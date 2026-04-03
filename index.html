@@ -1625,107 +1625,160 @@ mo.observe(document.body, { childList: true, subtree: true });
 // ══ YouTube: scroll-preview on both desktop + mobile, postMessage mute toggle ══
 (function () {
 
-  function previewUrl(videoId) {
-    // Always start muted (required for autoplay). enablejsapi=1 lets us postMessage.
-    return (
-      `https://www.youtube-nocookie.com/embed/${videoId}` +
-      `?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}` +
-      `&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1&enablejsapi=1`
-    );
+  // ── 1. Load the IFrame API script once ──────────────────────────────────
+  const apiScript = document.createElement('script');
+  apiScript.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(apiScript);
+
+  // Queue of setup callbacks to run once the API is ready
+  const onApiReady = [];
+  let apiLoaded = false;
+
+  window.onYouTubeIframeAPIReady = function () {
+    apiLoaded = true;
+    onApiReady.forEach(fn => fn());
+    onApiReady.length = 0;
+  };
+
+  function whenApiReady(fn) {
+    if (apiLoaded) fn();
+    else onApiReady.push(fn);
   }
 
-  function ytCommand(iframe, func, args) {
-    if (!iframe || !iframe.contentWindow) return;
-    iframe.contentWindow.postMessage(
-      JSON.stringify({ event: 'command', func, args: args || [] }),
-      '*'
-    );
-  }
-
+  // ── 2. Per-facade setup ──────────────────────────────────────────────────
   document.querySelectorAll('.yt-facade').forEach(facade => {
     const videoId = facade.dataset.vid;
     if (!videoId) return;
 
     const ytUrl   = `https://www.youtube.com/watch?v=${videoId}`;
     const muteBtn = facade.querySelector('.yt-mute-btn');
-    let iframe    = null;
+
+    let player    = null;   // YT.Player instance
     let isMuted   = true;
     let isVisible = false;
     let isHovered = false;
+    // Container div the API replaces with an iframe
+    let container = null;
 
     function syncMuteBtn() {
       if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
     }
 
-    function ensureFrame() {
-      if (iframe) return;
-      iframe = document.createElement('iframe');
-      iframe.style.cssText = [
+    function ensurePlayer() {
+      if (player || container) return;  // already created or in progress
+
+      // Create a plain div; the API will replace it with the iframe
+      container = document.createElement('div');
+      container.style.cssText = [
         'position:absolute;top:-10%;left:-10%;',
-        'width:120%;height:120%;border:none;',
+        'width:120%;height:120%;',
         'pointer-events:none;',
         'opacity:0;transition:opacity 0.4s ease;z-index:1;'
       ].join('');
-      iframe.allow = 'autoplay; encrypted-media';
-      // Always load muted — we unmute via postMessage after load
-      iframe.src = previewUrl(videoId);
-      facade.appendChild(iframe);
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (iframe) iframe.style.opacity = '1';
-      }));
+      facade.appendChild(container);
       facade.classList.add('previewing');
-      isMuted = true;  // reset state to match freshly-loaded muted iframe
+      isMuted = true;
       syncMuteBtn();
+
+      whenApiReady(() => {
+        player = new YT.Player(container, {
+          videoId,
+          playerVars: {
+            autoplay:       1,
+            mute:           1,   // must start muted for autoplay to work
+            controls:       0,
+            loop:           1,
+            playlist:       videoId,
+            rel:            0,
+            modestbranding: 1,
+            playsinline:    1,
+            start:          3,
+            disablekb:      1,
+            enablejsapi:    1,
+          },
+          events: {
+            onReady(e) {
+              // Fade in once ready
+              const iframe = e.target.getIframe();
+              iframe.style.cssText = [
+                'position:absolute;top:0;left:0;',
+                'width:100%;height:100%;border:none;',
+                'pointer-events:none;',
+                'opacity:0;transition:opacity 0.4s ease;z-index:1;'
+              ].join('');
+              // Remove the oversized container wrapper positioning — the API
+              // replaces `container` itself, so just fix the outer wrapper opacity
+              requestAnimationFrame(() => requestAnimationFrame(() => {
+                if (container) container.style.opacity = '1';
+                iframe.style.opacity = '1';
+              }));
+              e.target.mute();      // ensure muted
+              e.target.playVideo(); // force play (some browsers need this nudge)
+            },
+            onStateChange(e) {
+              // If it ends (shouldn't with loop, but just in case) replay
+              if (e.data === YT.PlayerState.ENDED) e.target.playVideo();
+            }
+          }
+        });
+      });
     }
 
-    function destroyFrame() {
-      if (!iframe) return;
-      iframe.style.opacity = '0';
-      const old = iframe;
-      iframe = null;
-      isMuted = true;  // will be muted again on next ensureFrame
+    function destroyPlayer() {
+      if (player) {
+        try { player.stopVideo(); player.destroy(); } catch (_) {}
+        player = null;
+      }
+      if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+      container = null;
+      isMuted = true;
       syncMuteBtn();
-      setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 420);
       facade.classList.remove('previewing');
     }
 
-    // ── Mute toggle via postMessage — no src change, no reload ───────────
+    // ── Mute toggle ────────────────────────────────────────────────────────
     if (muteBtn) {
       muteBtn.addEventListener('click', e => {
         e.stopPropagation();
+        if (!player) return;
         isMuted = !isMuted;
-        ytCommand(iframe, isMuted ? 'mute' : 'unMute');
+        try {
+          if (isMuted) player.mute();
+          else         player.unMute();
+        } catch (_) {}
         syncMuteBtn();
       });
     }
 
-    // ── Tap / click → open YouTube ────────────────────────────────────────
+    // ── Click / tap → open YouTube ─────────────────────────────────────────
     facade.addEventListener('click', e => {
       if (e.target === muteBtn) return;
       window.open(ytUrl, '_blank', 'noopener');
     });
 
-    // ── Desktop hover ─────────────────────────────────────────────────────
+    // ── Desktop hover ──────────────────────────────────────────────────────
     const isTouch = window.matchMedia('(hover: none)').matches;
     if (!isTouch) {
       facade.addEventListener('mouseenter', () => {
         isHovered = true;
-        ensureFrame();
+        ensurePlayer();
       });
       facade.addEventListener('mouseleave', () => {
         isHovered = false;
-        if (!isVisible) destroyFrame();
+        if (!isVisible) destroyPlayer();
       });
     }
 
-    // ── IntersectionObserver: auto-play when scrolled into view ───────────
+    // ── IntersectionObserver: start when in viewport, stop when out ────────
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
         if (isVisible) {
-          ensureFrame();
+          ensurePlayer();
         } else {
-          if (!isHovered) destroyFrame();
+          if (!isHovered) destroyPlayer();
         }
       });
     }, { threshold: 0.25 });
