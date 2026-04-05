@@ -1623,7 +1623,7 @@ mo.observe(document.body, { childList: true, subtree: true });
 
 <script>
 // ══ YouTube: scroll-preview on both desktop + mobile, postMessage mute toggle ══
-// ══ YouTube embed — race-condition-safe, no accidental tap-redirect on mobile ══
+// ══ YouTube embed — simple, robust, works on desktop + mobile ══
 (function () {
 
   function makeIframe(videoId) {
@@ -1634,8 +1634,7 @@ mo.observe(document.body, { childList: true, subtree: true });
 
     const iframe = document.createElement('iframe');
     iframe.src = src;
-    // All attributes must be set BEFORE appending to DOM — iOS Safari
-    // evaluates the allow policy at insertion time, not later.
+    // Must be set before DOM insertion for iOS Safari policy evaluation
     iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
     iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('playsinline', '');
@@ -1651,32 +1650,12 @@ mo.observe(document.body, { childList: true, subtree: true });
 
   function ytCmd(iframe, func) {
     if (!iframe || !iframe.contentWindow) return;
-    iframe.contentWindow.postMessage(
-      JSON.stringify({ event: 'command', func, args: [] }), '*'
-    );
+    try {
+      iframe.contentWindow.postMessage(
+        JSON.stringify({ event: 'command', func, args: [] }), '*'
+      );
+    } catch (_) {}
   }
-
-  // Listen for the YT player's onReady / onStateChange messages globally.
-  // We use this to fade in the iframe only once it's actually playing,
-  // and to know when it's safe to enable tap-to-YouTube.
-  const playingFrames = new WeakSet();
-
-  window.addEventListener('message', e => {
-    if (!e.data) return;
-    let data;
-    try { data = JSON.parse(e.data); } catch { return; }
-
-    // YT sends { event: 'onStateChange', info: 1 } when playing
-    if (data.event === 'onStateChange' && data.info === 1) {
-      // Find the iframe that sent this message
-      document.querySelectorAll('.yt-facade iframe').forEach(iframe => {
-        if (iframe.contentWindow === e.source) {
-          playingFrames.add(iframe);
-          iframe.style.opacity = '1';  // fade in only once actually playing
-        }
-      });
-    }
-  });
 
   document.querySelectorAll('.yt-facade').forEach(facade => {
     const videoId = facade.dataset.vid;
@@ -1689,10 +1668,8 @@ mo.observe(document.body, { childList: true, subtree: true });
     let isMuted      = true;
     let isVisible    = false;
     let isHovered    = false;
-    // Timestamp of when the iframe was created — we ignore taps for a short
-    // window after creation to avoid the scroll-tap triggering a YT redirect
-    let frameCreated = 0;
-    const TAP_GUARD_MS = 1200; // ignore taps for 1.2s after iframe is inserted
+    let fadeTimer    = null;
+    let tapGuardActive = false;
 
     function syncMuteBtn() {
       if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
@@ -1702,25 +1679,37 @@ mo.observe(document.body, { childList: true, subtree: true });
       if (iframe) return;
 
       iframe = makeIframe(videoId);
-      facade.appendChild(iframe);
-      facade.classList.add('previewing');
-      frameCreated = Date.now();
+      facade.appendChild(iframe);       // insert with opacity:0
+      facade.classList.add('previewing'); // hides thumbnail, shows mute btn
+
       isMuted = true;
       syncMuteBtn();
-      // Note: we do NOT fade in here — we wait for onStateChange(1) above
+
+      // Activate tap guard — swallow accidental taps for 1s after creation
+      tapGuardActive = true;
+      setTimeout(() => { tapGuardActive = false; }, 1000);
+
+      // Fade in after a short delay — enough time for the player to initialize
+      // without depending on postMessage events which vary by browser/device
+      clearTimeout(fadeTimer);
+      fadeTimer = setTimeout(() => {
+        if (iframe) iframe.style.opacity = '1';
+      }, 800);
     }
 
     function destroyFrame() {
+      clearTimeout(fadeTimer);
       if (!iframe) return;
       iframe.style.opacity = '0';
-      const old = iframe; iframe = null;
-      frameCreated = 0;
-      isMuted = true; syncMuteBtn();
-      setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 500);
+      const old = iframe;
+      iframe = null;
+      isMuted = true;
+      syncMuteBtn();
+      setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 520);
       facade.classList.remove('previewing');
     }
 
-    // Mute toggle
+    // Mute toggle via postMessage
     if (muteBtn) {
       muteBtn.addEventListener('click', e => {
         e.stopPropagation();
@@ -1730,28 +1719,27 @@ mo.observe(document.body, { childList: true, subtree: true });
       });
     }
 
-    // Tap / click → open YouTube
-    // Guard: ignore taps fired within TAP_GUARD_MS of iframe creation,
-    // because on mobile the same scroll gesture that triggers the
-    // IntersectionObserver can also fire a click on the facade.
+    // Click/tap → open YouTube (with tap guard to prevent ghost taps on mobile)
     facade.addEventListener('click', e => {
       if (e.target === muteBtn) return;
-      const age = Date.now() - frameCreated;
-      if (frameCreated > 0 && age < TAP_GUARD_MS) return; // swallow accidental tap
+      if (tapGuardActive) return;
       window.open(ytUrl, '_blank', 'noopener');
     });
 
-    // Desktop hover
+    // Desktop: hover to preview
     const isTouch = window.matchMedia('(hover: none)').matches;
     if (!isTouch) {
-      facade.addEventListener('mouseenter', () => { isHovered = true; ensureFrame(); });
+      facade.addEventListener('mouseenter', () => {
+        isHovered = true;
+        ensureFrame();
+      });
       facade.addEventListener('mouseleave', () => {
         isHovered = false;
         if (!isVisible) destroyFrame();
       });
     }
 
-    // Scroll into view
+    // Both: auto-preview when scrolled into view
     new IntersectionObserver(entries => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
