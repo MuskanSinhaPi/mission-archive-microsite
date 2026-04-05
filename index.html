@@ -1687,14 +1687,12 @@ mo.observe(document.body, { childList: true, subtree: true });
 
       // Activate tap guard — swallow accidental taps for 1s after creation
       tapGuardActive = true;
-      setTimeout(() => { tapGuardActive = false; }, 1000);
+      setTimeout(() => { tapGuardActive = false; }, 800);
 
       // Fade in after a short delay — enough time for the player to initialize
       // without depending on postMessage events which vary by browser/device
       clearTimeout(fadeTimer);
-      fadeTimer = setTimeout(() => {
-        if (iframe) iframe.style.opacity = '1';
-      }, 800);
+      iframe.style.opacity = '1'; 
     }
 
     function destroyFrame() {
@@ -1746,7 +1744,7 @@ mo.observe(document.body, { childList: true, subtree: true });
         if (isVisible) ensureFrame();
         else if (!isHovered) destroyFrame();
       });
-    }, { threshold: 0.25 }).observe(facade);
+    }, { threshold: 0.05 }).observe(facade);
   });
 
 })();
