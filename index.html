@@ -1622,9 +1622,20 @@ mo.observe(document.body, { childList: true, subtree: true });
 </script>
 
 <script>
-// ══ YouTube: scroll-preview on both desktop + mobile, postMessage mute toggle ══
-// ══ YouTube embed — simple, robust, works on desktop + mobile ══
+// ══ YouTube embed — guaranteed autoplay on iOS via touchstart iframe creation ══
+//
+// iOS Safari grants autoplay permission to media created DURING a user gesture
+// handler (touchstart/touchend). Creating the iframe from IntersectionObserver
+// (which runs outside a gesture) is unreliable — hence the "sometimes works"
+// behaviour. Strategy:
+//   Mobile : on first touchstart anywhere on the page, pre-warm ONE hidden iframe
+//            to establish the autoplay permission token for the session, then
+//            create visible iframes normally from IntersectionObserver.
+//            Also create the per-facade iframe on touchstart of that facade.
+//   Desktop: IntersectionObserver + mouseenter as before.
 (function () {
+
+  const isTouch = window.matchMedia('(hover: none)').matches;
 
   function makeIframe(videoId) {
     const src =
@@ -1632,20 +1643,13 @@ mo.observe(document.body, { childList: true, subtree: true });
       `?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}` +
       `&rel=0&modestbranding=1&playsinline=1&start=3&disablekb=1&enablejsapi=1`;
 
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    // Must be set before DOM insertion for iOS Safari policy evaluation
-    iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-    iframe.setAttribute('allowfullscreen', '');
-    iframe.setAttribute('playsinline', '');
-    iframe.setAttribute('webkit-playsinline', '');
-    iframe.style.cssText = [
-      'position:absolute;top:0;left:0;',
-      'width:100%;height:100%;border:none;',
-      'pointer-events:none;',
-      'opacity:0;transition:opacity 0.5s ease;z-index:1;'
-    ].join('');
-    return iframe;
+    const f = document.createElement('iframe');
+    f.src = src;
+    f.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+    f.setAttribute('allowfullscreen', '');
+    f.setAttribute('playsinline', '');
+    f.setAttribute('webkit-playsinline', '');
+    return f;
   }
 
   function ytCmd(iframe, func) {
@@ -1657,6 +1661,29 @@ mo.observe(document.body, { childList: true, subtree: true });
     } catch (_) {}
   }
 
+  // ── Mobile: one-time autoplay permission warm-up ─────────────────────────
+  // Create a tiny hidden iframe on the very first touch on the page.
+  // This runs inside a touchstart handler so iOS grants autoplay permission.
+  // We destroy it after 3s — its only purpose is to unlock the permission.
+  let warmedUp = false;
+  if (isTouch) {
+    const warmUp = () => {
+      if (warmedUp) return;
+      warmedUp = true;
+      document.removeEventListener('touchstart', warmUp, { capture: true });
+
+      const primer = makeIframe('BlnHOM-ItQg'); // use first video on page
+      primer.style.cssText = [
+        'position:fixed;top:-9999px;left:-9999px;',
+        'width:1px;height:1px;opacity:0;pointer-events:none;'
+      ].join('');
+      document.body.appendChild(primer);
+      setTimeout(() => { if (primer.parentNode) primer.parentNode.removeChild(primer); }, 3000);
+    };
+    document.addEventListener('touchstart', warmUp, { capture: true, passive: true });
+  }
+
+  // ── Per-facade setup ─────────────────────────────────────────────────────
   document.querySelectorAll('.yt-facade').forEach(facade => {
     const videoId = facade.dataset.vid;
     if (!videoId) return;
@@ -1664,35 +1691,45 @@ mo.observe(document.body, { childList: true, subtree: true });
     const ytUrl   = `https://www.youtube.com/watch?v=${videoId}`;
     const muteBtn = facade.querySelector('.yt-mute-btn');
 
-    let iframe       = null;
-    let isMuted      = true;
-    let isVisible    = false;
-    let isHovered    = false;
-    let fadeTimer    = null;
-    let tapGuardActive = false;
+    let iframe         = null;
+    let isMuted        = true;
+    let isVisible      = false;
+    let isHovered      = false;
+    let fadeTimer      = null;
+    let tapGuardUntil  = 0;
 
     function syncMuteBtn() {
       if (muteBtn) muteBtn.textContent = isMuted ? '🔇' : '🔊';
     }
 
+    function attachIframe() {
+      const f = makeIframe(videoId);
+      f.style.cssText = [
+        'position:absolute;top:0;left:0;',
+        'width:100%;height:100%;border:none;',
+        'pointer-events:none;',
+        'opacity:0;transition:opacity 0.5s ease;z-index:1;'
+      ].join('');
+      return f;
+    }
+
     function ensureFrame() {
       if (iframe) return;
 
-      iframe = makeIframe(videoId);
-      facade.appendChild(iframe);       // insert with opacity:0
-      facade.classList.add('previewing'); // hides thumbnail, shows mute btn
-
+      iframe = attachIframe();
+      facade.appendChild(iframe);
+      facade.classList.add('previewing');
       isMuted = true;
       syncMuteBtn();
 
-      // Activate tap guard — swallow accidental taps for 1s after creation
-      tapGuardActive = true;
-      setTimeout(() => { tapGuardActive = false; }, 800);
+      // Tap guard: swallow click events for 1s to prevent ghost-tap redirect
+      tapGuardUntil = Date.now() + 1000;
 
-      // Fade in after a short delay — enough time for the player to initialize
-      // without depending on postMessage events which vary by browser/device
+      // Fade in after 800ms — enough for player init without depending on postMessage
       clearTimeout(fadeTimer);
-      iframe.style.opacity = '1'; 
+      fadeTimer = setTimeout(() => {
+        if (iframe) iframe.style.opacity = '1';
+      }, 800);
     }
 
     function destroyFrame() {
@@ -1707,7 +1744,7 @@ mo.observe(document.body, { childList: true, subtree: true });
       facade.classList.remove('previewing');
     }
 
-    // Mute toggle via postMessage
+    // Mute toggle
     if (muteBtn) {
       muteBtn.addEventListener('click', e => {
         e.stopPropagation();
@@ -1717,34 +1754,37 @@ mo.observe(document.body, { childList: true, subtree: true });
       });
     }
 
-    // Click/tap → open YouTube (with tap guard to prevent ghost taps on mobile)
+    // Click → YouTube (with tap guard)
     facade.addEventListener('click', e => {
       if (e.target === muteBtn) return;
-      if (tapGuardActive) return;
+      if (Date.now() < tapGuardUntil) return;
       window.open(ytUrl, '_blank', 'noopener');
     });
 
-    // Desktop: hover to preview
-    const isTouch = window.matchMedia('(hover: none)').matches;
-    if (!isTouch) {
-      facade.addEventListener('mouseenter', () => {
-        isHovered = true;
+    if (isTouch) {
+      // ── Mobile: also create iframe on touchstart of this facade ──────────
+      // This runs inside a gesture handler → iOS grants autoplay for this frame
+      facade.addEventListener('touchstart', () => {
         ensureFrame();
-      });
+      }, { passive: true });
+
+    } else {
+      // ── Desktop: hover ────────────────────────────────────────────────────
+      facade.addEventListener('mouseenter', () => { isHovered = true; ensureFrame(); });
       facade.addEventListener('mouseleave', () => {
         isHovered = false;
         if (!isVisible) destroyFrame();
       });
     }
 
-    // Both: auto-preview when scrolled into view
+    // Both: IntersectionObserver for scroll-triggered preview
     new IntersectionObserver(entries => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
         if (isVisible) ensureFrame();
         else if (!isHovered) destroyFrame();
       });
-    }, { threshold: 0.05 }).observe(facade);
+    }, { threshold: 0.25 }).observe(facade);
   });
 
 })();
