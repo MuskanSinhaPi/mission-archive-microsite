@@ -1623,108 +1623,145 @@ mo.observe(document.body, { childList: true, subtree: true });
 </script>
 
 <script>
-let players = new Map();
-let activePlayer = null;
+// ══════════════════════════════════════════════════════════
+//  YouTube Facade — autoplay on scroll, mute toggle, loop
+//  Drop-in replacement for the second <script> block.
+//  Requires: YouTube IFrame API already loaded via
+//    <script src="https://www.youtube.com/iframe_api">
+// ══════════════════════════════════════════════════════════
 
-// Called automatically by YouTube API
-function onYouTubeIframeAPIReady() {
+(function () {
 
-  document.querySelectorAll(".yt-facade").forEach(container => {
-    const vid = container.dataset.vid;
-    const muteBtn = container.querySelector(".yt-mute-btn");
+  const facades  = [];
+  let   apiReady = false;
 
-    let player;
-    let isMuted = true;
+  // Icons: shown on the button to describe current state
+  // muted  → show 🔇 (click to unmute)
+  // unmuted → show 🔊 (click to mute)
+  const ICON_MUTED   = '\uD83D\uDD07'; // 🔇
+  const ICON_UNMUTED = '\uD83D\uDD0A'; // 🔊
 
-    function createPlayer() {
-      if (player) return;
+  document.querySelectorAll('.yt-facade').forEach(el => {
+    const vid = el.dataset.vid;
+    if (!vid) return;
 
-      const div = document.createElement("div");
-      container.appendChild(div);
+    const muteBtn = el.querySelector('.yt-mute-btn');
 
-      player = new YT.Player(div, {
-        videoId: vid,
-        playerVars: {
-          autoplay: 0,          
-          mute: 1,
-          controls: 1,
-          rel: 0,
-          playsinline: 1
-        },
-        events: {
-          onReady: () => {
-            container.classList.add("previewing");
-          },
-          onStateChange: (event) => {
-            // 🔁 AUTO REPLAY
-            if (event.data === YT.PlayerState.ENDED) {
-              player.seekTo(0);
-              player.playVideo();
-            }
-          }
+    // Set correct initial icon (starts muted)
+    if (muteBtn) muteBtn.textContent = ICON_MUTED;
+
+    const entry = { el, vid, player: null, ready: false, muted: true, inView: false };
+    facades.push(entry);
+
+    // Mute toggle
+    if (muteBtn) {
+      muteBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!entry.player || !entry.ready) return;
+        entry.muted = !entry.muted;
+        if (entry.muted) {
+          entry.player.mute();
+          muteBtn.textContent = ICON_MUTED;
+        } else {
+          entry.player.unMute();
+          muteBtn.textContent = ICON_UNMUTED;
         }
       });
-
-      players.set(container, player);
     }
 
-    const isMobile = window.innerWidth < 768;
-    
-    function play() {
-      createPlayer();
-    
-      if (isMobile) {
-        if (activePlayer && activePlayer !== player) {
-          activePlayer.pauseVideo();
-        }
-        activePlayer = player;
-      }
-    
-      player.playVideo();
-    }
-
-    function pause() {
-      if (!player) return;
-      player.pauseVideo();
-    }
-
-    muteBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!player) return;
-
-      if (isMuted) {
-        player.unMute();
-        muteBtn.innerHTML = "🔊";
-      } else {
-        player.mute();
-        muteBtn.innerHTML = "🔇";
-      }
-
-      isMuted = !isMuted;
+    // Click anywhere on facade → ensure player and play
+    el.addEventListener('click', e => {
+      if (e.target === muteBtn) return;
+      entry.userClicked = true;
+      ensurePlayer(entry, () => startPlay(entry));
     });
-
-    container.addEventListener("click", () => {
-      play();
-    });
-
-    container._controls = { play, pause };
   });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const controls = entry.target._controls;
-      if (!controls) return;
+  // Called by YouTube API when ready
+  window.onYouTubeIframeAPIReady = function () {
+    apiReady = true;
+    // Initialise any facades that came into view before the API loaded
+    facades.forEach(entry => {
+      if (entry.inView) ensurePlayer(entry, () => startPlay(entry));
+    });
+  };
 
-      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-        controls.play();
+  function ensurePlayer(entry, onReady) {
+    if (entry.player) {
+      // Player already exists — call onReady immediately if it's ready,
+      // otherwise it will be called from the onReady event handler below.
+      if (entry.ready && onReady) onReady();
+      return;
+    }
+    if (!apiReady) return; // deferred — will retry when API fires
+
+    const div = document.createElement('div');
+    entry.el.appendChild(div);
+
+    entry.player = new YT.Player(div, {
+      videoId: entry.vid,
+      playerVars: {
+        // Do NOT pass autoplay:1 — we call playVideo() manually.
+        // autoplay:1 triggers browser autoplay policies differently and
+        // can cause silent failures on mobile.
+        mute:           1,
+        controls:       1,
+        rel:            0,
+        playsinline:    1,
+        modestbranding: 1,
+        fs:             1,
+      },
+      events: {
+        onReady: evt => {
+          entry.ready = true;
+          evt.target.mute(); // belt-and-suspenders: ensure muted
+          entry.el.classList.add('previewing');
+          if (onReady) onReady();
+        },
+        onStateChange: evt => {
+          if (evt.data === YT.PlayerState.ENDED) {
+            evt.target.seekTo(0);
+            evt.target.playVideo();
+          }
+        },
+      },
+    });
+  }
+
+  function startPlay(entry) {
+    if (!entry.ready || !entry.player) return;
+    if (entry.muted) entry.player.mute();
+    entry.player.playVideo();
+    if (entry.userClicked) {
+      entry.userClicked = false;
+      entry.player.getIframe().requestFullscreen?.();
+    }
+  }
+
+  function stopPlay(entry) {
+    if (!entry.ready || !entry.player) return;
+    entry.player.pauseVideo();
+  }
+
+  // Autoplay when ≥50% visible, autopause when scrolled away
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(obs => {
+      const entry = facades.find(f => f.el === obs.target);
+      if (!entry) return;
+
+      if (obs.isIntersecting && obs.intersectionRatio >= 0.5) {
+        entry.inView = true;
+        ensurePlayer(entry, () => startPlay(entry));
       } else {
-        controls.pause();
+        entry.inView = false;
+        stopPlay(entry);
       }
     });
-  }, { threshold: 0.6 });
+  }, { threshold: [0, 0.5] }); // 0 catches the leaving edge cleanly
 
-  document.querySelectorAll(".yt-facade").forEach(el => observer.observe(el));
-}
+  facades.forEach(entry => observer.observe(entry.el));
+
+})();
 </script>
   
 </body>
