@@ -1626,32 +1626,27 @@ document.querySelectorAll(".yt-facade").forEach(container => {
   const vid = container.dataset.vid;
   const muteBtn = container.querySelector(".yt-mute-btn");
 
-  let iframe = document.createElement("iframe");
+  let iframe = null;
   let isMuted = true;
 
-  // Create iframe immediately (no click needed)
-  iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0`;
-  iframe.allow = "autoplay; encrypted-media";
-  iframe.allowFullscreen = true;
-  iframe.setAttribute("playsinline", "");
+  container.addEventListener("click", function () {
+    if (iframe) return;
 
-  container.appendChild(iframe);
-  container.classList.add("previewing");
+    iframe = document.createElement("iframe");
 
-  // 🔥 FORCE autoplay on first interaction (mobile fix)
-  const forcePlay = () => {
-    iframe.contentWindow.postMessage(
-      '{"event":"command","func":"playVideo","args":""}',
-      "*"
-    );
-  };
+    iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&playsinline=1&rel=0`;
 
-  window.addEventListener("touchstart", forcePlay, { once: true });
-  window.addEventListener("click", forcePlay, { once: true });
+    iframe.allow = "autoplay; encrypted-media";
+    iframe.allowFullscreen = true;
 
-  // 🔊 Mute toggle
+    container.appendChild(iframe);
+    container.classList.add("previewing");
+  });
+
   muteBtn.addEventListener("click", function (e) {
     e.stopPropagation();
+
+    if (!iframe) return;
 
     if (isMuted) {
       iframe.contentWindow.postMessage(
@@ -1671,5 +1666,6 @@ document.querySelectorAll(".yt-facade").forEach(container => {
   });
 });
 </script>
+  
 </body>
 </html>
