@@ -1677,14 +1677,20 @@ mo.observe(document.body, { childList: true, subtree: true });
     });
   });
 
-  // Called by YouTube API when ready
+  // Safe API ready — handles both "API fires first" and "script runs first"
+  const _prevYTReady = window.onYouTubeIframeAPIReady;
   window.onYouTubeIframeAPIReady = function () {
+    if (_prevYTReady) _prevYTReady();
     apiReady = true;
-    // Initialise any facades that came into view before the API loaded
     facades.forEach(entry => {
       if (entry.inView) ensurePlayer(entry, () => startPlay(entry));
     });
   };
+  
+  // Also handle case where API already fired before this script ran
+  if (window.YT && window.YT.Player) {
+    apiReady = true;
+  }
 
   function ensurePlayer(entry, onReady) {
     if (entry.player) {
@@ -1763,6 +1769,6 @@ mo.observe(document.body, { childList: true, subtree: true });
 
 })();
 </script>
-  
+
 </body>
 </html>
