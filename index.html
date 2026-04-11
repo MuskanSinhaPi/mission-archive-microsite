@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.youtube.com/iframe_api"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 <style>
 * { font-family: 'Space Grotesk', sans-serif; }
@@ -1622,48 +1623,108 @@ mo.observe(document.body, { childList: true, subtree: true });
 </script>
 
 <script>
-document.querySelectorAll(".yt-facade").forEach(container => {
-  const vid = container.dataset.vid;
-  const muteBtn = container.querySelector(".yt-mute-btn");
+let players = new Map();
+let activePlayer = null;
 
-  let iframe = null;
-  let isMuted = true;
+// Called automatically by YouTube API
+function onYouTubeIframeAPIReady() {
 
-  container.addEventListener("click", function () {
-    if (iframe) return;
+  document.querySelectorAll(".yt-facade").forEach(container => {
+    const vid = container.dataset.vid;
+    const muteBtn = container.querySelector(".yt-mute-btn");
 
-    iframe = document.createElement("iframe");
+    let player;
+    let isMuted = true;
 
-    iframe.src = `https://www.youtube.com/embed/${vid}?enablejsapi=1&playsinline=1&rel=0&mute=1&loop=1&playlist=${vid}`;
-    iframe.allow = "autoplay; encrypted-media";
-    iframe.allowFullscreen = true;
+    function createPlayer() {
+      if (player) return;
 
-    container.appendChild(iframe);
-    container.classList.add("previewing");
-  });
+      const div = document.createElement("div");
+      container.appendChild(div);
 
-  muteBtn.addEventListener("click", function (e) {
-    e.stopPropagation();
+      player = new YT.Player(div, {
+        videoId: vid,
+        playerVars: {
+          autoplay: 0,          
+          mute: 1,
+          controls: 1,
+          rel: 0,
+          playsinline: 1
+        },
+        events: {
+          onReady: () => {
+            container.classList.add("previewing");
+          },
+          onStateChange: (event) => {
+            // 🔁 AUTO REPLAY
+            if (event.data === YT.PlayerState.ENDED) {
+              player.seekTo(0);
+              player.playVideo();
+            }
+          }
+        }
+      });
 
-    if (!iframe) return;
-
-    if (isMuted) {
-      iframe.contentWindow.postMessage(
-        '{"event":"command","func":"unMute","args":""}',
-        "*"
-      );
-      muteBtn.innerHTML = "🔊";
-    } else {
-      iframe.contentWindow.postMessage(
-        '{"event":"command","func":"mute","args":""}',
-        "*"
-      );
-      muteBtn.innerHTML = "🔇";
+      players.set(container, player);
     }
 
-    isMuted = !isMuted;
+    const isMobile = window.innerWidth < 768;
+    
+    function play() {
+      createPlayer();
+    
+      if (isMobile) {
+        if (activePlayer && activePlayer !== player) {
+          activePlayer.pauseVideo();
+        }
+        activePlayer = player;
+      }
+    
+      player.playVideo();
+    }
+
+    function pause() {
+      if (!player) return;
+      player.pauseVideo();
+    }
+
+    muteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!player) return;
+
+      if (isMuted) {
+        player.unMute();
+        muteBtn.innerHTML = "🔊";
+      } else {
+        player.mute();
+        muteBtn.innerHTML = "🔇";
+      }
+
+      isMuted = !isMuted;
+    });
+
+    container.addEventListener("click", () => {
+      play();
+    });
+
+    container._controls = { play, pause };
   });
-});
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const controls = entry.target._controls;
+      if (!controls) return;
+
+      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+        controls.play();
+      } else {
+        controls.pause();
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll(".yt-facade").forEach(el => observer.observe(el));
+}
 </script>
   
 </body>
