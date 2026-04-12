@@ -1061,8 +1061,16 @@ let cur = '';
 sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
 navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
 }, { passive: true });
-document.querySelectorAll('a[href="#mission"]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); document.querySelector('#mission').scrollIntoView({ behavior: 'smooth' }); }));
+document.querySelectorAll('a[href="#mission"]').forEach(el => el.addEventListener('click', e => {
+  e.preventDefault();
+  document.querySelector('#mission').scrollIntoView({ behavior: 'smooth' });
 
+  // Use this gesture to pre-create all YouTube players on iOS
+  if (apiReady) {
+    facades.forEach(entry => { if (!entry.player) createPlayer(entry); });
+  }
+  unlocked = true;
+}));
 // Mobile hotspots
 function isMobile() { return window.matchMedia('(max-width:640px)').matches; }
 document.querySelectorAll('.hotspot').forEach(h => {
