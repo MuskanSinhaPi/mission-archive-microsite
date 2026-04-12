@@ -717,7 +717,25 @@ transition: opacity 0.4s ease;
 </section>
 
 <div class="section-divider"></div>
+  
+<!-- Video enable fallback for iOS edge cases -->
+<div id="video-enable-banner" style="display:none;text-align:center;padding:1.5rem 1rem;">
+  <button id="video-enable-btn"
+    style="background:linear-gradient(135deg,#00D4FF,#7C3AED);border:none;color:white;
+           font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;
+           padding:0.9rem 2rem;border-radius:9999px;cursor:pointer;
+           box-shadow:0 0 24px rgba(0,212,255,0.4);
+           display:inline-flex;align-items:center;gap:0.6rem;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+    Tap to enable video previews
+  </button>
+  <p style="color:#64748b;font-size:0.78rem;margin-top:0.6rem;">
+    Videos will autoplay as you scroll
+  </p>
+</div>
 
+<div class="section-divider"></div>
+  
 <!-- Flight & Testing -->
 <section id="testing" class="py-20 px-6">
 <div class="container mx-auto max-w-6xl">
@@ -1064,13 +1082,10 @@ navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#
 document.querySelectorAll('a[href="#mission"]').forEach(el => el.addEventListener('click', e => {
   e.preventDefault();
   document.querySelector('#mission').scrollIntoView({ behavior: 'smooth' });
-
-  // Use this gesture to pre-create all YouTube players on iOS
-  if (apiReady) {
-    facades.forEach(entry => { if (!entry.player) createPlayer(entry); });
-  }
   unlocked = true;
+  if (apiReady) facades.forEach(entry => { if (!entry.player) createPlayer(entry); });
 }));
+
 // Mobile hotspots
 function isMobile() { return window.matchMedia('(max-width:640px)').matches; }
 document.querySelectorAll('.hotspot').forEach(h => {
@@ -1631,151 +1646,132 @@ mo.observe(document.body, { childList: true, subtree: true });
 </script>
 
 <script>
-// ══════════════════════════════════════════════════════════
-//  YouTube Facade — autoplay on scroll, mute toggle, loop
-//  Drop-in replacement for the second <script> block.
-//  Requires: YouTube IFrame API already loaded via
-//    <script src="https://www.youtube.com/iframe_api">
-// ══════════════════════════════════════════════════════════
+var facades   = [];
+var apiReady  = false;
+var unlocked  = false;
 
-(function () {
+var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  const facades  = [];
-  let   apiReady = false;
+if (!isIOS) unlocked = true;
 
-  // Icons: shown on the button to describe current state
-  // muted  → show 🔇 (click to unmute)
-  // unmuted → show 🔊 (click to mute)
-  const ICON_MUTED   = '\uD83D\uDD07'; // 🔇
-  const ICON_UNMUTED = '\uD83D\uDD0A'; // 🔊
+var ICON_MUTED   = '\uD83D\uDD07';
+var ICON_UNMUTED = '\uD83D\uDD0A';
 
-  document.querySelectorAll('.yt-facade').forEach(el => {
-    const vid = el.dataset.vid;
-    if (!vid) return;
-
-    const muteBtn = el.querySelector('.yt-mute-btn');
-
-    // Set correct initial icon (starts muted)
-    if (muteBtn) muteBtn.textContent = ICON_MUTED;
-
-    const entry = { el, vid, player: null, ready: false, muted: true, inView: false };
-    facades.push(entry);
-
-    // Mute toggle
-    if (muteBtn) {
-      muteBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        if (!entry.player || !entry.ready) return;
-        entry.muted = !entry.muted;
-        if (entry.muted) {
-          entry.player.mute();
-          muteBtn.textContent = ICON_MUTED;
-        } else {
-          entry.player.unMute();
-          muteBtn.textContent = ICON_UNMUTED;
+function createPlayer(entry) {
+  if (entry.player) return;
+  var div = document.createElement('div');
+  entry.el.appendChild(div);
+  entry.player = new YT.Player(div, {
+    videoId: entry.vid,
+    playerVars: {
+      mute: 1, controls: 1, rel: 0,
+      playsinline: 1, modestbranding: 1,
+    },
+    events: {
+      onReady: function(evt) {
+        entry.ready = true;
+        evt.target.mute();
+        entry.el.classList.add('previewing');
+        if (entry.inView && unlocked) startPlay(entry);
+        if (entry._pendingOnReady) {
+          entry._pendingOnReady();
+          entry._pendingOnReady = null;
         }
-      });
-    }
+      },
+      onStateChange: function(evt) {
+        if (evt.data === YT.PlayerState.ENDED) {
+          evt.target.seekTo(0);
+          evt.target.playVideo();
+        }
+      },
+    },
+  });
+}
 
-    // Click anywhere on facade → ensure player and play
-    el.addEventListener('click', e => {
-      if (e.target === muteBtn) return;
-      entry.userClicked = true;
-      ensurePlayer(entry, () => startPlay(entry));
+function ensurePlayer(entry, onReady) {
+  if (entry.player) {
+    if (entry.ready && onReady) onReady();
+    else if (!entry.ready && onReady) entry._pendingOnReady = onReady;
+    return;
+  }
+  if (!apiReady) {
+    if (onReady) entry._pendingOnReady = onReady;
+    return;
+  }
+  if (onReady) entry._pendingOnReady = onReady;
+  createPlayer(entry);
+}
+
+function startPlay(entry) {
+  if (!entry.ready || !entry.player) return;
+  entry.player.mute();
+  entry.player.playVideo();
+}
+
+function stopPlay(entry) {
+  if (!entry.ready || !entry.player) return;
+  entry.player.pauseVideo();
+}
+
+document.querySelectorAll('.yt-facade').forEach(function(el) {
+  var vid = el.dataset.vid;
+  if (!vid) return;
+  var muteBtn = el.querySelector('.yt-mute-btn');
+  if (muteBtn) muteBtn.textContent = ICON_MUTED;
+
+  var entry = { el: el, vid: vid, player: null, ready: false, muted: true, inView: false, _pendingOnReady: null };
+  facades.push(entry);
+
+  if (muteBtn) {
+    muteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (!entry.player || !entry.ready) return;
+      entry.muted = !entry.muted;
+      entry.muted ? entry.player.mute() : entry.player.unMute();
+      muteBtn.textContent = entry.muted ? ICON_MUTED : ICON_UNMUTED;
+    });
+  }
+
+  // Direct tap on video — always works on all platforms
+  el.addEventListener('click', function(e) {
+    if (e.target === muteBtn) return;
+    ensurePlayer(entry, function() {
+      entry.player.playVideo();
     });
   });
+});
 
-  // Safe API ready — handles both "API fires first" and "script runs first"
-  const _prevYTReady = window.onYouTubeIframeAPIReady;
-  window.onYouTubeIframeAPIReady = function () {
-    if (_prevYTReady) _prevYTReady();
-    apiReady = true;
-    facades.forEach(entry => {
-      if (entry.inView) ensurePlayer(entry, () => startPlay(entry));
-    });
-  };
-  
-  // Also handle case where API already fired before this script ran
-  if (window.YT && window.YT.Player) {
-    apiReady = true;
-  }
+var _prevYTReady = window.onYouTubeIframeAPIReady;
+window.onYouTubeIframeAPIReady = function() {
+  if (_prevYTReady) _prevYTReady();
+  apiReady = true;
+  // If unlocked (non-iOS or button already tapped), create players for in-view facades
+  facades.forEach(function(entry) {
+    if (unlocked && !entry.player) createPlayer(entry);
+    else if (entry.inView && unlocked) ensurePlayer(entry, function() { startPlay(entry); });
+  });
+};
 
-  function ensurePlayer(entry, onReady) {
-    if (entry.player) {
-      // Player already exists — call onReady immediately if it's ready,
-      // otherwise it will be called from the onReady event handler below.
-      if (entry.ready && onReady) onReady();
-      return;
+if (window.YT && window.YT.Player) apiReady = true;
+
+// IntersectionObserver — autoplay on scroll for unlocked sessions
+var ytObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(obs) {
+    var entry = facades.find(function(f) { return f.el === obs.target; });
+    if (!entry) return;
+    if (obs.isIntersecting && obs.intersectionRatio >= 0.5) {
+      entry.inView = true;
+      if (unlocked) ensurePlayer(entry, function() { startPlay(entry); });
+    } else {
+      entry.inView = false;
+      stopPlay(entry);
     }
-    if (!apiReady) return; // deferred — will retry when API fires
+  });
+}, { threshold: [0, 0.5] });
 
-    const div = document.createElement('div');
-    entry.el.appendChild(div);
+facades.forEach(function(entry) { ytObserver.observe(entry.el); });
 
-    entry.player = new YT.Player(div, {
-      videoId: entry.vid,
-      playerVars: {
-        // Do NOT pass autoplay:1 — we call playVideo() manually.
-        // autoplay:1 triggers browser autoplay policies differently and
-        // can cause silent failures on mobile.
-        mute:           1,
-        controls:       1,
-        rel:            0,
-        playsinline:    1,
-        modestbranding: 1,
-        fs:             1,
-      },
-      events: {
-        onReady: evt => {
-          entry.ready = true;
-          evt.target.mute(); // belt-and-suspenders: ensure muted
-          entry.el.classList.add('previewing');
-          if (onReady) onReady();
-        },
-        onStateChange: evt => {
-          if (evt.data === YT.PlayerState.ENDED) {
-            evt.target.seekTo(0);
-            evt.target.playVideo();
-          }
-        },
-      },
-    });
-  }
-
-  function startPlay(entry) {
-    if (!entry.ready || !entry.player) return;
-    if (entry.muted) entry.player.mute();
-    entry.player.playVideo();
-    if (entry.userClicked) {
-      entry.userClicked = false;
-      entry.player.getIframe().requestFullscreen?.();
-    }
-  }
-
-  function stopPlay(entry) {
-    if (!entry.ready || !entry.player) return;
-    entry.player.pauseVideo();
-  }
-
-  // Autoplay when ≥50% visible, autopause when scrolled away
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(obs => {
-      const entry = facades.find(f => f.el === obs.target);
-      if (!entry) return;
-
-      if (obs.isIntersecting && obs.intersectionRatio >= 0.5) {
-        entry.inView = true;
-        ensurePlayer(entry, () => startPlay(entry));
-      } else {
-        entry.inView = false;
-        stopPlay(entry);
-      }
-    });
-  }, { threshold: [0, 0.5] }); // 0 catches the leaving edge cleanly
-
-  facades.forEach(entry => observer.observe(entry.el));
-
-})();
 </script>
 
 </body>
