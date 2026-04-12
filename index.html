@@ -733,8 +733,6 @@ transition: opacity 0.4s ease;
     Videos will autoplay as you scroll
   </p>
 </div>
-
-<div class="section-divider"></div>
   
 <!-- Flight & Testing -->
 <section id="testing" class="py-20 px-6">
@@ -1707,11 +1705,14 @@ function startPlay(entry) {
   if (!entry.ready || !entry.player) return;
   entry.player.mute();
   entry.player.playVideo();
+  entry.player.getIframe().style.pointerEvents = 'auto';  
 }
 
 function stopPlay(entry) {
   if (!entry.ready || !entry.player) return;
+  if (document.fullscreenElement) return;
   entry.player.pauseVideo();
+  entry.player.getIframe().style.pointerEvents = 'none';
 }
 
 document.querySelectorAll('.yt-facade').forEach(function(el) {
