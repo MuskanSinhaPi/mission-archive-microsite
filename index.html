@@ -93,6 +93,17 @@ html { scroll-behavior:smooth; }
   opacity:0; transition:opacity 0.25s ease;
   pointer-events:none;
 }
+.yt-expand-btn {
+  position:absolute; bottom:8px; left:8px;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.25);
+  color:white; font-size:14px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:5;
+  opacity:0; transition:opacity 0.25s ease;
+  pointer-events:none;
+}
+.yt-facade.previewing .yt-expand-btn { opacity:1; pointer-events:auto; }
 .yt-facade.previewing .yt-mute-btn { opacity:1; pointer-events:auto; }
 .yt-facade.previewing img { opacity:0; }
 .yt-facade.previewing .yt-play-btn { opacity:0; pointer-events:none; }
@@ -1650,6 +1661,7 @@ var unlocked  = false;
 
 var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var isMobileDevice = isIOS || /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 if (!isIOS) unlocked = true;
 
@@ -1670,6 +1682,8 @@ function createPlayer(entry) {
       onReady: function(evt) {
         entry.ready = true;
         evt.target.mute();
+        // Always keep iframe fully interactive — never block pointer events
+        evt.target.getIframe().style.pointerEvents = 'auto';
         entry.el.classList.add('previewing');
         if (entry.inView && unlocked) startPlay(entry);
         if (entry._pendingOnReady) {
@@ -1705,14 +1719,29 @@ function startPlay(entry) {
   if (!entry.ready || !entry.player) return;
   entry.player.mute();
   entry.player.playVideo();
-  entry.player.getIframe().style.pointerEvents = 'auto';  
 }
 
 function stopPlay(entry) {
   if (!entry.ready || !entry.player) return;
   if (document.fullscreenElement) return;
   entry.player.pauseVideo();
-  entry.player.getIframe().style.pointerEvents = 'none';
+}
+
+function openFullscreen(entry) {
+  var iframe = entry.player && entry.player.getIframe ? entry.player.getIframe() : null;
+  if (!iframe) return;
+
+  // Try standard Fullscreen API first (works on desktop + Android Chrome)
+  var reqFS = iframe.requestFullscreen || iframe.webkitRequestFullscreen ||
+              iframe.mozRequestFullScreen || iframe.msRequestFullscreen;
+  if (reqFS) {
+    reqFS.call(iframe).catch(function() {});
+    return;
+  }
+
+  // iOS fallback: open in a new tab so the user can go fullscreen natively
+  var url = 'https://www.youtube.com/watch?v=' + entry.vid;
+  window.open(url, '_blank');
 }
 
 document.querySelectorAll('.yt-facade').forEach(function(el) {
@@ -1720,6 +1749,15 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
   if (!vid) return;
   var muteBtn = el.querySelector('.yt-mute-btn');
   if (muteBtn) muteBtn.textContent = ICON_MUTED;
+
+  // Add expand button for mobile
+  if (isMobileDevice) {
+    var expandBtn = document.createElement('button');
+    expandBtn.className = 'yt-expand-btn';
+    expandBtn.title = 'Fullscreen';
+    expandBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
+    el.appendChild(expandBtn);
+  }
 
   var entry = { el: el, vid: vid, player: null, ready: false, muted: true, inView: false, _pendingOnReady: null };
   facades.push(entry);
@@ -1734,9 +1772,24 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
     });
   }
 
-  // Direct tap on video — always works on all platforms
+  // Expand button handler
+  var expandBtn2 = el.querySelector('.yt-expand-btn');
+  if (expandBtn2) {
+    expandBtn2.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (!entry.ready) {
+        ensurePlayer(entry, function() { openFullscreen(entry); });
+      } else {
+        openFullscreen(entry);
+      }
+    });
+  }
+
+  // Click on facade: load + play
   el.addEventListener('click', function(e) {
-    if (e.target === muteBtn) return;
+    if (e.target === muteBtn || e.target === expandBtn2) return;
+    // If iframe is ready and click landed on it, let YouTube handle it natively
+    if (entry.ready && e.target.tagName === 'IFRAME') return;
     ensurePlayer(entry, function() {
       entry.player.playVideo();
     });
@@ -1747,7 +1800,6 @@ var _prevYTReady = window.onYouTubeIframeAPIReady;
 window.onYouTubeIframeAPIReady = function() {
   if (_prevYTReady) _prevYTReady();
   apiReady = true;
-  // If unlocked (non-iOS or button already tapped), create players for in-view facades
   facades.forEach(function(entry) {
     if (unlocked && !entry.player) createPlayer(entry);
     else if (entry.inView && unlocked) ensurePlayer(entry, function() { startPlay(entry); });
@@ -1756,7 +1808,6 @@ window.onYouTubeIframeAPIReady = function() {
 
 if (window.YT && window.YT.Player) apiReady = true;
 
-// IntersectionObserver — autoplay on scroll for unlocked sessions
 var ytObserver = new IntersectionObserver(function(entries) {
   entries.forEach(function(obs) {
     var entry = facades.find(function(f) { return f.el === obs.target; });
