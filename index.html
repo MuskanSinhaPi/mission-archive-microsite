@@ -1674,19 +1674,14 @@ function createPlayer(entry) {
   entry.el.appendChild(div);
   entry.player = new YT.Player(div, {
     videoId: entry.vid,
-    playerVars: {
-      mute: 1, controls: 1, rel: 0,
-      playsinline: 1, modestbranding: 1,
-    },
+    playerVars: { mute: 1, controls: 1, rel: 0, playsinline: 1, modestbranding: 1 },
     events: {
       onReady: function(evt) {
         entry.ready = true;
         evt.target.mute();
-        // Always keep iframe fully interactive — never block pointer events
         var iframe = evt.target.getIframe();
-        iframe.setAttribute('allow', 'autoplay; fullscreen');  // ADD THIS
+        iframe.setAttribute('allow', 'autoplay; fullscreen');
         iframe.style.pointerEvents = 'auto';
-        evt.target.getIframe().style.pointerEvents = 'auto';
         entry.el.classList.add('previewing');
         if (entry.inView && unlocked) startPlay(entry);
         if (entry._pendingOnReady) {
@@ -1732,43 +1727,31 @@ function stopPlay(entry) {
 
 function openFullscreen(entry) {
   var iframe = entry.player && entry.player.getIframe ? entry.player.getIframe() : null;
-
-  // Try fullscreen on the iframe (works in Chrome/Firefox with allow="fullscreen")
   if (iframe) {
     var reqFS = iframe.requestFullscreen || iframe.webkitRequestFullscreen ||
                 iframe.mozRequestFullScreen || iframe.msRequestFullscreen;
     if (reqFS) {
-      reqFS.call(iframe).then(function() {}).catch(function() {
-        // Fullscreen was blocked — open in YouTube as fallback
+      reqFS.call(iframe).catch(function() {
         window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
       });
       return;
     }
   }
-
-  // No fullscreen API or iOS — open in YouTube
   window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
-}
-
-  // iOS fallback: open in a new tab so the user can go fullscreen natively
-  var url = 'https://www.youtube.com/watch?v=' + entry.vid;
-  window.open(url, '_blank');
 }
 
 document.querySelectorAll('.yt-facade').forEach(function(el) {
   var vid = el.dataset.vid;
   if (!vid) return;
+
   var muteBtn = el.querySelector('.yt-mute-btn');
   if (muteBtn) muteBtn.textContent = ICON_MUTED;
 
-  // // Add expand button for mobile
-  // if (isMobileDevice) {
-    var expandBtn = document.createElement('button');
-    expandBtn.className = 'yt-expand-btn';
-    expandBtn.title = 'Fullscreen';
-    expandBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
-    el.appendChild(expandBtn);
-  // }
+  var expandBtn = document.createElement('button');
+  expandBtn.className = 'yt-expand-btn';
+  expandBtn.title = 'Fullscreen / Open in YouTube';
+  expandBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
+  el.appendChild(expandBtn);
 
   var entry = { el: el, vid: vid, player: null, ready: false, muted: true, inView: false, _pendingOnReady: null };
   facades.push(entry);
@@ -1783,38 +1766,27 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
     });
   }
 
-  // Expand button handler
-  var expandBtn2 = el.querySelector('.yt-expand-btn');
-  if (expandBtn2) {
-    expandBtn2.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (!entry.ready) {
-        ensurePlayer(entry, function() { openFullscreen(entry); });
-      } else {
-        openFullscreen(entry);
-      }
-    });
-  }
+  expandBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!entry.ready) {
+      ensurePlayer(entry, function() { openFullscreen(entry); });
+    } else {
+      openFullscreen(entry);
+    }
+  });
 
-  // Click on facade: load + play
-el.addEventListener('click', function(e) {
-  if (e.target === muteBtn || e.target === expandBtn2) return;
-  if (entry.ready && e.target.tagName === 'IFRAME') return;
-
-  // If player isn't ready yet and user clicks play button, open YouTube directly on desktop
-  if (!entry.ready && !isMobileDevice) {
-    window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
-    return;
-  }
-
-  ensurePlayer(entry, function() {
-    entry.player.playVideo();
+  el.addEventListener('click', function(e) {
+    if (e.target === muteBtn || e.target === expandBtn) return;
+    if (entry.ready && e.target.tagName === 'IFRAME') return;
+    if (!entry.ready && !isMobileDevice) {
+      window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
+      return;
+    }
+    ensurePlayer(entry, function() { entry.player.playVideo(); });
   });
 });
 
-var _prevYTReady = window.onYouTubeIframeAPIReady;
 window.onYouTubeIframeAPIReady = function() {
-  if (_prevYTReady) _prevYTReady();
   apiReady = true;
   facades.forEach(function(entry) {
     if (unlocked && !entry.player) createPlayer(entry);
