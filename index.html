@@ -117,6 +117,19 @@ html { scroll-behavior:smooth; }
 }
 .yt-facade.previewing .yt-expand-btn { opacity:1; pointer-events:auto; }
 .yt-facade.previewing .yt-mute-btn { opacity:1; pointer-events:auto; }
+
+.yt-link-btn {
+position:absolute; top:8px; right:8px;
+width:32px; height:32px; border-radius:50%;
+background:rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.25);
+color:white; display:flex; align-items:center; justify-content:center;
+z-index:5; text-decoration:none; transition:background 0.2s;
+}
+.yt-link-btn:hover { background:rgba(0,212,255,0.5); }
+.yt-facade.is-fullscreen .yt-mute-btn,
+.yt-facade.is-fullscreen .yt-expand-btn,
+.yt-facade.is-fullscreen .yt-link-btn { opacity:1; pointer-events:auto; }
+  
 .yt-facade.previewing img { opacity:0; }
 .yt-facade.previewing .yt-play-btn { opacity:0; pointer-events:none; }
 
@@ -1686,7 +1699,7 @@ function createPlayer(entry) {
   entry.el.appendChild(div);
   entry.player = new YT.Player(div, {
     videoId: entry.vid,
-    playerVars: { mute: 1, controls: 1, rel: 0, playsinline: 1, modestbranding: 1 },
+    playerVars: { mute: 1, controls: 1, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3 },
     events: {
       onReady: function(evt) {
         entry.ready = true;
@@ -1694,7 +1707,6 @@ function createPlayer(entry) {
         var iframe = evt.target.getIframe();
         iframe.setAttribute('allow', 'autoplay; fullscreen');
         iframe.style.pointerEvents = 'auto';
-        entry.el.classList.add('previewing');
         if (entry.inView && unlocked) startPlay(entry);
         if (entry._pendingOnReady) {
           entry._pendingOnReady();
@@ -1702,6 +1714,10 @@ function createPlayer(entry) {
         }
       },
       onStateChange: function(evt) {
+        if (evt.data === YT.PlayerState.PLAYING && !entry.revealed) {
+          entry.revealed = true;
+          setTimeout(function() { entry.el.classList.add('previewing'); }, 350);
+        }
         if (evt.data === YT.PlayerState.ENDED) {
           evt.target.seekTo(0);
           evt.target.playVideo();
@@ -1737,20 +1753,28 @@ function stopPlay(entry) {
   entry.player.pauseVideo();
 }
 
-function openFullscreen(entry) {
-  var iframe = entry.player && entry.player.getIframe ? entry.player.getIframe() : null;
-  if (iframe) {
-    var reqFS = iframe.requestFullscreen || iframe.webkitRequestFullscreen ||
-                iframe.mozRequestFullScreen || iframe.msRequestFullscreen;
-    if (reqFS) {
-      reqFS.call(iframe).catch(function() {
-        window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
-      });
-      return;
-    }
+function toggleFullscreen(entry) {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    return;
   }
-  window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
+  var target = entry.el;
+  var reqFS = target.requestFullscreen || target.webkitRequestFullscreen ||
+              target.mozRequestFullScreen || target.msRequestFullscreen;
+  if (reqFS) {
+    reqFS.call(target).catch(function() {
+      window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
+    });
+  } else {
+    window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
+  }
 }
+
+document.addEventListener('fullscreenchange', function() {
+  facades.forEach(function(entry) {
+    entry.el.classList.toggle('is-fullscreen', document.fullscreenElement === entry.el);
+  });
+});
 
 document.querySelectorAll('.yt-facade').forEach(function(el) {
   var vid = el.dataset.vid;
@@ -1764,6 +1788,16 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
   expandBtn.title = 'Fullscreen / Open in YouTube';
   expandBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>';
   el.appendChild(expandBtn);
+
+  var linkBtn = document.createElement('a');
+  linkBtn.className = 'yt-link-btn';
+  linkBtn.title = 'Watch on YouTube';
+  linkBtn.href = 'https://www.youtube.com/watch?v=' + vid;
+  linkBtn.target = '_blank';
+  linkBtn.rel = 'noopener';
+  linkBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+  linkBtn.addEventListener('click', function(e) { e.stopPropagation(); });
+  el.appendChild(linkBtn);
 
   var entry = { el: el, vid: vid, player: null, ready: false, muted: true, inView: false, _pendingOnReady: null };
   facades.push(entry);
@@ -1781,9 +1815,9 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
   expandBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     if (!entry.ready) {
-      ensurePlayer(entry, function() { openFullscreen(entry); });
+      ensurePlayer(entry, function() { toggleFullscreen(entry); });
     } else {
-      openFullscreen(entry);
+      toggleFullscreen(entry);
     }
   });
 
