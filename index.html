@@ -1730,7 +1730,7 @@ function createPlayer(entry) {
       onStateChange: function(evt) {
         if (evt.data === YT.PlayerState.PLAYING) {
           entry.playing = true;
-          if (playPauseBtn) playPauseBtn.textContent = ICON_PAUSE;
+          if (entry.playPauseBtn) entry.playPauseBtn.textContent = ICON_PAUSE;
           if (!entry.revealed) {
             entry.revealed = true;
             setTimeout(function() { entry.el.classList.add('previewing'); }, 350);
@@ -1738,7 +1738,7 @@ function createPlayer(entry) {
         }
         if (evt.data === YT.PlayerState.PAUSED) {
           entry.playing = false;
-          if (playPauseBtn) playPauseBtn.textContent = ICON_PLAY;
+          if (entry.playPauseBtn) entry.playPauseBtn.textContent = ICON_PLAY;
         }
         if (evt.data === YT.PlayerState.ENDED) {
           evt.target.seekTo(0);
@@ -1821,7 +1821,7 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
   linkBtn.addEventListener('click', function(e) { e.stopPropagation(); });
   el.appendChild(linkBtn);
 
-  var entry = { el: el, vid: vid, player: null, ready: false, muted: true, playing: false, inView: false, revealed: false, _pendingOnReady: null };
+  var entry = { el: el, vid: vid, player: null, ready: false, muted: true, playing: false, inView: false, revealed: false, playPauseBtn: null, _pendingOnReady: null };
   facades.push(entry);
 
   var playPauseBtn = document.createElement('button');
@@ -1829,6 +1829,7 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
   playPauseBtn.title = 'Play/Pause';
   playPauseBtn.textContent = ICON_PAUSE;
   el.appendChild(playPauseBtn);
+  entry.playPauseBtn = playPauseBtn;
 
   playPauseBtn.addEventListener('click', function(e) {
     e.stopPropagation();
