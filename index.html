@@ -1858,12 +1858,12 @@ document.querySelectorAll('.yt-facade').forEach(function(el) {
 
   el.addEventListener('click', function(e) {
     if (e.target === muteBtn || e.target === expandBtn || e.target === playPauseBtn) return;
-    if (entry.ready) {
+    if (entry.ready && e.target.tagName === 'IFRAME') {
       if (entry.playing) entry.player.pauseVideo();
       else entry.player.playVideo();
       return;
     }
-    if (!isMobileDevice) {
+    if (!entry.ready && !isMobileDevice) {
       window.open('https://www.youtube.com/watch?v=' + entry.vid, '_blank');
       return;
     }
