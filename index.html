@@ -1713,7 +1713,7 @@ function createPlayer(entry) {
   entry.el.appendChild(div);
   entry.player = new YT.Player(div, {
     videoId: entry.vid,
-    playerVars: { mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3 },
+    playerVars: { mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, loop: 1, playlist: entry.vid },
     events: {
       onReady: function(evt) {
         entry.ready = true;
@@ -1733,16 +1733,12 @@ function createPlayer(entry) {
           if (entry.playPauseBtn) entry.playPauseBtn.textContent = ICON_PAUSE;
           if (!entry.revealed) {
             entry.revealed = true;
-            setTimeout(function() { entry.el.classList.add('previewing'); }, 350);
+            entry.el.classList.add('previewing');
           }
         }
         if (evt.data === YT.PlayerState.PAUSED) {
           entry.playing = false;
           if (entry.playPauseBtn) entry.playPauseBtn.textContent = ICON_PLAY;
-        }
-        if (evt.data === YT.PlayerState.ENDED) {
-          evt.target.seekTo(0);
-          evt.target.playVideo();
         }
       },
     },
