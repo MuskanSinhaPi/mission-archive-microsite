@@ -1308,7 +1308,8 @@ function mediaSrc(folder, filename) {
   return raw;
 }
 
-fetch('https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/index.json')
+// fetch('https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/index.json')
+fetch("/gallery-api")
 .then(r=>{if(!r.ok)throw new Error('Gallery index not found');return r.json();})
 .then(data=>{galleryData=data;buildTabs();renderAlbum(currentAlbum);document.getElementById('gallery-loading').style.display='none';document.getElementById('gallery-tip').style.display='block';})
 .catch(err=>{ document.getElementById('gallery-loading').innerHTML=`<div class="py-12 text-center"><p class="text-red-400 text-lg mb-2">&#9888;&#65039; Gallery not loaded</p><p class="text-gray-500 text-sm">${err.message}</p></div>`; });
