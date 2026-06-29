@@ -1,0 +1,7 @@
+name="gallery-api"
+main="gallery-api.js"
+compatibility_date="2026-06-29"
+
+[[r2_buckets]]
+binding="GALLERY"
+bucket_name="cansat-assets"
