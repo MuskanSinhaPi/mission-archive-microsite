@@ -7,7 +7,8 @@
 - Free for first 10GB storage + 1M requests/month 
 - Much faster than Netlify for binary files since it's a proper object store with CDN 
 - Upload your assets/images/gallery/, assets/models/ folders to R2, then update the paths in index.html to point to your R2 public URL 
-- Keep index.html and the rest of the code on Netlify - offloads the heavy assets to R2 
+- Keep index.html and the rest of the code on Netlify - offloads the heavy assets to R2
+- Updated with cloudflare r2 wrangler binding to sync with the bucket in real time, instead of relying on index.json generated from running bash script (on media stored locally)
 
 For embedding the Instagram feed:
 https://fouita.com
