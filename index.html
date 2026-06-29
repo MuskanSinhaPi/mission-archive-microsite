@@ -1301,15 +1301,24 @@ let modalItems=[], modalIndex=0;
 const CLOUDINARY_CLOUD = 'dy7oi1iy9'; // <-- replace with your Cloudinary cloud name
 
 function mediaSrc(folder, filename) {
-  const raw = `https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/${folder}/${filename}`;
-  if (/\.avi$/i.test(filename)) {
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/video/fetch/f_mp4,q_auto/${encodeURIComponent(raw)}`;
-  }
-  return raw;
+    const base = "https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/";
+
+    // AVI -> Cloudinary video conversion
+    if (/\.avi$/i.test(filename)) {
+        return `https://res.cloudinary.com/dy7oi1iy9/video/fetch/f_mp4,q_auto/${encodeURIComponent(base + folder + "/" + filename)}`;
+    }
+
+    // HEIC / HEIF -> Cloudinary image conversion
+    if (/\.(heic|heif)$/i.test(filename)) {
+        return `https://res.cloudinary.com/dy7oi1iy9/image/fetch/f_auto,q_auto/${encodeURIComponent(base + folder + "/" + filename)}`;
+    }
+
+    // Everything else comes directly from R2
+    return `${base}${folder}/${encodeURIComponent(filename)}`;
 }
 
 // fetch('https://pub-f56e87f4590a48d0a51dbcdf1328253f.r2.dev/gallery/index.json')
-fetch("/gallery-api")
+fetch("https://gallery-api.muskan-sinha.workers.dev")
 .then(r=>{if(!r.ok)throw new Error('Gallery index not found');return r.json();})
 .then(data=>{galleryData=data;buildTabs();renderAlbum(currentAlbum);document.getElementById('gallery-loading').style.display='none';document.getElementById('gallery-tip').style.display='block';})
 .catch(err=>{ document.getElementById('gallery-loading').innerHTML=`<div class="py-12 text-center"><p class="text-red-400 text-lg mb-2">&#9888;&#65039; Gallery not loaded</p><p class="text-gray-500 text-sm">${err.message}</p></div>`; });
